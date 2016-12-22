@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mailSend">
+
+	<resultMap id="mailSendResult" class="logistics.system.project.common.Entity.MailSendEntity">
+		<result property="mailSendId" column="MAIL_SEND_ID" columnIndex="1" />
+		<result property="mailSendTo" column="MAIL_SEND_TO" columnIndex="2" />
+		<result property="mailSendSub" column="MAIL_SEND_SUB" columnIndex="3" />
+		<result property="mailSendText" column="MAIL_SEND_TEXT" columnIndex="4" />
+		<result property="ankenNo" column="ANKEN_NO" columnIndex="5" />
+		<result property="ankenStatus" column="ANKEN_STATUS" columnIndex="6" />
+		<result property="mailSendStatus" column="MAIL_SEND_STATUS" columnIndex="7" />
+		<result property="mailSendKs" column="MAIL_SEND_KS" columnIndex="8" />
+		<result property="createId" column="CREATE_ID" columnIndex="9" />
+		<result property="createDt" column="CREATE_DT" columnIndex="10" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="11" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="12" />
+	</resultMap>
+	
+	<parameterMap id="mailSendParaMap" class="logistics.system.project.common.Entity.MailSendEntity">
+		<!-- <parameter property="mailSendId" jdbcType="BIGINT" javaType="java.lang.Integer" /> -->
+		<parameter property="mailSendTo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="mailSendSub" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="mailSendText" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="ankenNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="ankenStatus" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<!-- <parameter property="mailSendStatus" jdbcType="VARCHAR" javaType="java.lang.String" /> -->
+		<!-- <parameter property="mailSendKs" jdbcType="INT" javaType="java.lang.Integer" /> -->
+		<parameter property="createId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="updateId" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<select id="getMailSendList" parameterClass="logistics.system.project.common.Entity.MailSendEntity"
+		resultMap="mailSendResult">
+		select
+			MAIL_SEND_ID,
+			MAIL_SEND_TO,
+			MAIL_SEND_SUB,
+			MAIL_SEND_TEXT,
+			ANKEN_NO,
+			ANKEN_STATUS,
+			MAIL_SEND_STATUS,
+			MAIL_SEND_KS,
+			CREATE_ID,
+			CREATE_DT,
+			UPDATE_ID,
+			UPDATE_DT
+		from 
+			T_MAIL_SEND
+		where 1=1
+		<isNotEmpty prepend="AND" property="mailSendStatus" >
+			<![CDATA[MAIL_SEND_STATUS = #mailSendStatus#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="mailSendKs" >
+			<![CDATA[MAIL_SEND_KS = #mailSendKs#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="ankenNo" >
+			<![CDATA[ANKEN_NO = #ankenNo#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="ankenStatus" >
+			<![CDATA[ANKEN_STATUS = #ankenStatus#]]>
+		</isNotEmpty>
+	</select>
+	
+	<insert id="insertMailSend" parameterMap="mailSendParaMap">
+		INSERT INTO 
+			T_MAIL_SEND (
+				MAIL_SEND_TO,
+				MAIL_SEND_SUB,
+				MAIL_SEND_TEXT,
+				ANKEN_NO,
+				ANKEN_STATUS,
+				MAIL_SEND_STATUS,
+				MAIL_SEND_KS,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			) VALUES (
+				?,
+				?,
+				?,
+				?,
+				?,
+				0,
+				0,
+				?,
+				NOW(),
+				?,
+				NOW()
+			)
+	</insert>
+	
+	<update id="updateMailSendStatus" parameterClass="logistics.system.project.common.Entity.MailSendEntity">
+		UPDATE T_MAIL_SEND
+		SET MAIL_SEND_STATUS = #mailSendStatus#,
+			UPDATE_ID 	 	 = #updateId#,
+			UPDATE_DT		 = NOW()
+		WHERE MAIL_SEND_ID = #mailSendId#
+	</update>
+	
+	<update id="updateMailSendKs" parameterClass="logistics.system.project.common.Entity.MailSendEntity">
+		UPDATE T_MAIL_SEND
+		SET MAIL_SEND_KS	 = MAIL_SEND_KS + 1,
+			UPDATE_ID		 = #updateId#,
+			UPDATE_DT		 = NOW()
+		WHERE MAIL_SEND_ID = #mailSendId#
+	</update>
+	
+	<update id="updateMailSendStatusAndKs" parameterClass="logistics.system.project.common.Entity.MailSendEntity">
+		UPDATE T_MAIL_SEND
+		SET MAIL_SEND_STATUS = #mailSendStatus#,
+			MAIL_SEND_KS	 = MAIL_SEND_KS + 1,
+			UPDATE_ID		 = #updateId#,
+			UPDATE_DT		 = NOW()
+		WHERE MAIL_SEND_ID = #mailSendId#
+	</update>
+</sqlMap>

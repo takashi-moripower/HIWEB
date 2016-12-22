@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="anken">
+
+	<parameterMap id="NinushiKensuMap" class="java.util.Map">
+		<parameter property="sysDate1" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="sysDate2" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="companyCode" jdbcType="VARCHAR" javaType="java.lang.String"/>
+	</parameterMap>
+
+	<parameterMap id="KakuinZumiKensuMap" class="java.util.Map">
+		<parameter property="sysDate" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="gyomuSb" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="companyCode" jdbcType="VARCHAR" javaType="java.lang.String"/>
+		<parameter property="gyomuSb" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="companyCode" jdbcType="VARCHAR" javaType="java.lang.String"/>
+	</parameterMap>
+
+	<parameterMap id="ShabanMinyuRyokuKensuMap" class="java.util.Map">
+		<parameter property="sysDate" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="companyCode" jdbcType="VARCHAR" javaType="java.lang.String"/>
+	</parameterMap>
+
+	<parameterMap id="AnkenDetailMap" class="java.util.Map">
+		<parameter property="ankenNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<parameterMap id="ankenParaMap" class="logistics.system.project.common.Entity.AnkenDetailEntity">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="ninushiCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="jutuKigen" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="hokenKG" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="tyuiJK" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="picName1" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="picName2" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="picName3" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="seikyuKsCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="shihraiKsCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="createId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="createDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="updateId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="updateDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<resultMap id="AnkenListResult" class="logistics.system.project.common.Entity.AnkenListEntity">
+		<result property="ankenNo" column="ANKEN_NO" columnIndex="1" />
+		<result property="status" column="ANKEN_STATUS" columnIndex="2" />
+		<result property="statusNm" column="ANKEN_STATUS_NM" columnIndex="3" />
+		<result property="nisyu" column="NISYU_NM" columnIndex="4" />
+		<result property="syasyu" column="SYASYU_NM" columnIndex="5" />
+		<result property="opList" column="OP_LIST" columnIndex="6" />
+		<result property="syukaDay" column="SYUKA_DAY" columnIndex="7" />
+		<result property="syukaBasho" column="SYUKA_BASHO" columnIndex="8" />
+		<result property="syukaNisugata" column="SYUKA_NISUGATA_NM" columnIndex="9" />
+		<result property="syukaBiko" column="SYUKA_BIKO" columnIndex="10" />
+		<result property="nohinDay" column="NOHIN_DAY" columnIndex="11" />
+		<result property="nohinBasho" column="NOHIN_BASHO" columnIndex="12" />
+		<result property="nohinNisugata" column="NOHIN_NISUGATA_NM" columnIndex="13" />
+		<result property="nohinBiko" column="NOHIN_BIKO" columnIndex="14" />
+		<result property="tyuiJk" column="TYUI_JK" columnIndex="15" />
+		<result property="yosan" column="YOSAN_MN" columnIndex="16" />
+		<result property="kosoku" column="KOSOKU_KBN" columnIndex="17" />
+		<result property="nenryosc" column="NENRYOSC_KBN" columnIndex="18" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="19" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="20" />
+		<result property="hokenKG" column="HOKEN_MN" columnIndex="21" />
+	</resultMap>
+
+	<resultMap id="AnkenDetailResult" class="logistics.system.project.common.Entity.AnkenDetailEntity">
+		<result property="ankenNo" column="ANKEN_NO" columnIndex="1" />
+		<result property="jutuKigen" column="JUTU_KG" columnIndex="2" />
+		<result property="status" column="ANKEN_STATUS" columnIndex="3" />
+		<result property="statusNm" column="ANKEN_STATUS_NM" columnIndex="4" />
+		<result property="ninushiCd" column="NINUSHI_CD" columnIndex="5" />
+		<result property="seikyuKsCd" column="SEIKYU_KS_CD" columnIndex="6" />
+		<result property="ninushiMeisho" column="ninushiMeisho" columnIndex="7" />
+		<result property="ninushiJusho" column="ninushiJusho" columnIndex="8" />
+		<result property="unsoCd" column="unsoCd" columnIndex="9" />
+		<result property="unsoMeisho" column="unsoMeiSho" columnIndex="10" />
+		<result property="unsoJusho" column="unsoJusho" columnIndex="11" />
+		<result property="hokenKG" column="HOKEN_MN" columnIndex="12" />
+		<result property="tyuiJK" column="TYUI_JK" columnIndex="13" />
+		<result property="picName1" column="PIC_NM1" columnIndex="14" />
+		<result property="picName2" column="PIC_NM2" columnIndex="15" />
+		<result property="picName3" column="PIC_NM3" columnIndex="16" />
+		<result property="syabanKsNm" column="SYABAN_KS_NM" columnIndex="17" />
+		<result property="syaryoNo" column="SYARYO_NO" columnIndex="18" />
+		<result property="untensyaName" column="UNTENSYA_NM" columnIndex="19" />
+		<result property="renrakuTel" column="RENRAKU_TEL" columnIndex="20" />
+		<result property="kinkyuCorp" column="KINKYU_CORP" columnIndex="21" />
+		<result property="kinkyuTant" column="KINKYU_TANT" columnIndex="22" />
+		<result property="kinkyuTel" column="KINKYU_TEL" columnIndex="23" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="24" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="25" />
+		<result property="createId" column="CREATE_ID" columnIndex="26" />
+		<result property="createDt" column="CREATE_DT" columnIndex="27" />
+		<result property="truckNo" column="TRUCK_NO" columnIndex="28" />
+		<result property="kosokuMn" column="KOSOKU_MN" columnIndex="29" />
+		<result property="ocreateId" column="OCREATE_ID" columnIndex="30" />
+		<result property="ocreateDt" column="OCREATE_DT" columnIndex="31" />
+		<result property="ankenId" column="ANKEN_ID" columnIndex="32" />
+	</resultMap>
+
+	<resultMap id="SeikyuAnkenListResult" class="logistics.system.project.common.Entity.SeikyuAnkenEntity">
+		<result property="ankenNo" column="ANKEN_NO" columnIndex="1" />
+		<result property="ninushiCd" column="NINUSHI_CD" columnIndex="2" />
+		<result property="shihraiKsCd" column="SHIHRAI_KS_CD" columnIndex="3" />
+		<result property="syukaDay" column="SYUKA_DAY" columnIndex="4" />
+		<result property="syukaNm" column="SYUKA_ADDR_NM" columnIndex="5" />
+		<result property="syukaBasho" column="SYUKA_BASHO" columnIndex="6" />
+		<result property="syukaNisugata" column="NISUGATA_NM" columnIndex="7" />
+		<result property="nohinDay" column="NOHIN_DAY" columnIndex="8" />
+		<result property="nohinNm" column="NOHIN_ADDR_NM" columnIndex="9" />
+		<result property="nohinBasho" column="NOHIN_BASHO" columnIndex="10" />
+		<result property="syasyuNm" column="SYASYU_NM" columnIndex="11" />
+		<result property="kosokuKbn" column="KOSOKU_KBN" columnIndex="12" />
+		<result property="kosokuMn" column="KOSOKU_MN" columnIndex="13" />
+		<result property="nenryoscKbn" column="NENRYOSC_KBN" columnIndex="14" />
+		<result property="nenryoscMn" column="NENRYOSC_MN" columnIndex="15" />
+		<result property="status" column="ANKEN_STATUS" columnIndex="16" />
+		<result property="cancelMn" column="CANCEL_MN" columnIndex="17" />
+		<result property="yosan" column="YOSAN_MN" columnIndex="18" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="19" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="20" />
+		<result property="syukaBiko" column="SYUKA_BIKO" columnIndex="21" />
+		<result property="nohinBiko" column="NOHIN_BIKO" columnIndex="22" />
+		<result property="kosu" column="KOSU" columnIndex="23" />
+		<result property="syukaNisugataCd" column="NISUGATA_CD" columnIndex="24" />
+		<result property="syasyuCd" column="SYASYU_CD" columnIndex="25" />
+		<result property="daisu" column="DAISU" columnIndex="26" />
+		<result property="zyuryo" column="ZYURYO" columnIndex="27" />
+	</resultMap>
+
+	<select id="getNinushiKensu" parameterMap="NinushiKensuMap" resultClass="logistics.system.project.common.Entity.NinushiKensuEntity" >
+		<![CDATA[
+		SELECT COUNT(*) as MikakuteiKensu,IFNULL(SUM(IF(anken.JUTU_KG < ?, 1, 0)), 0) as SugiKensu
+		FROM
+			T_ANKEN anken
+		LEFT JOIN T_ANKEN_ORDER ankenO
+			ON anken.ANKEN_ID = ankenO.ANKEN_ID
+		WHERE EXISTS
+		( SELECT ''
+			FROM T_SYUKA syuka
+		   WHERE anken.ANKEN_ID = syuka.ANKEN_ID
+			 AND anken.ANKEN_ID = ankenO.ANKEN_ID
+		     AND ankenO.ANKEN_STATUS IN ('10')
+			 AND syuka.SYUKA_DAY >= ?
+			 AND anken.NINUSHI_CD = ?
+		)
+		]]>
+	</select>
+
+	<select id="getKakuinZumiKensu" parameterMap="KakuinZumiKensuMap" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT COUNT(*)
+		FROM
+			T_ANKEN anken
+		LEFT JOIN T_ANKEN_ORDER ankenO
+			ON anken.ANKEN_ID = ankenO.ANKEN_ID
+		WHERE EXISTS
+		( SELECT ''
+			FROM T_SYUKA syuka
+		   WHERE anken.ANKEN_ID = syuka.ANKEN_ID
+			 AND anken.ANKEN_ID = ankenO.ANKEN_ID
+		     AND ankenO.ANKEN_STATUS IN ('20', '30')
+			 AND syuka.SYUKA_DAY >= ?
+			 AND ('1' = ? OR anken.NINUSHI_CD=?)
+			 AND ('0' = ? OR ankenO.SHIHRAI_KS_CD=?)
+		)
+		]]>
+	</select>
+
+	<select id="getShabanMinyuRyokuKensu" parameterMap="ShabanMinyuRyokuKensuMap" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT COUNT(*)
+		FROM
+			T_ANKEN anken
+		LEFT JOIN T_ANKEN_ORDER ankenO
+			ON anken.ANKEN_ID = ankenO.ANKEN_ID
+		WHERE EXISTS
+		( SELECT ''
+			FROM T_SYUKA syuka
+		   WHERE anken.ANKEN_ID = syuka.ANKEN_ID
+			 AND anken.ANKEN_ID = ankenO.ANKEN_ID
+		     AND ankenO.ANKEN_STATUS IN ('20')
+			 AND syuka.SYUKA_DAY >= ?
+			 AND ankenO.SHIHRAI_KS_CD = ?
+		)
+		]]>
+	</select>
+
+	<select id="getAnkenDetail"  parameterMap="AnkenDetailMap" resultMap="AnkenDetailResult">
+		<![CDATA[
+		SELECT
+			ankenO.ANKEN_ID,
+			ankenO.ANKEN_NO,
+			anken.JUTU_KG,
+			ankenO.ANKEN_STATUS,
+			(CASE ankenO.ANKEN_STATUS
+						WHEN '10' THEN '登録済'
+						WHEN '20' THEN '確定'
+						WHEN '30' THEN '車番登録済み'
+						WHEN '40' THEN '集荷完了'
+						WHEN '90' THEN 'キャンセル'
+						END) AS ANKEN_STATUS_NM,
+			anken.NINUSHI_CD,
+			anken.SEIKYU_KS_CD,
+			CONCAT(comp1.COMPANY_NM, comp1.OFFICE_NM) AS ninushiMeisho,
+			CONCAT(comp1.PREF_NM, comp1.CITY_NM) AS ninushiJusho,
+			IFNULL(ankenO.SHIHRAI_KS_CD, ankenO.UNSOKS_CD) as unsoCd,
+			CONCAT(comp2.COMPANY_NM, comp2.OFFICE_NM) AS unsoMeiSho,
+			CONCAT(comp2.PREF_NM, comp2.CITY_NM) AS unsoJusho,
+			anken.HOKEN_MN,
+			anken.TYUI_JK,
+			anken.PIC_NM1,
+			anken.PIC_NM2,
+			anken.PIC_NM3,
+			ankenO.SYABAN_KS_NM,
+			ankenO.SYARYO_NO,
+			ankenO.UNTENSYA_NM,
+			ankenO.RENRAKU_TEL,
+			ankenO.KINKYU_CORP,
+			ankenO.KINKYU_TANT,
+			ankenO.KINKYU_TEL,
+			ankenO.UPDATE_ID,
+			ankenO.UPDATE_DT,
+			anken.CREATE_ID,
+			anken.CREATE_DT,
+			ankenO.TRUCK_NO,
+			ankenO.KOSOKU_MN,
+			ankenO.CREATE_ID OCREATE_ID,
+			ankenO.CREATE_DT OCREATE_DT
+		FROM
+			T_ANKEN anken
+		INNER JOIN
+			T_ANKEN_ORDER ankenO
+			ON anken.ANKEN_ID = ankenO.ANKEN_ID
+		LEFT JOIN M_COMPANY comp1
+			ON anken.SEIKYU_KS_CD = comp1.COMPANY_CD
+		LEFT JOIN M_COMPANY comp2
+			ON IFNULL(ankenO.SHIHRAI_KS_CD, ankenO.UNSOKS_CD) = comp2.COMPANY_CD
+		WHERE
+			ankenO.ANKEN_NO = ?
+		]]>
+	</select>
+
+	<sql id="getAnkenListCondition">
+   		<![CDATA[
+		FROM
+			(SELECT ankenO.ANKEN_NO AS ANKEN_NO,
+					ankenO.ANKEN_STATUS,
+					ankenO.UPDATE_ID AS UPDATE_ID,
+					ankenO.UPDATE_DT AS UPDATE_DT,
+					(CASE ankenO.ANKEN_STATUS
+						WHEN '10' THEN '登録済'
+						WHEN '20' THEN '確定'
+						WHEN '30' THEN '車番登録済み'
+						WHEN '40' THEN '集荷完了'
+						WHEN '90' THEN 'キャンセル'
+						END) AS ANKEN_STATUS_NM,
+					syukaInfo.NISYU_NM AS NISYU_NM,
+					syasyu.SYASYU_NM AS SYASYU_NM,
+					truck.OP_LIST AS OP_LIST,
+					syukaInfo.SYUKA_DAY AS SYUKA_DAY,
+					syukaInfo.SYUKA_BASHO AS SYUKA_BASHO,
+					syukaInfo.SYUKA_NISUGATA_NM AS SYUKA_NISUGATA_NM,
+					syukaInfo.SYUKA_BIKO AS SYUKA_BIKO ,
+					nohinInfo.NOHIN_DAY AS NOHIN_DAY,
+					nohinInfo.NOHIN_BASHO AS NOHIN_BASHO,
+					nohinInfo.NOHIN_NISUGATA_NM AS NOHIN_NISUGATA_NM,
+					nohinInfo.NOHIN_BIKO AS NOHIN_BIKO,
+					anken.TYUI_JK AS TYUI_JK,
+					IF(#gyomuSb# = '1', truck.ORDER_MN, truck.YOSAN_MN) AS YOSAN_MN,
+					IF(truck.KOSOKU_KBN = '0', '込み', '別料金') AS KOSOKU_KBN,
+					IF(truck.NENRYOSC_KBN = '0', '込み', '別料金') AS NENRYOSC_KBN,
+					truck.SYASYU_CD AS SYASYU_CD,
+					anken.NINUSHI_CD AS NINUSHI_CD,
+					anken.SHIHRAI_KS_CD AS SHIHRAI_KS_CD,
+					ankenO.UNSOKS_CD AS UNSOKS_CD,
+					anken.HOKEN_MN
+			FROM
+				T_ANKEN anken
+			INNER JOIN
+				T_ANKEN_ORDER ankenO
+				ON anken.ANKEN_ID = ankenO.ANKEN_ID
+			INNER JOIN
+				(SELECT
+					anken.ANKEN_ID,
+					GROUP_CONCAT(nisyu.NISYU_NM SEPARATOR '/') AS NISYU_NM,
+					CONCAT(IF(COUNT(syuka.ANKEN_ID) <> 1, CONCAT('[', COUNT(syuka.ANKEN_ID), 'ヶ所]'), ''), GROUP_CONCAT(CONCAT(syuka.PREF_NM, syuka.CITY_NM) SEPARATOR ' / ')) AS SYUKA_BASHO,
+					MAX(IF (syuka.SYUKA_SEQ = '1',CONCAT(syuka.SYUKA_DAY,syuka.SYUKA_TIME),'')) AS SYUKA_DAY,
+					GROUP_CONCAT(nisugata.NISUGATA_NM SEPARATOR '/') AS SYUKA_NISUGATA_NM,
+					IF (MAX(syuka.BIKO) IS NOT NULL AND MAX(syuka.BIKO) != '','有り', '無し') AS SYUKA_BIKO
+				FROM
+					T_ANKEN anken
+				LEFT JOIN T_SYUKA syuka ON anken.ANKEN_ID = syuka.ANKEN_ID
+				LEFT JOIN M_NISYU nisyu ON syuka.NISYU_CD = nisyu.NISYU_CD
+				LEFT JOIN M_NISUGATA nisugata ON syuka.NISUGATA_CD = nisugata.NISUGATA_CD
+				WHERE 1=1
+			]]>
+		   		<isNotEmpty prepend="AND" property="ankenNo" >
+		        	anken.ANKEN_ID LIKE CONCAT(LEFT(#ankenNo#, 15), '%')
+		   		</isNotEmpty>
+				<isEqual prepend="AND" property="gyomuSb" compareValue="0">
+					anken.NINUSHI_CD=#companyCd#
+				</isEqual>
+				<iterate prepend="AND"  property="prefNameList" open="(" close=")" conjunction="OR">
+					syuka.PREF_NM LIKE CONCAT('%', #prefNameList[]#, '%')
+				</iterate>
+				<iterate prepend="AND"  property="cityNameList" open="(" close=")" conjunction="OR">
+					syuka.CITY_NM LIKE CONCAT('%', #cityNameList[]#, '%')
+				</iterate>
+				<isNotEmpty prepend="AND" property="syukaDayFr" >
+		           <![CDATA[syuka.SYUKA_DAY >= #syukaDayFr#]]>
+		   		</isNotEmpty>
+				<isNotEmpty prepend="AND" property="syukaDayTo" >
+		           <![CDATA[syuka.SYUKA_DAY <= #syukaDayTo#]]>
+		   		</isNotEmpty>
+				<isNotEmpty prepend="AND" property="seikyuKsCd" >
+					<![CDATA[(anken.SEIKYU_KS_CD = #seikyuKsCd# OR anken.NINUSHI_CD = #seikyuKsCd#) ]]>
+				</isNotEmpty>
+		   		<![CDATA[
+				GROUP BY
+					anken.ANKEN_ID) syukaInfo
+				ON anken.ANKEN_ID = syukaInfo.ANKEN_ID
+				INNER JOIN
+				(SELECT
+					anken.ANKEN_ID,
+					GROUP_CONCAT(nisyu.NISYU_NM SEPARATOR '/') AS NISYU_NM,
+					CONCAT(IF(COUNT(nohin.ANKEN_ID) <> 1, CONCAT('[', COUNT(nohin.ANKEN_ID), 'ヶ所]'), ''), GROUP_CONCAT(CONCAT(nohin.PREF_NM, nohin.CITY_NM) SEPARATOR ' / ')) AS NOHIN_BASHO,
+					MAX(IF (nohin.NOHIN_SEQ = '1',CONCAT(nohin.NOHIN_DAY, nohin.NOHIN_TIME),'')) AS NOHIN_DAY,
+					GROUP_CONCAT(nisugata.NISUGATA_NM SEPARATOR '/') AS NOHIN_NISUGATA_NM,
+					IF (MAX(nohin.BIKO) IS NOT NULL AND MAX(nohin.BIKO) != '', '有り', '無し') AS NOHIN_BIKO
+				FROM
+					T_ANKEN anken
+				LEFT JOIN T_NOHIN nohin ON anken.ANKEN_ID = nohin.ANKEN_ID
+				LEFT JOIN M_NISYU nisyu ON nohin.NISYU_CD = nisyu.NISYU_CD
+				LEFT JOIN M_NISUGATA nisugata ON nohin.NISUGATA_CD = nisugata.NISUGATA_CD
+				WHERE 1=1
+				]]>
+		   		<isNotEmpty prepend="AND" property="ankenNo" >
+		        	anken.ANKEN_ID LIKE CONCAT(LEFT(#ankenNo#, 15), '%')
+		   		</isNotEmpty>
+				<isEqual prepend="AND" property="gyomuSb" compareValue="0">
+					anken.NINUSHI_CD=#companyCd#
+				</isEqual>
+				<isNotEmpty prepend="AND" property="seikyuKsCd" >
+					<![CDATA[(anken.SEIKYU_KS_CD = #seikyuKsCd# OR anken.NINUSHI_CD = #seikyuKsCd#) ]]>
+				</isNotEmpty>
+				<![CDATA[
+				GROUP BY
+					anken.ANKEN_ID
+				) nohinInfo
+				ON anken.ANKEN_ID = nohinInfo.ANKEN_ID
+			LEFT JOIN T_TRUCK truck
+				ON ankenO.ANKEN_ID = truck.ANKEN_ID AND ankenO.TRUCK_NO = truck.TRUCK_NO
+			LEFT JOIN M_SYASYU syasyu
+				ON truck.SYASYU_CD = syasyu.SYASYU_CD
+			WHERE
+				ankenO.ANKEN_STATUS <> '00'
+			]]>
+			<iterate prepend="AND"  property="syasyuList" open="(" close=")" conjunction="OR">
+				truck.SYASYU_CD=#syasyuList[]#
+			</iterate>
+			<iterate prepend="AND"  property="opList" open="(" close=")" conjunction="OR">
+				truck.OP_LIST LIKE CONCAT('%', #opList[]#, '%')
+			</iterate>
+	   		<isNotEmpty prepend="AND" property="ankenNo" >
+	            ankenO.ANKEN_NO LIKE CONCAT(#ankenNo#, '%')
+	   		</isNotEmpty>
+	   		<isNotEmpty prepend="AND" property="jutuKg" >
+	            anken.JUTU_KG &lt; #jutuKg#
+	   		</isNotEmpty>
+			<iterate prepend="AND"  property="ankenStatusList" open="(" close=")" conjunction="OR">
+				ankenO.ANKEN_STATUS=#ankenStatusList[]#
+			</iterate>
+			<isEqual prepend="AND" property="gyomuSb" compareValue="0">
+				anken.NINUSHI_CD=#companyCd#
+			</isEqual>
+			<isEqual prepend="AND" property="gyomuSb" compareValue="1">
+				<![CDATA[
+				((ankenO.ANKEN_STATUS = '10' AND ankenO.CREATE_DT < #createDt#)
+				OR (ankenO.ANKEN_STATUS <> '10' AND ankenO.SHIHRAI_KS_CD = #companyCd#))
+				]]>
+			</isEqual>
+			<isNotEmpty prepend="AND" property="seikyuKsCd" >
+				<![CDATA[(anken.SEIKYU_KS_CD = #seikyuKsCd# OR anken.NINUSHI_CD = #seikyuKsCd#)]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="shihraiKsCd" >
+				<![CDATA[ankenO.SHIHRAI_KS_CD = #shihraiKsCd#]]>
+			</isNotEmpty>
+			<![CDATA[
+			) main
+			]]>
+	</sql>
+
+	<select id="getAnkenListCount" parameterClass="logistics.system.project.common.parameterClass.AnkenListParameter"
+ 		 resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT IF(COUNT(*) IS NULL, 0, COUNT(*))
+		]]>
+		<include refid="getAnkenListCondition"/>
+	</select>
+
+ 	<select id="getAnkenList" parameterClass="logistics.system.project.common.parameterClass.AnkenListParameter"
+ 		 resultMap="AnkenListResult" >
+		<![CDATA[
+		SELECT
+			main.ANKEN_NO,
+			main.ANKEN_STATUS,
+			main.ANKEN_STATUS_NM,
+			main.NISYU_NM,
+			main.SYASYU_NM,
+			main.OP_LIST,
+			main.SYUKA_DAY,
+			main.SYUKA_BASHO,
+			main.SYUKA_NISUGATA_NM,
+			main.SYUKA_BIKO,
+			main.NOHIN_DAY,
+			main.NOHIN_BASHO,
+			main.NOHIN_NISUGATA_NM,
+			main.NOHIN_BIKO,
+			main.TYUI_JK,
+			main.YOSAN_MN,
+			main.KOSOKU_KBN,
+			main.NENRYOSC_KBN,
+			main.UPDATE_ID,
+			main.UPDATE_DT,
+			main.HOKEN_MN
+		]]>
+		<include refid="getAnkenListCondition"/>
+		<isEmpty property="sortId" >
+	        ORDER BY main.YOSAN_MN DESC
+	   	</isEmpty>
+		<isEqual property="sortId" compareValue="0">
+          	ORDER BY main.YOSAN_MN DESC
+      	</isEqual>
+		<isEqual property="sortId" compareValue="1">
+          	ORDER BY main.SYUKA_DAY
+      	</isEqual>
+		<isEqual property="sortId" compareValue="2">
+          	ORDER BY main.SYASYU_CD
+      	</isEqual>
+      		LIMIT #startIndex#, #countPerPage#
+	</select>
+
+	<select id="getAnKenMaxSeqNo" parameterClass="string" resultClass="string">
+		<![CDATA[
+		SELECT
+			SUBSTR(max(anken.ANKEN_ID), -2)
+		FROM
+			t_anken anken
+		WHERE
+			anken.ANKEN_ID LIKE CONCAT(#startSeq#, "%")
+		]]>
+	</select>
+
+	<insert id="insertAnken" parameterMap="ankenParaMap">
+		<![CDATA[
+		INSERT INTO
+			T_ANKEN (
+				ANKEN_ID,
+				NINUSHI_CD,
+				JUTU_KG,
+				HOKEN_MN,
+				TYUI_JK,
+				PIC_NM1,
+				PIC_NM2,
+				PIC_NM3,
+				SEIKYU_KS_CD,
+				SHIHRAI_KS_CD,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT,
+				DELETE_FLG
+			)
+			VALUES(
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				0
+			)
+		]]>
+	</insert>
+
+	<update id="updateAnkenShiHrai" parameterClass="logistics.system.project.common.Entity.AnkenDetailEntity">
+      UPDATE
+      	T_ANKEN
+      SET
+      	SHIHRAI_KS_CD 	= #shihraiKsCd#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT		= NOW()
+      WHERE ANKEN_ID = #ankenId#
+      	AND UPDATE_DT= #updateDt#
+    </update>
+
+	<update id="updateAnkenStatus" parameterClass="logistics.system.project.common.Entity.AnkenDetailEntity">
+      UPDATE
+      	T_ANKEN_ORDER
+      SET
+      	ANKEN_STATUS 	= #status#,
+    <isEqual property="status" compareValue="20">
+      	ORDER_DT		= NOW(),
+      	KINKYU_CORP 	= #kinkyuCorp#,
+      	KINKYU_TANT 	= #kinkyuTant#,
+      	KINKYU_TEL 		= #kinkyuTel#,
+    </isEqual>
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT		= NOW()
+   	<isNotEmpty prepend="," property="unsoCd" >
+   		UNSOKS_CD 		= #unsoCd#
+   	</isNotEmpty>
+   	<isNotEmpty prepend="," property="shihraiKsCd" >
+   		SHIHRAI_KS_CD 	= #shihraiKsCd#
+   	</isNotEmpty>
+      WHERE ANKEN_NO = #ankenNo#
+      	AND UPDATE_DT= #updateDt#
+    </update>
+
+    <update id="updateSyaban" parameterClass="logistics.system.project.common.Entity.AnkenDetailEntity">
+      UPDATE
+      	T_ANKEN_ORDER
+      SET
+      	ANKEN_STATUS 	= #status#,
+      	SYABAN_KS_NM 	= #syabanKsNm#,
+      	SYARYO_NO 		= #syaryoNo#,
+      	UNTENSYA_NM 	= #untensyaName#,
+      	RENRAKU_TEL 	= #renrakuTel#,
+      	KINKYU_CORP 	= #kinkyuCorp#,
+      	KINKYU_TANT 	= #kinkyuTant#,
+      	KINKYU_TEL 		= #kinkyuTel#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT		= NOW()
+       WHERE ANKEN_NO = #ankenNo#
+      	AND UPDATE_DT= #updateDt#
+    </update>
+
+    <delete id="deleteAnken" parameterClass="logistics.system.project.common.Entity.AnkenDetailEntity">
+    	DELETE
+      	FROM
+      	T_ANKEN
+       	WHERE ANKEN_ID = #ankenId#
+       	AND UPDATE_DT = #updateDt#
+    </delete>
+
+    <update id="updateAnken" parameterClass="logistics.system.project.common.Entity.AnkenDetailEntity">
+      UPDATE
+      	T_ANKEN
+      SET
+      	NINUSHI_CD 	= #ninushiCd#,
+      	JUTU_KG 	= #jutuKigen#,
+      	HOKEN_MN 		= #hokenKG#,
+      	TYUI_JK 	= #tyuiJK#,
+      	PIC_NM1 	= #picName1#,
+      	PIC_NM2 	= #picName2#,
+      	PIC_NM3 	= #picName3#,
+      	SEIKYU_KS_CD = #seikyuKsCd#,
+      	SHIHRAI_KS_CD = #shihraiKsCd#,
+      	CREATE_ID = #createId#,
+      	CREATE_DT		= #createDt#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT		= NOW()
+       WHERE ANKEN_ID = #ankenId#
+      	AND UPDATE_DT = #updateDt#
+    </update>
+
+    <select id="getSeikyuAnkenList" parameterClass="logistics.system.project.common.parameterClass.SeikyuAnkenListParameter"
+    	resultMap="SeikyuAnkenListResult">
+             SELECT ankenO.ANKEN_NO,
+             	anken.NINUSHI_CD,
+             	anken.SHIHRAI_KS_CD,
+                syukaInfo.SYUKA_DAY,
+                syukaInfo.SYUKA_ADDR_NM,
+                syukaInfo.SYUKA_BASHO,
+                syukaInfo.NISUGATA_CD,
+                syukaInfo.NISUGATA_NM,
+                syukaInfo.SYUKA_BIKO,
+                syukaInfo.KOSU,
+                syukaInfo.ZYURYO,
+                nohinInfo.NOHIN_DAY,
+                nohinInfo.NOHIN_ADDR_NM,
+                nohinInfo.NOHIN_BASHO,
+                nohinInfo.NOHIN_BIKO,
+                syasyu.SYASYU_NM,
+                truck.SYASYU_CD,
+                truck.KOSOKU_KBN,
+                ankenO.KOSOKU_MN,
+                truck.NENRYOSC_KBN,
+                truck.NENRYOSC_MN,
+                truck.DAISU,
+                ankenO.ANKEN_STATUS,
+                ankenO.CANCEL_MN,
+                IF(#gyomuSb# = '1', truck.ORDER_MN, truck.YOSAN_MN) AS YOSAN_MN,
+                ankenO.UPDATE_ID,
+                ankenO.UPDATE_DT,
+                anken.HOKEN_MN
+			FROM
+				T_ANKEN anken
+			INNER JOIN
+				T_ANKEN_ORDER ankenO
+				ON anken.ANKEN_ID = ankenO.ANKEN_ID
+			INNER JOIN
+				(SELECT
+					anken.ANKEN_ID,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.SYUKA_DAY, '')) AS SYUKA_DAY,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.ADDR_NM, '')) AS SYUKA_ADDR_NM,
+					MAX(IF(syuka.SYUKA_SEQ = '1', CONCAT(syuka.PREF_NM, syuka.CITY_NM), '')) AS SYUKA_BASHO,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.NISUGATA_CD, '')) AS NISUGATA_CD,
+					MAX(IF(syuka.SYUKA_SEQ = '1', nisugata.NISUGATA_NM, '')) AS NISUGATA_NM,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.BIKO, '')) AS SYUKA_BIKO,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.KOSU, '')) AS KOSU,
+					MAX(IF(syuka.SYUKA_SEQ = '1', syuka.ZYURYO, '')) AS ZYURYO
+				FROM
+					T_ANKEN anken
+				LEFT JOIN T_SYUKA syuka ON anken.ANKEN_ID = syuka.ANKEN_ID
+				LEFT JOIN M_NISUGATA nisugata ON syuka.NISUGATA_CD = nisugata.NISUGATA_CD
+				WHERE syuka.SYUKA_DAY BETWEEN #syukaDayFr# AND #syukaDayTo#
+				GROUP BY anken.ANKEN_ID
+				) syukaInfo
+				    ON anken.ANKEN_ID = syukaInfo.ANKEN_ID
+				INNER JOIN
+				(SELECT
+					anken.ANKEN_ID,
+					MAX(IF(nohin.NOHIN_SEQ = '1', nohin.NOHIN_DAY, '')) AS NOHIN_DAY,
+					MAX(IF(nohin.NOHIN_SEQ = '1', nohin.ADDR_NM, '')) AS NOHIN_ADDR_NM,
+					MAX(IF(nohin.NOHIN_SEQ = '1', CONCAT(nohin.PREF_NM, nohin.CITY_NM), '')) AS NOHIN_BASHO,
+					MAX(IF(nohin.NOHIN_SEQ = '1', nohin.BIKO, '')) AS NOHIN_BIKO
+				FROM
+					T_ANKEN anken
+				LEFT JOIN T_NOHIN nohin ON anken.ANKEN_ID = nohin.ANKEN_ID
+				WHERE 1=1
+				GROUP BY anken.ANKEN_ID
+				) nohinInfo
+				    ON anken.ANKEN_ID = nohinInfo.ANKEN_ID
+			LEFT JOIN T_TRUCK truck
+				ON ankenO.ANKEN_ID = truck.ANKEN_ID AND ankenO.TRUCK_NO = truck.TRUCK_NO
+			LEFT JOIN M_SYASYU syasyu
+				ON truck.SYASYU_CD = syasyu.SYASYU_CD
+			WHERE 1 = 1
+			<isEqual prepend="AND" property="gyomuSb" compareValue="9">
+				anken.SEIKYU_KS_CD = #kigyo#
+			</isEqual>
+		  	<isEqual prepend="AND" property="gyomuSb" compareValue="1">
+		     	ankenO.SHIHRAI_KS_CD = #kigyo#
+		  	</isEqual>
+			<iterate prepend="AND"  property="statusList" open="(" close=")" conjunction="OR">
+				ankenO.ANKEN_STATUS = #statusList[]#
+			</iterate>
+  	</select>
+</sqlMap>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="member">
+
+	<resultMap id="memberResult" class="logistics.system.project.common.Entity.MemberEntity">
+		<result property="companyCd" column="COMPANY_CD" columnIndex="1" />
+		<result property="customCd" column="CUSTOM_CD" columnIndex="2" />
+		<result property="officeCd" column="OFFICE_CD" columnIndex="3" />
+		<result property="companyNm" column="COMPANY_NM" columnIndex="4" />
+		<result property="officeNm" column="OFFICE_NM" columnIndex="5" />
+		<result property="keiyakuDay" column="KEIYAKU_DAY" columnIndex="6" />
+		<result property="keiyakuKgDay" column="KEIYAKU_KG_DAY" columnIndex="7" />
+		<result property="riyoTm" column="RIYO_TM" columnIndex="8" />
+		<result property="gyomuSb" column="GYOMU_SB" columnIndex="9" />
+		<result property="ryoritu" column="RYORITU" columnIndex="10" />
+		<result property="hokenMn" column="HOKEN_MN" columnIndex="11" />
+		<result property="postCode" column="POST_CODE" columnIndex="12" />
+		<result property="prefNm" column="PREF_NM" columnIndex="13" />
+		<result property="cityNm" column="CITY_NM" columnIndex="14" />
+		<result property="addrOther" column="ADDR_OTHER" columnIndex="15" />
+		<result property="sekininNm" column="SEKININ_NM" columnIndex="16" />
+		<result property="companyTel" column="COMPANY_TEL" columnIndex="17" />
+		<result property="companyFax" column="COMPANY_FAX" columnIndex="18" />
+		<result property="companyEmail" column="COMPANY_EMAIL" columnIndex="19" />
+		<result property="keiriNm" column="KEIRI_NM" columnIndex="20" />
+		<result property="keiriBs" column="KEIRI_BS" columnIndex="21" />
+		<result property="keiriYk" column="KEIRI_YK" columnIndex="22" />
+		<result property="keiriTel" column="KEIRI_TEL" columnIndex="23" />
+		<result property="keiriEmail" column="KEIRI_EMAIL" columnIndex="24" />
+		<result property="ginkouCd" column="GINKOU_CD" columnIndex="25" />
+		<result property="ginkouNm" column="GINKOU_NM" columnIndex="26" />
+		<result property="sitenCd" column="SITEN_CD" columnIndex="27" />
+		<result property="sitenNm" column="SITEN_NM" columnIndex="28" />
+		<result property="kozaSr" column="KOZA_SR" columnIndex="29" />
+		<result property="kozaNo" column="KOZA_NO" columnIndex="30" />
+		<result property="simbSb" column="SIMB_SB" columnIndex="31" />
+		<result property="sihrSt" column="SIHR_ST" columnIndex="32" />
+		<result property="dispDl" column="DISP_DL" columnIndex="33" />
+		<result property="deleteFlg" column="DELETE_FLG" columnIndex="34" />
+		<result property="createId" column="CREATE_ID" columnIndex="35" />
+		<result property="createDt" column="CREATE_DT" columnIndex="36" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="37" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="38" />
+	</resultMap>
+
+	<select id="getMemberList" parameterClass="logistics.system.project.common.parameterClass.MemberListParameter"
+		resultMap="memberResult">
+		select
+			com.COMPANY_CD,
+			com.CUSTOM_CD,
+			com.OFFICE_CD,
+			com.COMPANY_NM,
+			com.OFFICE_NM,
+			com.KEIYAKU_DAY,
+			com.KEIYAKU_KG_DAY,
+			com.RIYO_TM,
+			com.GYOMU_SB,
+			com.RYORITU,
+			com.HOKEN_MN,
+			com.POST_CODE,
+			com.PREF_NM,
+			com.CITY_NM,
+			com.ADDR_OTHER,
+			com.SEKININ_NM,
+			com.COMPANY_TEL,
+			com.COMPANY_FAX,
+			com.COMPANY_EMAIL,
+			com.KEIRI_NM,
+			com.KEIRI_BS,
+			com.KEIRI_YK,
+			com.KEIRI_TEL,
+			com.KEIRI_EMAIL,
+			com.GINKOU_CD,
+			com.GINKOU_NM,
+			com.SITEN_CD,
+			com.SITEN_NM,
+			com.KOZA_SR,
+			com.KOZA_NO,
+			com.SIMB_SB,
+			com.SIHR_ST,
+			com.DISP_DL,
+			com.DELETE_FLG,
+			com.CREATE_ID,
+			com.CREATE_DT,
+			com.UPDATE_ID,
+			com.UPDATE_DT
+		from 
+			m_company com
+		where 
+			com.DELETE_FLG=0
+		<isNotEmpty prepend="AND" property="gyomuSb" >
+			<![CDATA[com.GYOMU_SB IN ($gyomuSb$)]]>
+		</isNotEmpty>
+		<!-- <isNotEmpty prepend="AND" property="gyomuSb0" >
+			<![CDATA[com.GYOMU_SB = #gyomuSb0#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="OR" property="gyomuSb1" >
+			<![CDATA[com.GYOMU_SB = #gyomuSb1#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="OR" property="gyomuSb9" >
+			<![CDATA[com.GYOMU_SB = #gyomuSb9#]]>
+		</isNotEmpty> -->
+		<isNotEmpty prepend="AND" property="prefNm" >
+			<![CDATA[com.PREF_NM = #prefNm#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="cityNm" >
+			<![CDATA[com.CITY_NM = #cityNm#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="keyWord" >
+			<![CDATA[
+				(CONCAT(com.CUSTOM_CD,com.OFFICE_CD) LIKE CONCAT('%',#keyWord#,'%')
+					OR com.COMPANY_NM LIKE CONCAT('%',#keyWord#,'%')
+					OR com.OFFICE_NM LIKE CONCAT('%',#keyWord#,'%') )
+			]]>
+		</isNotEmpty>
+	</select>
+
+	<select id="getMemberByCd" parameterClass="java.lang.String"
+		resultMap="memberResult">
+		select
+			com.COMPANY_CD,
+			com.CUSTOM_CD,
+			com.OFFICE_CD,
+			com.COMPANY_NM,
+			com.OFFICE_NM,
+			com.KEIYAKU_DAY,
+			com.KEIYAKU_KG_DAY,
+			com.RIYO_TM,
+			com.GYOMU_SB,
+			com.RYORITU,
+			com.HOKEN_MN,
+			com.POST_CODE,
+			com.PREF_NM,
+			com.CITY_NM,
+			com.ADDR_OTHER,
+			com.SEKININ_NM,
+			com.COMPANY_TEL,
+			com.COMPANY_FAX,
+			com.COMPANY_EMAIL,
+			com.KEIRI_NM,
+			com.KEIRI_BS,
+			com.KEIRI_YK,
+			com.KEIRI_TEL,
+			com.KEIRI_EMAIL,
+			com.GINKOU_CD,
+			com.GINKOU_NM,
+			com.SITEN_CD,
+			com.SITEN_NM,
+			com.KOZA_SR,
+			com.KOZA_NO,
+			com.SIMB_SB,
+			com.SIHR_ST,
+			com.DISP_DL,
+			com.DELETE_FLG,
+			com.CREATE_ID,
+			com.CREATE_DT,
+			com.UPDATE_ID,
+			com.UPDATE_DT
+		from 
+			m_company com
+		where com.COMPANY_CD = #value#
+		
+	</select>
+	
+	<update id="updateMember" parameterClass="logistics.system.project.common.Entity.MemberEntity">
+      UPDATE
+      	M_COMPANY
+      SET
+      	COMPANY_NM 		= #companyNm#,
+      	OFFICE_NM 	 	= #officeNm#,
+      	KEIYAKU_DAY 	= #keiyakuDay#,
+      	KEIYAKU_KG_DAY 	= #keiyakuKgDay#,
+      	RIYO_TM 	 	= NULLIF(#riyoTm# ,''),
+      	GYOMU_SB 	 	= #gyomuSb#,
+      	RYORITU 	 	= NULLIF(#ryoritu#, ''),
+      	HOKEN_MN 	 	= NULLIF(#hokenMn#, ''),
+      	POST_CODE 	 	= #postCode#,
+      	PREF_NM 	 	= #prefNm#,
+      	CITY_NM 	 	= #cityNm#,
+      	ADDR_OTHER 	 	= #addrOther#,
+      	SEKININ_NM 	 	= #sekininNm#,
+      	COMPANY_TEL 	= #companyTel#,
+      	COMPANY_FAX 	= #companyFax#,
+      	COMPANY_EMAIL 	= #companyEmail#,
+      	KEIRI_NM 	 	= #keiriNm#,
+      	KEIRI_BS 	 	= #keiriBs#,
+      	KEIRI_YK 	 	= #keiriYk#,
+      	KEIRI_TEL 	 	= #keiriTel#,
+      	KEIRI_EMAIL 	= #keiriEmail#,
+      	GINKOU_CD 	 	= #ginkouCd#,
+      	GINKOU_NM 	 	= #ginkouNm#,
+      	SITEN_CD 	 	= #sitenCd#,
+      	SITEN_NM 	 	= #sitenNm#,
+      	KOZA_SR 	 	= #kozaSr#,
+      	KOZA_NO 	 	= #kozaNo#,
+      	SIMB_SB 	 	= #simbSb#,
+      	SIHR_ST 	 	= #sihrSt#,
+      	DISP_DL 	 	= NULLIF(#dispDl#, ''),
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT 	 	= NOW()
+      WHERE COMPANY_CD 	= #companyCd#
+       AND	UPDATE_DT	= #updateDt#
+    </update>
+	 
+	<insert id="insertMember" parameterClass="logistics.system.project.common.Entity.MemberEntity">
+ 		INSERT INTO
+			M_COMPANY (
+				COMPANY_CD,
+				CUSTOM_CD,
+				COMPANY_NM,
+				OFFICE_CD,
+				OFFICE_NM,
+				KEIYAKU_DAY,
+				KEIYAKU_KG_DAY,
+				RIYO_TM,
+				GYOMU_SB,
+				RYORITU,
+				HOKEN_MN,
+				POST_CODE,
+				PREF_NM,
+				CITY_NM,
+				ADDR_OTHER,
+				SEKININ_NM,
+				COMPANY_TEL,
+				COMPANY_FAX,
+				COMPANY_EMAIL,
+				KEIRI_NM,
+				KEIRI_BS,
+				KEIRI_YK,
+				KEIRI_TEL,
+				KEIRI_EMAIL,
+				GINKOU_CD,
+				GINKOU_NM,
+				SITEN_CD,
+				SITEN_NM,
+				KOZA_SR,
+				KOZA_NO,
+				SIMB_SB,
+				SIHR_ST,
+				DISP_DL,
+				DELETE_FLG,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#companyCd#,
+				#customCd#,
+				#companyNm#,
+				#officeCd#,
+				#officeNm#,
+				#keiyakuDay#,
+				#keiyakuKgDay#,
+				NULLIF(#riyoTm#, ''),
+				#gyomuSb#,
+				NULLIF(#ryoritu#, ''),
+				NULLIF(#hokenMn#, ''),
+				#postCode#,
+				#prefNm#,
+				#cityNm#,
+				#addrOther#,
+				#sekininNm#,
+				#companyTel#,
+				#companyFax#,
+				#companyEmail#,
+				#keiriNm#,
+				#keiriBs#,
+				#keiriYk#,
+				#keiriTel#,
+				#keiriEmail#,
+				#ginkouCd#,
+				#ginkouNm#,
+				#sitenCd#,
+				#sitenNm#,
+				#kozaSr#,
+				#kozaNo#,
+				#simbSb#,
+				#sihrSt#,
+				NULLIF(#dispDl#, ''),
+				0,
+				#createId#,
+				NOW(),
+				#updateId#,
+				NOW()	
+			)
+    </insert>
+</sqlMap>  

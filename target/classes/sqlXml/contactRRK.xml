@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="contact">
+	<resultMap id="contactResult"
+		class="logistics.system.project.common.Entity.ContactRRKEntity">
+		<result property="companyCd" column="COMPANY_CD" columnIndex="1" />
+		<result property="addressKbn" column="ADDRESS_KBN" columnIndex="2" />
+		<result property="companyNm" column="COMPANY_NM" columnIndex="3" />
+		<result property="tantoNm" column="TANTO_NM" columnIndex="4" />
+		<result property="tantoTel" column="TANTO_TEL" columnIndex="5" />
+		<result property="id" column="RRK_ID" columnIndex="6" />
+	</resultMap>
+
+	<parameterMap id="contactParaMap" class="java.util.Map">
+		<parameter property="companyCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="addressKbn" jdbcType="VARCHAR"
+			javaType="java.lang.String" />
+		<parameter property="tantoNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="tantoTel" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<parameterMap id="deleteContactParaMap" class="java.util.Map">
+		<parameter property="companyCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="rrkId" jdbcType="VARCHAR"
+			javaType="java.lang.String" />
+	</parameterMap>
+
+
+	<select id="getContactByAddrKBN" parameterMap="contactParaMap"
+		resultMap="contactResult">
+		SELECT
+		cont.COMPANY_CD,
+		cont.ADDRESS_KBN,
+		cont.COMPANY_NM,
+		cont.TANTO_NM,
+		cont.TANTO_TEL,
+		cont.RRK_ID
+		from T_CONTACT_RRK cont
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="companyCd">
+				cont.COMPANY_CD = #companyCd#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="addressKbn">
+				cont.ADDRESS_KBN = #addressKbn#
+			</isNotEmpty>			
+			<isNotEmpty prepend="and" property="tantoNm">
+				cont.TANTO_NM = #tantoNm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="tantoTel">
+				cont.TANTO_TEL = #tantoTel#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<delete id="deleteContactById" parameterMap="deleteContactParaMap">
+    	DELETE 
+      	FROM
+      	T_CONTACT_RRK
+       	WHERE COMPANY_CD = ?       	
+       	AND RRK_ID = ?
+    </delete>
+    
+    <insert id="insertContactRRK" parameterClass="logistics.system.project.common.Entity.ContactRRKEntity">		
+		INSERT INTO
+			T_CONTACT_RRK (
+				COMPANY_CD,
+				ADDRESS_KBN,
+				COMPANY_NM,
+				TANTO_NM,
+				TANTO_TEL,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#companyCd#,
+				#addressKbn#,
+				<isNotEmpty prepend="" property="companyNm">
+					#companyNm#,
+				</isNotEmpty>
+				<isEmpty prepend="" property="companyNm">
+					(SELECT
+						com.COMPANY_NM
+					 FROM
+						M_COMPANY com
+					 where
+					 	com.COMPANY_CD = #companyCd#
+					),
+				</isEmpty>
+				#tantoNm#,
+				#tantoTel#,
+				#createId#,
+				#createDt#,
+				#updateId#,
+				#updateDt#
+			)		
+	</insert>
+
+</sqlMap>  

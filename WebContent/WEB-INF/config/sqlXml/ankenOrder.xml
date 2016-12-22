@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ankenOrder">
+
+	<parameterMap id="ankenParaMap" class="logistics.system.project.common.Entity.AnkenOrderEntity">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="truckNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="renban" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="ankenNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="unsoksCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="ankenStatus" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="shihraiKsCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="createId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="createDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="updateId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="updateDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<insert id="insertAnkenOrder" parameterClass="logistics.system.project.common.Entity.AnkenOrderEntity">
+		<![CDATA[
+		INSERT INTO
+			T_ANKEN_ORDER (
+				ANKEN_ID,
+				TRUCK_NO,
+				RENBAN,
+				ANKEN_NO,
+				UNSOKS_CD,
+				ANKEN_STATUS,
+				SHIHRAI_KS_CD,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#ankenId#,
+				#truckNo#,
+				#renban#,
+				#ankenNo#,
+				#unsoksCd#,
+				#ankenStatus#,
+				#shihraiKsCd#,
+				#createId#,
+				(select anken.UPDATE_DT
+				 from
+				 t_anken anken
+				 where anken.ANKEN_ID = #ankenId#),
+				#updateId#,
+				(select anken.UPDATE_DT
+				 from
+				 t_anken anken
+				 where anken.ANKEN_ID = #ankenId#)
+			)
+		]]>
+	</insert>
+
+	<select id="getCountNot10" parameterClass="logistics.system.project.common.Entity.AnkenOrderEntity"
+		resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT
+			ankenOTemp.count = truckTemp.sum
+		FROM
+			(
+				SELECT
+					COUNT(*) AS count,
+					ankenO.ANKEN_ID AS ANKEN_ID
+				FROM
+					T_ANKEN_ORDER ankenO
+				WHERE
+					ankenO.ANKEN_STATUS = 10
+				AND ankenO.ANKEN_ID = #ankenId#
+				AND ankenO.UPDATE_DT = #updateDt#
+			) ankenOTemp,
+			(
+				SELECT
+					SUM(truck.DAISU) AS sum,
+					truck.ANKEN_ID AS ANKEN_ID
+				FROM
+					t_truck truck
+				WHERE
+					truck.ANKEN_ID = #ankenId#
+			) truckTemp
+		]]>
+	</select>
+	
+    <update id="ryokinToroku" parameterClass="logistics.system.project.common.Entity.AnkenOrderEntity">
+      UPDATE
+      	T_ANKEN_ORDER
+      SET
+      	KOSOKU_MN 		= #kosokuMn#,
+      	CANCEL_MN 		= #cancelMn#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT		= #updateDt1#
+       WHERE ANKEN_NO = #ankenNo#
+      	AND UPDATE_DT= #updateDt#
+    </update>
+    
+	<delete id="deleteAnkenOrder" parameterClass="logistics.system.project.common.Entity.AnkenOrderEntity">
+    	DELETE
+      	FROM
+      	T_ANKEN_ORDER
+       	WHERE ANKEN_ID = #ankenId#
+       	AND UPDATE_DT = #updateDt#
+    </delete>
+
+</sqlMap>

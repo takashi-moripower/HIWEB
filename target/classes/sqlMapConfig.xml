@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+  <sqlMap resource="sqlXml/user.xml"/>
+  <sqlMap resource="sqlXml/adressRRK.xml"/>
+  <sqlMap resource="sqlXml/anken.xml"/>
+  <sqlMap resource="sqlXml/area.xml"/>
+  <sqlMap resource="sqlXml/pref.xml"/>
+  <sqlMap resource="sqlXml/city.xml"/>
+  <sqlMap resource="sqlXml/contactRRK.xml"/>
+  <sqlMap resource="sqlXml/nisugate.xml"/>
+  <sqlMap resource="sqlXml/nisyu.xml"/>
+  <sqlMap resource="sqlXml/truckOption.xml"/>
+  <sqlMap resource="sqlXml/syasyu.xml"/>
+  <sqlMap resource="sqlXml/truck.xml"/>
+  <sqlMap resource="sqlXml/syuka.xml"/>
+  <sqlMap resource="sqlXml/nohin.xml"/>
+  <sqlMap resource="sqlXml/ankenOrder.xml"/>
+  <sqlMap resource="sqlXml/member.xml"/>
+  <sqlMap resource="sqlXml/mailSend.xml"/>
+  <sqlMap resource="sqlXml/postCode.xml"/>
+</sqlMapConfig>

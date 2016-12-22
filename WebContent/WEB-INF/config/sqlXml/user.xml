@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="user">
+
+	<resultMap id="userResult" class="logistics.system.project.common.Entity.UserEntity">
+		<result property="userId" column="USER_ID"/>
+		<result property="username" column="USER_NM"/>
+		<result property="loginId" column="LOGIN_ID"/>
+		<result property="renrakuTel" column="RENRAKU_TEL"/>
+		<result property="userBS" column="USER_BS"/>
+		<result property="userYK" column="USER_YK"/>
+		<result property="updateDt" column="UPDATE_DT"/>
+		<result property="companyCd" column="COMPANY_CD"/>
+		<result property="gyomuSb" column="GYOMU_SB"/>
+		<result property="postCode" column="POST_CODE"/>
+		<result property="prefNm" column="PREF_NM"/>
+		<result property="cityNm" column="CITY_NM"/>
+		<result property="addrOther" column="ADDR_OTHER"/>
+	</resultMap>
+
+	<resultMap id="result" class="logistics.system.project.common.Entity.UserEntity">
+		<result property="userId" column="USER_ID" columnIndex="1" />
+		<result property="username" column="USER_NM" columnIndex="2" />
+		<result property="loginId" column="LOGIN_ID" columnIndex="3" />
+		<result property="renrakuTel" column="RENRAKU_TEL" columnIndex="4" />
+		<result property="userBS" column="USER_BS" columnIndex="5" />
+		<result property="userYK" column="USER_YK" columnIndex="6" />
+		<result property="companyCd" column="COMPANY_CD" columnIndex="7" />
+		<result property="companyNm" column="COMPANY_NM" columnIndex="8" />
+		<result property="gyomuSb" column="GYOMU_SB" columnIndex="9" />
+		<result property="postCode" column="POST_CODE" columnIndex="10" />
+		<result property="prefNm" column="PREF_NM" columnIndex="11" />
+		<result property="cityNm" column="CITY_NM" columnIndex="12" />
+		<result property="addrOther" column="ADDR_OTHER" columnIndex="13" />
+		<result property="dispDl" column="DISP_DL"  columnIndex="14" />
+		<result property="ryoritu" column="RYORITU"  columnIndex="15" />
+		<result property="simbSb" column="SIMB_SB"  columnIndex="16" />
+		<result property="sihrSt" column="SIHR_ST"  columnIndex="17" />
+		<result property="hokenMn" column="HOKEN_MN"  columnIndex="18" />
+	</resultMap>
+
+	<resultMap id="userListResult" class="logistics.system.project.common.Entity.UserEntity">
+		<result property="userId" column="USER_ID" columnIndex="1" />
+		<result property="username" column="USER_NM" columnIndex="2" />
+		<result property="loginId" column="LOGIN_ID" columnIndex="3" />
+		<result property="companyCd" column="COMPANY_CD" columnIndex="4" />
+		<result property="userBS" column="USER_BS" columnIndex="5" />
+		<result property="userYK" column="USER_YK" columnIndex="6" />
+		<result property="renrakuTel" column="RENRAKU_TEL" columnIndex="7" />
+		<result property="updateId" column="UPDATE_ID" columnIndex="8" />
+		<result property="updateDt" column="UPDATE_DT" columnIndex="9" />
+	</resultMap>
+
+	<parameterMap id="loginMap" class="java.util.Map">
+		<parameter property="loginPassword" jdbcType="VARCHAR"
+			javaType="java.lang.String"/>
+		<parameter property="loginId" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<select id="getUserByCd" parameterClass="java.lang.String" resultMap="userResult">
+		select
+			user.USER_ID,
+			user.USER_NM,
+			user.LOGIN_ID,
+			user.RENRAKU_TEL,
+			user.USER_BS,
+			user.USER_YK,
+			user.UPDATE_DT,
+			com.COMPANY_CD,
+			com.GYOMU_SB,
+			com.POST_CODE,
+			com.PREF_NM,
+			com.CITY_NM,
+			com.ADDR_OTHER
+		from
+			m_user user,
+			m_company com
+		where
+			com.DELETE_FLG=0
+			and user.COMPANY_CD = com.COMPANY_CD
+			and user.USER_ID = #value#
+	</select>
+
+
+	<select id="getUserByLoginId" parameterMap="loginMap"
+		resultMap="result">
+		select
+			user.USER_ID,
+			user.USER_NM,
+			user.LOGIN_ID,
+			user.RENRAKU_TEL,
+			user.USER_BS,
+			user.USER_YK,
+			com.COMPANY_CD,
+			com.COMPANY_NM,
+			com.GYOMU_SB,
+			com.POST_CODE,
+			com.PREF_NM,
+			com.CITY_NM,
+			com.ADDR_OTHER,
+			com.DISP_DL,
+			com.RYORITU,
+			com.SIMB_SB,
+			com.SIHR_ST,
+			com.HOKEN_MN
+		from
+			m_user user,
+			m_company com
+		where
+			com.DELETE_FLG=0
+			and user.DELETE_FLG=0
+			and user.COMPANY_CD = com.COMPANY_CD
+			and user.LOGIN_PWD = ?
+			and user.LOGIN_ID = ?
+	</select>
+
+	<select id="getUserByCompanyCd" parameterClass="string"
+		resultMap="userListResult">
+		select
+			user.USER_ID,
+			user.USER_NM,
+			user.LOGIN_ID,
+			user.COMPANY_CD,
+			user.USER_BS,
+			user.USER_YK,
+			user.RENRAKU_TEL,
+			user.UPDATE_ID,
+			user.UPDATE_DT
+		from
+			m_user user,
+			m_company com
+		where
+			user.COMPANY_CD = com.COMPANY_CD
+			and com.DELETE_FLG=0
+			and user.DELETE_FLG=0
+			and user.COMPANY_CD = #companyCd#
+	</select>
+
+	<select id="getCountByEmail" parameterClass="logistics.system.project.common.Entity.UserEntity" resultClass="java.lang.Integer">
+		<![CDATA[
+		SELECT
+			COUNT(*)
+		FROM
+			M_USER
+		WHERE
+			LOGIN_ID = #loginId#
+		AND USER_ID <> #userId#
+		]]>
+	</select>
+
+	<update id="updateUser" parameterClass="logistics.system.project.common.Entity.UserEntity">
+      UPDATE
+      	M_USER
+      SET
+      	USER_NM 		= #username#,
+      	LOGIN_ID 	 	= #loginId#,
+      	RENRAKU_TEL 	= #renrakuTel#,
+      	USER_BS 		= #userBS#,
+      	USER_YK 	 	= #userYK#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT 	 	= NOW()
+      WHERE USER_ID 	= #userId#
+      AND 	UPDATE_DT 	= #updateDt#
+    </update>
+
+	<update id="updatePassword" parameterClass="logistics.system.project.common.Entity.UserEntity">
+      UPDATE
+      	M_USER
+      SET
+      	LOGIN_PWD 		= #loginPassword#,
+      	UPDATE_ID 	 	= #updateId#,
+      	UPDATE_DT 	 	= NOW()
+      WHERE USER_ID 	= #userId#
+    </update>
+
+    <delete id="deleteUser" parameterClass="logistics.system.project.common.Entity.UserEntity">
+    	DELETE
+      	FROM
+      	M_USER
+       	WHERE USER_ID = #userId#
+       	AND UPDATE_DT = #updateDt#
+    </delete>
+
+	<insert id="insertUser" parameterClass="logistics.system.project.common.Entity.UserEntity">
+		<![CDATA[
+		INSERT INTO
+			M_USER (
+				USER_ID,
+				USER_NM,
+				LOGIN_ID,
+				LOGIN_PWD,
+				RENRAKU_TEL,
+				USER_BS,
+				USER_YK,
+				COMPANY_CD,
+				DELETE_FLG,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#userId#,
+				#username#,
+				#loginId#,
+				#loginPassword#,
+				#renrakuTel#,
+				#userBS#,
+				#userYK#,
+				#companyCd#,
+				0,
+				#createId#,
+				NOW(),
+				#updateId#,
+				NOW()
+			)
+		]]>
+	</insert>
+
+	<insert id="insertOrUpdateUser" parameterClass="logistics.system.project.common.Entity.UserEntity">
+		<![CDATA[
+		INSERT INTO
+			M_USER (
+				USER_ID,
+				USER_NM,
+				LOGIN_ID,
+				LOGIN_PWD,
+				RENRAKU_TEL,
+				USER_BS,
+				USER_YK,
+				COMPANY_CD,
+				DELETE_FLG,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#userId#,
+				#username#,
+				#loginId#,
+				#loginPassword#,
+				#renrakuTel#,
+				#userBS#,
+				#userYK#,
+				#companyCd#,
+				0,
+				#createId#,
+				NOW(),
+				#updateId#,
+				NOW()
+			)
+			ON DUPLICATE KEY UPDATE
+                USER_NM = #username#,
+                LOGIN_ID = #loginId#,
+                RENRAKU_TEL = #renrakuTel#,
+                USER_BS = #userBS#,
+                USER_YK = #userYK#,
+                UPDATE_ID =#updateId#,
+                UPDATE_DT =now()
+		]]>
+	</insert>
+</sqlMap>

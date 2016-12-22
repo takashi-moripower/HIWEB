@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="nohin">
+	
+	<parameterMap id="getNohinByAnkenIdMap" class="java.util.Map">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<resultMap id="nohinResult" class="logistics.system.project.common.Entity.NohinEntity">
+		<result property="ankenId" column="ANKEN_ID" columnIndex="1" />
+		<result property="nohinSeq" column="NOHIN_SEQ" columnIndex="2" />
+		<result property="nohinDay" column="NOHIN_DAY" columnIndex="3" />
+		<result property="nohinTime" column="NOHIN_TIME" columnIndex="4" />
+		<result property="addrNm" column="ADDR_NM" columnIndex="5" />
+		<result property="postCode" column="POST_CODE" columnIndex="6" />
+		<result property="prefNm" column="PREF_NM" columnIndex="7" />
+		<result property="cityNm" column="CITY_NM" columnIndex="8" />
+		<result property="addrOther" column="ADDR_OTHER" columnIndex="9" />
+		<result property="tantoNm" column="TANTO_NM" columnIndex="10" />
+		<result property="tantoTel" column="TANTO_TEL" columnIndex="11" />
+		<result property="nisyuCd" column="NISYU_CD" columnIndex="12" />
+		<result property="nisyuNm" column="NISYU_NM" columnIndex="13" />
+		<result property="nisugataCd" column="NISUGATA_CD" columnIndex="14" />
+		<result property="nisugataNm" column="NISUGATA_NM" columnIndex="15" />
+		<result property="kosu" column="KOSU" columnIndex="16" />
+		<result property="zyuryo" column="ZYURYO" columnIndex="17" />
+		<result property="biko" column="BIKO" columnIndex="18" />
+	</resultMap>
+	
+	<parameterMap id="insertNohinParaMap" class="logistics.system.project.common.Entity.NohinEntity">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nohinSeq" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nohinDay" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nohinTime" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="addrNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="postCode" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="prefNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="cityNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="addrOther" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="tantoNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="tantoTel" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nisyuCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nisugataCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="kosu" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="zyuryo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="biko" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<select id="getNohinByAnkenId" parameterMap="getNohinByAnkenIdMap" resultMap="nohinResult" >
+		<![CDATA[ 
+			SELECT 
+			        nohin.ANKEN_ID, 
+			        nohin.NOHIN_SEQ, 
+			        nohin.NOHIN_DAY, 
+			        nohin.NOHIN_TIME, 
+			        nohin.ADDR_NM, 
+			        nohin.POST_CODE, 
+			        nohin.PREF_NM, 
+			        nohin.CITY_NM, 
+			        nohin.ADDR_OTHER, 
+			        nohin.TANTO_NM, 
+			        nohin.TANTO_TEL,
+			        nohin.NISYU_CD,
+			        nisyu.NISYU_NM, 
+			        nisugata.NISUGATA_CD,
+			        nisugata.NISUGATA_NM, 
+			        nohin.KOSU, 
+			        nohin.ZYURYO, 
+			        nohin.BIKO
+			FROM T_NOHIN nohin
+			LEFT JOIN  M_NISUGATA nisugata
+					ON nohin.NISUGATA_CD = nisugata.NISUGATA_CD
+			LEFT JOIN  M_NISYU nisyu
+					ON nohin.NISYU_CD = nisyu.NISYU_CD
+			WHERE nohin.ANKEN_ID = ?;
+		]]>
+	</select>
+	
+	<insert id="insertNohin" parameterMap="insertNohinParaMap">
+		<![CDATA[ 
+			INSERT INTO
+				T_NOHIN (
+					ANKEN_ID,
+					NOHIN_SEQ,
+					NOHIN_DAY,
+					NOHIN_TIME,
+					ADDR_NM,
+					POST_CODE,
+					PREF_NM,
+					CITY_NM,
+					ADDR_OTHER,
+					TANTO_NM,
+					TANTO_TEL,
+					NISYU_CD,
+					NISUGATA_CD,
+					KOSU,
+					ZYURYO,
+					BIKO
+				)
+				VALUES(
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?
+				)			        
+		]]>
+	</insert>
+	
+	<delete id="deleteNohin" parameterClass="logistics.system.project.common.Entity.NohinEntity">
+    	DELETE    	
+      	FROM
+      	T_NOHIN
+       	WHERE ANKEN_ID = #ankenId#
+    </delete>
+</sqlMap>  

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="truck">
+	
+	<resultMap id="truckResult" class="logistics.system.project.common.Entity.TruckEntity">
+		<result property="ankenId" column="ANKEN_ID" columnIndex="1" />
+		<result property="truckNo" column="TRUCK_NO" columnIndex="2" />
+		<result property="yosanMn" column="YOSAN_MN" columnIndex="3" />
+		<result property="orderMn" column="ORDER_MN" columnIndex="4" />
+		<result property="kosokuKbn" column="KOSOKU_KBN" columnIndex="5" />
+		<result property="nenryoscKbn" column="NENRYOSC_KBN" columnIndex="6" />
+		<result property="nenryoscMn" column="NENRYOSC_MN" columnIndex="7" />
+		<result property="syasyuCd" column="SYASYU_CD" columnIndex="8" />
+		<result property="syasyuNm" column="SYASYU_NM" columnIndex="8" />
+		<result property="daisu" column="DAISU" columnIndex="9" />
+		<result property="opList" column="OP_LIST" columnIndex="10" />
+	</resultMap>
+	
+	<parameterMap id="getTruckByPKMap" class="java.util.Map">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="truckNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<parameterMap id="truckParaMap" class="logistics.system.project.common.Entity.TruckEntity">
+		<parameter property="ankenId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="truckNo" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="yosanMn" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="orderMn" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="kosokuKbn" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nenryoscKbn" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="nenryoscMn" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="syasyuCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="daisu" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="opList" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<select id="getTruckByPK" parameterMap="getTruckByPKMap" resultMap="truckResult" >
+		<![CDATA[ 
+		SELECT 
+				truck.ANKEN_ID, 
+		        truck.TRUCK_NO, 
+		        truck.YOSAN_MN, 
+		        truck.ORDER_MN, 
+		        IF(truck.KOSOKU_KBN = '0', '込み', '別料金') AS KOSOKU_KBN,
+		        IF(truck.NENRYOSC_KBN = '0', '込み', '別料金') AS NENRYOSC_KBN,
+		        truck.NENRYOSC_MN, 
+		        truck.SYASYU_CD, 
+		        syasyu.SYASYU_NM, 
+		        truck.DAISU, 
+		        truck.OP_LIST 
+		FROM T_TRUCK truck
+		LEFT JOIN  M_SYASYU syasyu
+				ON truck.SYASYU_CD = syasyu.SYASYU_CD
+		WHERE ANKEN_ID = ? and TRUCK_NO = ?
+		]]>
+	</select>
+	
+	<insert id="insertTruck" parameterMap="truckParaMap">
+		<![CDATA[
+		INSERT INTO
+			T_TRUCK (
+				ANKEN_ID,
+				TRUCK_NO,
+				YOSAN_MN,
+				ORDER_MN,
+				KOSOKU_KBN,
+				NENRYOSC_KBN,
+				NENRYOSC_MN,
+				SYASYU_CD,
+				DAISU,
+				OP_LIST
+			)
+			VALUES(
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?
+			)
+		]]>	
+	</insert>	
+		
+	<select id="getTruckById" parameterClass="string" resultMap="truckResult" >
+		<![CDATA[ 
+		SELECT 
+				truck.ANKEN_ID, 
+		        truck.TRUCK_NO, 
+		        truck.YOSAN_MN, 
+		        truck.ORDER_MN, 
+		        IF(truck.KOSOKU_KBN = '0', '込み', '別料金') AS KOSOKU_KBN,
+		        IF(truck.NENRYOSC_KBN = '0', '込み', '別料金') AS NENRYOSC_KBN,
+		        truck.NENRYOSC_MN, 
+		        truck.SYASYU_CD, 
+		        syasyu.SYASYU_NM, 
+		        truck.DAISU, 
+		        truck.OP_LIST 
+		FROM T_TRUCK truck
+		LEFT JOIN  M_SYASYU syasyu
+				ON truck.SYASYU_CD = syasyu.SYASYU_CD
+		WHERE ANKEN_ID = #ankenId#
+		]]>
+	</select>
+	
+	<delete id="deleteTruck" parameterClass="logistics.system.project.common.Entity.TruckEntity">
+    	DELETE    	
+      	FROM
+      	T_TRUCK
+       	WHERE ANKEN_ID = #ankenId#
+    </delete>
+</sqlMap>  

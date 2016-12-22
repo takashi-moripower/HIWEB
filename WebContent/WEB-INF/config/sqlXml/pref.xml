@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pref">
+	
+	<parameterMap id="getPreCdByPrefNameMap" class="java.util.Map">
+		<parameter property="prefName" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<parameterMap id="getPreNameByPrefCdMap" class="java.util.Map">
+		<parameter property="prefCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<parameterMap id="getAllPrefMap" class="java.util.Map">
+		<parameter property="createDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="sysDate" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<resultMap id="prefResult" class="logistics.system.project.common.Entity.PrefEntity">
+		<result property="prefCd" column="PREF_CD" columnIndex="1" />
+		<result property="prefName" column="PREF_NM" columnIndex="2" />
+		<result property="areaCd" column="AREA_CD" columnIndex="3" />
+		<result property="kensu" column="kensu" columnIndex="4" />
+	</resultMap>
+	
+	<resultMap id="prefResultList" class="logistics.system.project.common.Entity.PrefEntity">
+		<result property="prefCd" column="PREF_CD" columnIndex="1" />
+		<result property="prefName" column="PREF_NM" columnIndex="2" />
+		<result property="areaCd" column="AREA_CD" columnIndex="3" />
+	</resultMap>
+	
+	<select id="getAllPref" parameterMap="getAllPrefMap" resultMap="prefResult" >
+		<![CDATA[ 
+		SELECT pref.PREF_CD,
+			   pref.PREF_NM,
+			   pref.AREA_CD,
+			   COUNT(IF(ankenO.CREATE_DT <= ? AND syuka.SYUKA_DAY >= ?, ankenO.ANKEN_ID, NULL)) as kensu
+		FROM 
+			M_PREF pref
+		LEFT JOIN (SELECT ANKEN_ID, SYUKA_DAY, PREF_NM FROM T_SYUKA GROUP BY ANKEN_ID, SYUKA_DAY, PREF_NM) syuka
+			ON syuka.PREF_NM LIKE CONCAT('%', pref.PREF_NM, '%')
+		LEFT JOIN T_ANKEN_ORDER ankenO
+			ON syuka.ANKEN_ID = ankenO.ANKEN_ID
+			AND ankenO.ANKEN_STATUS = '10'
+		GROUP BY PREF_CD, PREF_NM, AREA_CD
+		]]>
+	</select>
+	
+	<select id="getAllPrefList"  resultMap="prefResultList" >
+		<![CDATA[ 
+		SELECT pref.PREF_CD,
+			   pref.PREF_NM,
+			   pref.AREA_CD
+		FROM 
+			M_PREF pref
+		ORDER BY pref.DISP_ORD
+		]]>
+	</select>
+	
+	<select id="getPreCdByPrefName" parameterMap="getPreCdByPrefNameMap" resultClass="string" >
+		<![CDATA[ 
+		SELECT pref.PREF_CD
+		FROM 
+			M_PREF pref
+		WHERE pref.PREF_NM = ?
+		]]>
+	</select>
+	
+	<select id="getPreNameByPrefCd" parameterClass="string" resultClass="string" >
+		<![CDATA[ 
+		SELECT pref.PREF_NM
+		FROM 
+			M_PREF pref
+		WHERE pref.PREF_CD = #prefCd#
+		]]>
+	</select>
+	
+</sqlMap>  

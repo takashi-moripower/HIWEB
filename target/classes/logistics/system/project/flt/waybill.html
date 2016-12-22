@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<style type="text/css">
+body {
+	margin-left: 0px;
+	margin-right: 0px;
+	font-family: Arial Unicode MS;
+	font-size: 9px;
+}
+
+.tbl{/* width: 560px; */ border: 1px black solid;border-collapse:collapse;border-spacing:0;}
+.tbl .head{font-size: 20px; text-align: center; /* font-family: 'ＭＳ Ｐゴシック'; */}
+.tbl .b2{border-top: 1px black solid; border-bottom: 1px black solid;}
+.tbl .b2{border-top: 1px black solid; border-bottom: 1px black solid;}
+.tbl td{width: 20px; padding: 0px}
+
+.b1t{border-top: 1px black solid;}
+.b1b{border-bottom: 1px black solid;}
+.b1l{border-left: 1px black solid;}
+.b1r{border-right: 1px black solid;}
+.b2t{border-top: 1px black solid;}
+.b2b{border-bottom: 1px black solid;}
+.b2l{border-left: 1px black solid;}
+.b2r{border-right: 1px black solid;}
+
+.b1td{border-top: 1px black solid;}
+.b1bd{border-bottom: 1px black solid;}
+.b1ld{border-left: 1px black solid;}
+.b1rd{border-right: 1px black solid;}
+.b2td{border-top: 1px black solid;}
+.b2bd{border-bottom: 1px black solid;}
+.b2ld{border-left: 1px black solid;}
+.b2rd{border-right: 1px black solid;}
+
+.text_center{text-align: center}
+</style>
+</head>
+<body>
+	<table class="tbl">
+		<tr style="height: 0px">
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+			<td width="30px" style="width:30px"></td>
+		</tr>
+		<tr>
+			<td class="head" colspan="28">
+				運送状及び運送引受書
+			</td>
+		</tr>
+		<tr>
+			<td class="title b2t b2b" colspan="28">
+				運送委託業者
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd text_center" colspan="3">
+				名称
+			</td>
+			<td class="b1bd b1l" colspan="13">
+				${ninMember.companyNm?default('')}${ninMember.officeNm?default('')}
+			</td>
+			<td class="b1bd b1l text_center" colspan="3">
+				委託日
+			</td>
+			<td class="b1bd b1l" colspan="9">
+				${ankenDetail.jutuKigen?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd text_center" colspan="3">
+				住所
+			</td>
+			<td class="b1bd b1l" colspan="25">
+				${ninMember.prefNm?default('')}${ninMember.cityNm?default('')}${ninMember.addrOther?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd text_center" colspan="3">
+				電話
+			</td>
+			<td class="b1bd b1l" colspan="5">
+				${ninMember.companyTel?default('')}
+			</td>
+			<td class="b1bd b1l text_center" colspan="3">
+				FAX
+			</td>
+			<td class="b1bd b1l" colspan="5">
+				${ninMember.companyFax?default('')}
+			</td>
+			<td class="b1bd b1l text_center" colspan="3">
+				E-mail
+			</td>
+			<td class="b1bd b1l" colspan="9">
+				${ninMember.companyEmail?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center" colspan="3">
+				責任者
+			</td>
+			<td class="b1l" colspan="5">
+				${ninMember.sekininNm?default('')}
+			</td>
+			<td class="b1l text_center" colspan="3">
+				担当者
+			</td>
+			<td class="b1l" colspan="5">
+				${ninushi.username?default('')}
+			</td>
+			<td class="b1l" colspan="12">
+			</td>
+		</tr>
+		<tr>
+			<td class="title b2t b2b" colspan="28">
+				Ⅰ 運送業務
+			</td>
+		</tr>
+		<tr>
+			<td class="b1b b1r text_center" colspan="4">
+				案件番号
+			</td>
+			<td class="b1b" colspan="24">
+				${ankenDetail.ankenNo?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1b b1r text_center" rowspan="${anken.syukaList?size * 4 +1}">
+				積地
+			</td>
+			<td colspan="27" height="0" style="height: 0px">
+			</td>
+		</tr>
+		<#list anken.syukaList as syuka>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				日付
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${syuka.syukaDay?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				積地名称
+			</td>
+			<td class="b1bd" colspan="16">
+				${syuka.addrNm?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				郵便番号
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${syuka.postCode?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				担当者名
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${syuka.tantoNm?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				担当TEL
+			</td>
+			<td class="b1bd" colspan="8">
+				${syuka.tantoTel?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				住所
+			</td>
+			<td class="b1bd" colspan="24">
+				${syuka.prefNm?default('')}${syuka.cityNm?default('')}${syuka.addrOther?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1b b1rd text_center" colspan="3">
+				個数
+			</td>
+			<td class="b1b b1rd" colspan="5">
+				${syuka.kosu?default('')}
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+				荷種
+			</td>
+			<td class="b1b b1rd" colspan="5">
+				${syuka.nisyuNm?default('')}
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+				荷姿
+			</td>
+			<td class="b1b" colspan="8">
+				${syuka.nisugataNm?default('')}
+			</td>
+		</tr>
+		</#list>
+		<tr>
+			<td class="b1b b1r text_center" rowspan="${anken.nohinList?size * 4 +1}">
+				納品
+			</td>
+			<td colspan="27" height="0" style="height: 0px">
+			</td>
+		</tr>
+		<#list anken.nohinList as nohin>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				日付
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${nohin.nohinDay?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				納品名称
+			</td>
+			<td class="b1bd" colspan="16">
+				${nohin.addrNm?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				郵便番号
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${nohin.postCode?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				担当者名
+			</td>
+			<td class="b1bd b1rd" colspan="5">
+				${nohin.tantoNm?default('')}
+			</td>
+			<td class="b1bd b1rd text_center" colspan="3">
+				担当TEL
+			</td>
+			<td class="b1bd" colspan="8">
+				${nohin.tantoTel?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1bd b1rd text_center" colspan="3">
+				住所
+			</td>
+			<td class="b1bd" colspan="24">
+				${nohin.prefNm?default('')}${nohin.cityNm?default('')}${nohin.addrOther?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="b1b b1rd text_center" colspan="3">
+				個数
+			</td>
+			<td class="b1b b1rd" colspan="5">
+				${nohin.kosu?default('')}
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+				荷種
+			</td>
+			<td class="b1b b1rd" colspan="5">
+				${nohin.nisyuNm?default('')}
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+				荷姿
+			</td>
+			<td class="b1b" colspan="8">
+				${nohin.nisugataNm?default('')}
+			</td>
+		</tr>
+		</#list>
+		<tr>
+			<td class="b1b b1rd text_center" colspan="4">
+				車種
+			</td>
+			<td class="b1b b1rd" colspan="5">
+				${truck.syasyuNm?default('')}
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+				台数
+			</td>
+			<td class="b1b" colspan="5">
+				1
+			</td>
+			<td class="b1b b1rd text_center" colspan="3">
+			</td>
+			<td class="b1b" colspan="8">
+			</td>
+		</tr>
+		<tr>
+			<td class="b2b b1rd text_center" colspan="4">
+				オプション
+			</td>
+			<td class="b2b" colspan="24">
+				${truck.opList?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="title b2b" colspan="28">
+				Ⅱ 付帯業務
+			</td>
+		</tr>
+		<tr>
+			<td class="b2b" colspan="28">
+			<div style="min-height: 50px">
+			<#if anken.syukaList ? exists>
+			<#list anken.syukaList as syuka>
+				<div>
+					${syuka.biko?default('')}
+				</div>
+			</#list>
+			</#if>
+			<#if anken.nohinList ? exists>
+			<#list anken.nohinList as nohin>
+				<div>
+					${nohin.biko?default('')}
+				</div>
+			</#list>
+			</#if>
+				<div>
+					${ankenDetail.tyuiJK?default('')}
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="b2b" colspan="28" style="text-align: left; vertical-align: middle;">
+				<div style="padding-left:28px;">
+					<div>注）附帯業務」は、標準貨物自動車運送約款第60条第1項を踏まえた役務</div>
+					<div>（例：貨物の荷造り、仕分け等）であり、「運賃及び料金」の「附帯業務料等」の欄に記載の費用となります。</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="title b2b" colspan="28">
+				Ⅲ 運賃及び料金
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1bd b1rd" colspan="4">
+				運賃
+			</td>
+			<td class="b1bd b1rd" colspan="6" style="text-align: right">
+				${fare?default('')}
+			</td>
+			<td class="text_center b1bd b1rd" colspan="3">
+				高速使用料
+			</td>
+			<td class="b1bd b1rd" colspan="6" style="text-align: right">
+				${kosokuMn?default('')}
+			</td>
+			<td class="text_center b1bd b1rd" colspan="4">
+				込/別料金
+			</td>
+			<td class="b1bd" colspan="5">
+				${truck.kosokuKbn?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1b b1rd" colspan="4">
+				燃料サーチャージ
+			</td>
+			<td class="b1b b1rd" colspan="6">
+				${truck.nenryoscKbn?default('')}
+			</td>
+			<td class="text_center b1b b1rd" colspan="3">
+				車両係留費
+			</td>
+			<td class="b1b b1rd" colspan="6" style="text-align: right">
+			</td>
+			<td class="text_center b1b b1rd" colspan="4">
+				消費税額
+			</td>
+			<td class="b1b" colspan="5" style="text-align: right">
+				${fee?default('')}
+			</td>
+		</tr>
+		<tr style="margin-bottom: 3px">
+			<td></td>
+			<td colspan="27">
+				<div>
+				※上記の通り運送を委託いたします。　なお、運賃及び料金に変更が生じる等、本状に記載のない
+				</div>
+				<div>
+				　 事項が発生した場合は、支払時に双方で協議の上、清算する事といたします。
+				</div>
+				<div>
+				※料金は、税抜価格となります。
+				</div>
+			</td>
+		</tr>
+		<tr style="padding-bottom: 10px">
+			<td></td>
+			<td colspan="26" style="border-bottom: 3px double; ">
+				委託者<span style="font-size: 7px">(荷主、元請事業者、貨物利用運送事業者)</span>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="28">　</td>
+		</tr>
+		<tr>
+			<td class="title b2b b2t" colspan="28">
+				受託時記載事項
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1bd b1rd" colspan="3">
+				名称
+			</td>
+			<td class=" b1bd b1rd" colspan="13">
+				${agMember.companyNm?default('')}
+			</td>
+			<td class=" b1bd" colspan="12">
+				
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1bd b1rd" colspan="3">
+				住所
+			</td>
+			<td class=" b1bd" colspan="25">
+				${agMember.prefNm?default('')}${agMember.cityNm?default('')}${agMember.addrOther?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1bd b1rd" colspan="3">
+				電話
+			</td>
+			<td class=" b1bd b1rd" colspan="5">
+				${agMember.companyTel?default('')}
+			</td>
+			<td class="text_center b1bd b1rd" colspan="3">
+				FAX
+			</td>
+			<td class=" b1bd b1rd" colspan="5">
+				${agMember.companyFax?default('')}
+			</td>
+			<td class="text_center b1bd b1rd" colspan="3">
+				E-mail
+			</td>
+			<td class=" b1bd" colspan="9">
+				${agMember.companyEmail?default('')}
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1bd b1rd" colspan="3">
+				責任者
+			</td>
+			<td class=" b1bd b1rd" colspan="5">
+				${agMember.sekininNm?default('')}
+			</td>
+			<td class="text_center b1bd b1rd" colspan="3">
+				担当者
+			</td>
+			<td class=" b1bd b1rd" colspan="5">
+				${ankenDetail.kinkyuTant?default('')}
+			</td>
+			<td class="title b1bd b1rd" colspan="3">
+			</td>
+			<td class=" b1bd" colspan="9">
+				
+			</td>
+		</tr>
+		<tr>
+			<td class="text_center b1b b1rd" colspan="3">
+				車両番号
+			</td>
+			<td class=" b1b b1rd" colspan="5">
+				${ankenDetail.syaryoNo?default('')}
+			</td>
+			<td class="text_center b1b b1rd" colspan="3">
+				運転者名
+			</td>
+			<td class=" b1b b1rd" colspan="5">
+				${ankenDetail.untensyaName?default('')}
+			</td>
+			<td class="b1b b1rd" colspan="3">
+			</td>
+			<td class=" b1b" colspan="9">
+				
+			</td>
+		</tr>
+		<tr>
+			<td class="b2b" colspan="28" style="text-align: center; vertical-align: middle;">
+				<div style="min-height: 40px"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="28" style="padding-left:28px;">
+				※上記の通り、運送を受託いたします。
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="5" style="border-bottom: 3px double; ">
+			
+			</td>
+			<td></td>
+			<td colspan="20" style="border-bottom: 3px double; ">
+				運送受託者<span style="font-size: 7px">(貨物自動車運送事業者)</span>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="28">　</td>
+		</tr>
+	</table>
+
+</body>
+</html>

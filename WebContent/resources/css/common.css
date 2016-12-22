@@ -1,0 +1,16 @@
+.datepicker {
+    line-height: 20px;
+}
+.datepicker .table-condensed th,
+.datepicker .table-condensed td {
+    padding: 4px 5px;
+}
+.help-block{
+	width:150px;
+}
+
+.btn-lg{
+	margin-top:10px;
+	width:150px;
+	padding:20px;
+}

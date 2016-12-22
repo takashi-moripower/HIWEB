@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="postCode">
+	
+	<resultMap id="postCodeResult" class="logistics.system.project.common.Entity.PostCodeEntity">
+		<result property="pcId" column="ID" columnIndex="1" />
+		<result property="postCode" column="POST_CODE" columnIndex="2" />
+		<result property="prefNm" column="PREF_NM" columnIndex="3" />
+		<result property="cityNm" column="CITY_NM" columnIndex="4" />
+		<result property="addrOther" column="ADDR_OTHER" columnIndex="5" />
+	</resultMap>
+	
+	<select id="getPostCodeInfo" parameterClass="string" resultMap="postCodeResult" >
+		<![CDATA[ 
+		SELECT 
+			ID,
+			POST_CODE,
+			PREF_NM,
+			CITY_NM,
+			ADDR_OTHER
+		FROM 
+			m_post_code
+		WHERE POST_CODE = #postCode#
+		ORDER BY ID 
+		LIMIT 1
+		]]>
+	</select>
+</sqlMap>  

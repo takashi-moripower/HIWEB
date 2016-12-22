@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean id="logAspect" class="logistics.system.project.utility.LoggingAspect" />
+	
+	<import resource="classpath:database.xml"/>
+
+	<aop:config>
+		<aop:aspect id="aspectLoggging" ref="logAspect">
+			<aop:pointcut id="pointCut"
+				expression="execution(* logistics.system.project..*.*(..))" />
+			<aop:before pointcut-ref="pointCut" method="doBefore" />
+			<aop:after pointcut-ref="pointCut" method="doAfter" />
+			<aop:around pointcut-ref="pointCut" method="doAround" />
+			<aop:after-throwing pointcut-ref="pointCut"
+				method="doThrowing" throwing="ex" />
+		</aop:aspect>
+	</aop:config>
+
+
+</beans>

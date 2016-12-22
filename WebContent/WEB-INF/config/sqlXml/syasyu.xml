@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="syasyu">
+
+	<resultMap id="syasyuResult" class="logistics.system.project.common.Entity.SyasyuEntity">
+		<result property="syasyuCd" column="SYASYU_CD" columnIndex="1" />
+		<result property="syasyuName" column="SYASYU_NM" columnIndex="2" />
+	</resultMap>
+
+	<select id="getAllSyasyu"  resultMap="syasyuResult" >
+		<![CDATA[
+		SELECT syasyu.SYASYU_CD,
+			   syasyu.SYASYU_NM
+		FROM
+			M_SYASYU syasyu
+		ORDER BY syasyu.DISP_ORD
+		]]>
+	</select>
+
+</sqlMap>

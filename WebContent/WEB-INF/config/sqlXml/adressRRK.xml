@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"      
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="address">
+	<resultMap id="addrResult"
+		class="logistics.system.project.common.Entity.AddressRRKEntity">
+		<result property="companyCd" column="COMPANY_CD" columnIndex="1" />
+		<result property="addressKbn" column="ADDRESS_KBN" columnIndex="2" />
+		<result property="addrNm" column="ADDR_NM" columnIndex="3" />
+		<result property="postCode" column="POST_CODE" columnIndex="4" />
+		<result property="prefNm" column="PREF_NM" columnIndex="5" />
+		<result property="cityNm" column="CITY_NM" columnIndex="6" />
+		<result property="addrOther" column="ADDR_OTHER" columnIndex="7" />
+		<result property="id" column="RRK_ID" columnIndex="8" />
+	</resultMap>
+
+	<parameterMap id="adressParaMap" class="java.util.Map">
+		<parameter property="companyCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="addressKbn" jdbcType="VARCHAR"
+			javaType="java.lang.String" />			
+		<parameter property="addrNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="postCode" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="prefNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="cityNm" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="addrOther" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+	
+	<parameterMap id="deleteAdressParaMap" class="java.util.Map">
+		<parameter property="companyCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="rrkId" jdbcType="VARCHAR"
+			javaType="java.lang.String" />
+	</parameterMap>
+
+
+	<select id="getAddrByAddrKBN" parameterMap="adressParaMap"
+		resultMap="addrResult">
+		SELECT
+		addr.COMPANY_CD,
+		addr.ADDRESS_KBN,
+		addr.ADDR_NM,
+		addr.POST_CODE,
+		addr.PREF_NM,
+		addr.CITY_NM,
+		addr.ADDR_OTHER,
+		addr.RRK_ID
+		FROM t_address_rrk addr
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="companyCd">
+				addr.COMPANY_CD = #companyCd#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="addressKbn">
+				addr.ADDRESS_KBN = #addressKbn#
+			</isNotEmpty>			
+			<isNotEmpty prepend="and" property="addrNm">
+				addr.ADDR_NM = #addrNm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="postCode">
+				addr.POST_CODE = #postCode#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="prefNm">
+				addr.PREF_NM = #prefNm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="cityNm">
+				addr.CITY_NM = #cityNm#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="addrOther">
+				addr.ADDR_OTHER = #addrOther#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<delete id="deleteAddrById" parameterMap="deleteAdressParaMap">
+    	DELETE 
+      	FROM
+      	T_ADDRESS_RRK
+       	WHERE COMPANY_CD = ?    	
+       	AND RRK_ID = ? 
+    </delete>
+    
+    <insert id="insertAdressRRK" parameterClass="logistics.system.project.common.Entity.AddressRRKEntity">
+		<![CDATA[
+		INSERT INTO
+			T_ADDRESS_RRK (
+				COMPANY_CD,
+				ADDRESS_KBN,
+				ADDR_NM,
+				POST_CODE,
+				PREF_NM,
+				CITY_NM,
+				ADDR_OTHER,
+				CREATE_ID,
+				CREATE_DT,
+				UPDATE_ID,
+				UPDATE_DT
+			)
+			VALUES(
+				#companyCd#,
+				#addressKbn#,
+				#addrNm#,
+				#postCode#,
+				#prefNm#,
+				#cityNm#,
+				#addrOther#,
+				#createId#,
+				#createDt#,
+				#updateId#,
+				#updateDt#
+			)
+		]]>	
+	</insert>
+</sqlMap>  

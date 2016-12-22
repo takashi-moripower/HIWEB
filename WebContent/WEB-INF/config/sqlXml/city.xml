@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="city">
+
+	<resultMap id="cityResult" class="logistics.system.project.common.Entity.CityEntity">
+		<result property="cityCd" column="CITY_CD" columnIndex="1" />
+		<result property="cityName" column="CITY_NM" columnIndex="2" />
+		<result property="cityDisp" column="CITY_DISP" columnIndex="3" />
+		<result property="dispCateg" column="DISP_CATEG" columnIndex="4" />
+		<result property="prefCd" column="PREF_CD" columnIndex="5" />
+		<result property="kensu" column="kensu" columnIndex="6" />
+	</resultMap>
+
+	<parameterMap id="getCitiesByPrefCdMap" class="java.util.Map">
+		<parameter property="createDt" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="sysDate" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<parameter property="prefCd" jdbcType="VARCHAR" javaType="java.lang.String" />
+	</parameterMap>
+
+	<select id="getCitiesByPrefCd" parameterMap="getCitiesByPrefCdMap" resultMap="cityResult" >
+		<![CDATA[
+		SELECT  city.CITY_CD,
+				city.CITY_NM,
+				city.CITY_DISP,
+				city.DISP_CATEG,
+				city.PREF_CD,
+				COUNT(IF(ankenO.CREATE_DT <= ?  AND syuka.SYUKA_DAY >= ? , ankenO.ANKEN_ID, NULL)) as kensu
+		FROM
+			M_PREF pref
+		LEFT JOIN M_CITY city
+			ON pref.PREF_CD = city.PREF_CD
+		LEFT JOIN (
+			SELECT ANKEN_ID, SYUKA_DAY, CITY_NM, PREF_NM FROM T_SYUKA GROUP BY ANKEN_ID, SYUKA_DAY, CITY_NM, PREF_NM) syuka
+			ON syuka.PREF_NM LIKE CONCAT('%', pref.PREF_NM, '%')
+			AND syuka.CITY_NM LIKE CONCAT('%', city.CITY_NM, '%')
+		LEFT JOIN T_ANKEN_ORDER ankenO
+			ON syuka.ANKEN_ID = ankenO.ANKEN_ID
+			AND ankenO.ANKEN_STATUS = '10'
+		WHERE city.PREF_CD = ?
+		GROUP BY CITY_CD, CITY_NM, CITY_DISP, DISP_CATEG, PREF_CD
+		]]>
+	</select>
+</sqlMap>
