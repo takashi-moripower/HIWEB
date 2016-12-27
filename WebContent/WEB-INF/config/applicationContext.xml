@@ -38,7 +38,8 @@
 	<task:annotation-driven />
 
 	<task:scheduled-tasks>
-		<task:scheduled ref="mainTask" method="sendMailBatch" cron="0 */2 * * * *" />
+		<task:scheduled ref="mainTask" method="sendMailBatch"
+			cron="0 */2 * * * *" />
 	</task:scheduled-tasks>
 
 
@@ -55,6 +56,10 @@
 	<context:component-scan base-package="logistics.system.project.common.service*" />
 
 	<context:component-scan base-package="logistics.system.project.common.dao*" />
+
+	<context:component-scan base-package="logistics.system.project.tuchi.service*" />
+
+	<context:component-scan base-package="logistics.system.project.tuchi.dao*" />
 
 	<bean
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
@@ -75,7 +80,8 @@
 		</property>
 	</bean>
 
-	<bean id="ExceptionResolver" class="logistics.system.project.common.resolver.ExceptionResolver">
+	<bean id="ExceptionResolver"
+		class="logistics.system.project.common.resolver.ExceptionResolver">
 		<property name="defaultErrorView" value="/error/400"></property>
 	</bean>
 

@@ -11,8 +11,8 @@
 <body>
 	<div class="container">
 		<ul>
-			<li><a href="tuchi_debug01">debug01</a></li>
 			<li><a href="tuchi_list">list</a></li>
+			<li><a href="tuchi_add">add</a></li>
 		</ul>
 	</div>
 

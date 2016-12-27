@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="tuchi">
+	<resultMap id="tuchiResult"
+		class="logistics.system.project.tuchi.Entity.TuchiEntity">
+		<result column="TUCHI_ID" jdbcType="INTEGER" property="tuchiId" />
+		<result column="USER_ID" jdbcType="CHAR" property="userId" />
+		<result column="NINUSI_CD" jdbcType="CHAR" property="ninusiCd" />
+		<result column="PREF_CD" jdbcType="CHAR" property="prefCd" />
+		<result column="DATE_START" jdbcType="TIMESTAMP" property="dateStart" />
+		<result column="DATE_END" jdbcType="TIMESTAMP" property="dateEnd" />
+		<result column="TITLE" jdbcType="VARCHAR" property="title" />
+		<result column="MAIL_COUNT" jdbcType="INTEGER" property="mailCount" />
+		<result column="MAIL_COUNT_DAY" jdbcType="INTEGER" property="mailCountDay" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		TUCHI_ID,
+		USER_ID,
+		NINUSI_CD,
+		PREF_CD,
+		DATE_START,
+		DATE_END,
+		TITLE,
+		MAIL_COUNT,
+		MAIL_COUNT_DAY
+	</sql>
+
+	<select id="getTuchiByCd" parameterClass="java.lang.Integer"
+		resultMap="tuchiResult">
+		select
+		<include refid="Base_Column_List" />
+		from t_tuchi
+		where TUCHI_ID = #value#
+	</select>
+
+	<select id="getTuchiByUser" parameterClass="java.lang.String"
+		resultMap="tuchiResult">
+		select
+		<include refid="Base_Column_List" />
+		from t_tuchi
+		<dynamic>
+			<isNotEmpty>
+				where USER_ID = #value#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>
