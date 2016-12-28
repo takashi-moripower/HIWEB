@@ -16,6 +16,18 @@
 		<result column="MAIL_COUNT" jdbcType="INTEGER" property="mailCount" />
 		<result column="MAIL_COUNT_DAY" jdbcType="INTEGER" property="mailCountDay" />
 	</resultMap>
+	<!-- <parameterMap id="tuchiParaMap" class="logistics.system.project.tuchi.Entity.TuchiEntity">
+		<parameter property="tuchiId" jdbcType="INTEGER" javaType="java.lang.Integer"
+		/> <parameter property="userId" jdbcType="VARCHAR" javaType="java.lang.String"
+		/> <parameter property="ninusiCd" jdbcType="VARCHAR" javaType="java.lang.String"
+		/> <parameter property="prefCd" jdbcType="VARCHAR" javaType="java.lang.String"
+		/> <parameter property="dateStart" jdbcType="TIMESTAMP" javaType="java.sql.timestamp"
+		/> <parameter property="dateEnd" jdbcType="TIMESTAMP" javaType="java.sql.timestamp"
+		/> <parameter property="title" jdbcType="VARCHAR" javaType="java.lang.String"
+		/> <parameter property="mailCount" jdbcType="VARCHAR" javaType="java.lang.Integer"
+		/> <parameter property="mailCountDay" jdbcType="VARCHAR" javaType="java.lang.Integer"
+		/> </parameterMap> -->
+
 	<sql id="Base_Column_List">
 		TUCHI_ID,
 		USER_ID,
@@ -47,4 +59,41 @@
 			</isNotEmpty>
 		</dynamic>
 	</select>
+	<select id="getNextTuchiId" resultClass="java.lang.Integer">
+		SELECT
+			MAX(TUCHI_ID) + 1
+		FROM T_TUCHI
+	</select>
+
+	<update id="updateTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
+		UPDATE
+		T_TUCHI
+		SET
+			TITLE =	#title#,
+			PREF_CD = #prefCd#,
+			DATE_START = #dateStart#,
+			DATE_END = #dateEnd#
+		WHERE TUCHI_ID = #tuchiId#
+		AND USER_ID = #userId#
+	</update>
+	<insert id="insertTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
+			INSERT
+			INTO T_TUCHI (
+				TUCHI_ID,
+				USER_ID,
+				TITLE,
+				PREF_CD,
+				DATE_START,
+				DATE_END
+			)
+			VALUES(
+				#tuchiId#,
+				#userId#,
+				#title#,
+				#prefCd#,
+				#dateStart#,
+				#dateEnd#
+			)
+
+	</insert>
 </sqlMap>

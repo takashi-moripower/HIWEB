@@ -1,6 +1,5 @@
 package logistics.system.project.tuchi.dao.impl;
 
-
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -20,8 +19,23 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TuchiEntity> getTuchiByUser(String userId) {
-		return getSqlMapClientTemplate().queryForList( "getTuchiByUser" , userId);
+		return getSqlMapClientTemplate().queryForList("getTuchiByUser", userId);
 	}
 
+	@Override
+	public int save(TuchiEntity entity) {
+		if (entity.getTuchiId() == 0) {
+			int newId = (int)getSqlMapClientTemplate().queryForObject("getNextTuchiId");
+			entity.setTuchiId(newId);
+
+			getSqlMapClientTemplate().insert("insertTuchi",entity);
+
+			return 1;
+		}
+
+		getSqlMapClientTemplate().update("updateTuchi", entity);
+
+		return 0;
+	}
 
 }

@@ -27,4 +27,9 @@ public class TuchiServiceImpl implements TuchiService{
 	public List<TuchiEntity> getTuchiByUser(String userId) {
 		return tuchiDao.getTuchiByUser(userId);
 	}
+
+	@Override
+	public int save(TuchiEntity entity) {
+		return tuchiDao.save( entity );
+	}
 }

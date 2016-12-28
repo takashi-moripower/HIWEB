@@ -21,21 +21,25 @@
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
+					<th>Id</th>
 					<th>Title</th>
-					<th>tuchiId</th>
-					<th>userId</th>
-					<th>dateStart</th>
-					<th>dateEnd</th>
+					<th>user</th>
+					<th>都道府県</th>
+					<th>開始</th>
+					<th>終了</th>
+					<th>action</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="item" items="${list}" varStatus="status">
 					<tr>
-						<th><c:out value="${item.title}" /></th>
 						<td><c:out value="${item.tuchiId}" /></td>
+						<th><c:out value="${item.title}" /></th>
 						<td><c:out value="${item.userId}" /></td>
-						<td><c:out value="${item.dateStart}" /></td>
-						<td><c:out value="${item.dateEnd}" /></td>
+						<td><c:out value="${item.prefName}" /></td>
+						<td><c:out value="${item.dateStartText}" /></td>
+						<td><c:out value="${item.dateEndText}" /></td>
+						<td><a href='tuchi_edit?tuchiId=<c:out value="${item.tuchiId}" />'>edit</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>

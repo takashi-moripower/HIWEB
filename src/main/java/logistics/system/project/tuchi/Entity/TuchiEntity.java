@@ -3,6 +3,9 @@ package logistics.system.project.tuchi.Entity;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import logistics.system.project.common.Entity.PrefEntity;
+import logistics.system.project.utility.Constants;
+
 public class TuchiEntity {
 	protected int tuchiId;
 	protected String userId;
@@ -13,7 +16,16 @@ public class TuchiEntity {
 	protected String title;
 	protected int mailCount;
 	protected int mailCountDay;
-	protected String[] truckOp =  new String[0];
+	protected String[] truckOp = new String[0];
+	protected String[] syasyu = new String[0];
+
+	public String[] getSyasyu() {
+		return syasyu;
+	}
+
+	public void setSyasyu(String[] syasyu) {
+		this.syasyu = syasyu;
+	}
 
 	public String[] getTruckOp() {
 		return truckOp;
@@ -95,9 +107,33 @@ public class TuchiEntity {
 		this.mailCountDay = mailCountDay;
 	}
 
-	static public final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+	public String getPrefName(){
+		if( prefCd == null || prefCd.equals("") ){
+			return "全国";
+		}else{
+			for(PrefEntity item : Constants.MAST_PREF_LIST ){
+				if( item.getPrefCd().equals(this.getPrefCd()) ){
+					return item.getPrefName();
+				}
+			}
+			return null;
+		}
+	}
+
+	public String getDateStartText() {
+		return d2s(dateStart);
+	}
+
+	public String getDateEndText() {
+		return d2s(dateEnd);
+	}
+
+	static public final String DATE_PATTERN = "yyyy-MM-dd";
 
 	static public String d2s(java.util.Date date) {
+		if (date == null) {
+			return null;
+		}
 		return (new SimpleDateFormat(DATE_PATTERN)).format(date);
 	}
 }

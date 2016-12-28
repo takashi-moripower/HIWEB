@@ -14,6 +14,8 @@ public class TuchiEditForm {
 	String[] truckOp;
 	String dateStart;
 	String dateEnd;
+	String prefCd;
+	String[] syasyu;
 
 	public int getTuchiId() {
 		return tuchiId;
@@ -33,7 +35,7 @@ public class TuchiEditForm {
 
 	public String[] getTruckOp() {
 		if (truckOp == null) {
-			return new String[0];
+			truckOp = new String[0];
 		}
 		return truckOp;
 	}
@@ -66,20 +68,42 @@ public class TuchiEditForm {
 		this.dateEnd = dateEnd;
 	}
 
-	public void initEntity(TuchiEntity entity) {
-		entity.setTuchiId(this.tuchiId);
-		entity.setUserId(this.userId);
-		entity.setDateStart(s2t(this.dateStart));
-		entity.setDateEnd(s2t(this.dateEnd));
-		entity.setTitle(this.title);
-
+	public String getPrefCd() {
+		return prefCd;
 	}
 
-	public Timestamp s2t( String str ){
-		if( str == null || str == "" ){
+	public void setPrefCd(String prefCd) {
+		this.prefCd = prefCd;
+	}
+
+	public String[] getSyasyu() {
+		if (syasyu == null) {
+			syasyu = new String[0];
+		}
+		return syasyu;
+	}
+
+	public void setSyasyu(String[] syasyu) {
+		this.syasyu = syasyu;
+	}
+
+	public void initEntity(TuchiEntity entity) {
+		entity.setTuchiId(getTuchiId());
+		entity.setUserId(getUserId());
+		entity.setTitle(getTitle());
+		entity.setPrefCd(getPrefCd());
+		entity.setDateStart(s2t(getDateStart()));
+		entity.setDateEnd(s2t(getDateEnd()));
+		entity.setTruckOp(getTruckOp());
+		entity.setSyasyu(getSyasyu());
+		return;
+	}
+
+	public Timestamp s2t(String str) {
+		if (str == null || str == "") {
 			return null;
 		}
-		return Timestamp.valueOf( str + " 00:00:00.00");
+		return Timestamp.valueOf(str + " 00:00:00.00");
 	}
 
 }
