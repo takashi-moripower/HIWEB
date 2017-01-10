@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="generalHABTM">
+	<select id="getRelation" parameterClass="java.util.Map"  resultClass="java.lang.String">
+		SELECT
+			$key2$ as RESULT
+		FROM $table$
+		WHERE $key1$ = #key1Value#
+	</select>
+	<insert id="link" parameterClass="java.util.Map">
+		INSERT
+			INTO $table$(
+				$key1$,
+				$key2$
+			)
+			VALUES(
+				#key1Value#,
+				#key2Value#
+			)
+	</insert>
+	<delete id="unLink" parameterClass="java.util.Map">
+		DELETE
+			FROM $table$
+			WHERE (
+				$key1$ = #key1Value#
+				AND
+				$key2$ IN ( $key2Values$ )
+			)
+	</delete>
+
+</sqlMap>

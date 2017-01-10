@@ -2,6 +2,7 @@ package logistics.system.project.tuchi.Entity;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import logistics.system.project.common.Entity.PrefEntity;
 import logistics.system.project.utility.Constants;
@@ -16,24 +17,9 @@ public class TuchiEntity {
 	protected String title;
 	protected int mailCount;
 	protected int mailCountDay;
-	protected String[] truckOp = new String[0];
-	protected String[] syasyu = new String[0];
+	protected List<String> truckOp;
+	protected List<String> syasyu;
 
-	public String[] getSyasyu() {
-		return syasyu;
-	}
-
-	public void setSyasyu(String[] syasyu) {
-		this.syasyu = syasyu;
-	}
-
-	public String[] getTruckOp() {
-		return truckOp;
-	}
-
-	public void setTruckOp(String[] truckOp) {
-		this.truckOp = truckOp;
-	}
 
 	public int getTuchiId() {
 		return tuchiId;
@@ -108,16 +94,7 @@ public class TuchiEntity {
 	}
 
 	public String getPrefName(){
-		if( prefCd == null || prefCd.equals("") ){
-			return "全国";
-		}else{
-			for(PrefEntity item : Constants.MAST_PREF_LIST ){
-				if( item.getPrefCd().equals(this.getPrefCd()) ){
-					return item.getPrefName();
-				}
-			}
-			return null;
-		}
+		return Constants.getPrefName(prefCd);
 	}
 
 	public String getDateStartText() {
@@ -135,5 +112,21 @@ public class TuchiEntity {
 			return null;
 		}
 		return (new SimpleDateFormat(DATE_PATTERN)).format(date);
+	}
+
+	public List<String> getTruckOp() {
+		return truckOp;
+	}
+
+	public void setTruckOp(List<String> truckOp) {
+		this.truckOp = truckOp;
+	}
+
+	public List<String> getSyasyu() {
+		return syasyu;
+	}
+
+	public void setSyasyu(List<String> syasyu) {
+		this.syasyu = syasyu;
 	}
 }

@@ -38,6 +38,17 @@
 								</c:forEach>
 						</select></td>
 					</tr>
+					<c:forEach var="item" items="${prefList}" varStatus="status">
+						<tr>
+							<th>市町村 <c:out value="${item.prefName}" /></th>
+							<td>
+
+
+
+
+							</td>
+						</tr>
+					</c:forEach>
 					<tr>
 						<th>開始日</th>
 						<td><input type="date" name="dateStart"
@@ -64,7 +75,7 @@
 						<th>車種</th>
 						<td><c:forEach var="item" items="${syasyu}"
 								varStatus="status">
-								<label for="truckOp-<c:out value="${item.syasyuCd}"/>"
+								<label for="syasyu-<c:out value="${item.syasyuCd}"/>"
 									class="checkbox-inline"><input
 									id='syasyu-<c:out value="${item.syasyuCd}"/>' type="checkbox"
 									value="<c:out value="${item.syasyuCd}" />"

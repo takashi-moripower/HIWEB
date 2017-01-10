@@ -16,17 +16,6 @@
 		<result column="MAIL_COUNT" jdbcType="INTEGER" property="mailCount" />
 		<result column="MAIL_COUNT_DAY" jdbcType="INTEGER" property="mailCountDay" />
 	</resultMap>
-	<!-- <parameterMap id="tuchiParaMap" class="logistics.system.project.tuchi.Entity.TuchiEntity">
-		<parameter property="tuchiId" jdbcType="INTEGER" javaType="java.lang.Integer"
-		/> <parameter property="userId" jdbcType="VARCHAR" javaType="java.lang.String"
-		/> <parameter property="ninusiCd" jdbcType="VARCHAR" javaType="java.lang.String"
-		/> <parameter property="prefCd" jdbcType="VARCHAR" javaType="java.lang.String"
-		/> <parameter property="dateStart" jdbcType="TIMESTAMP" javaType="java.sql.timestamp"
-		/> <parameter property="dateEnd" jdbcType="TIMESTAMP" javaType="java.sql.timestamp"
-		/> <parameter property="title" jdbcType="VARCHAR" javaType="java.lang.String"
-		/> <parameter property="mailCount" jdbcType="VARCHAR" javaType="java.lang.Integer"
-		/> <parameter property="mailCountDay" jdbcType="VARCHAR" javaType="java.lang.Integer"
-		/> </parameterMap> -->
 
 	<sql id="Base_Column_List">
 		TUCHI_ID,
@@ -64,6 +53,12 @@
 			MAX(TUCHI_ID) + 1
 		FROM T_TUCHI
 	</select>
+	<select id="getTruckOpByTuchiCd" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT
+			OP_CD
+		FROM T_TRUCK_OP_TUCHI
+		WHERE TUCHI_ID = #value#
+	</select>
 
 	<update id="updateTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
 		UPDATE
@@ -94,6 +89,24 @@
 				#dateStart#,
 				#dateEnd#
 			)
-
 	</insert>
+	<insert id="linkTruckOpTuchi" parameterClass="java.util.Map">
+		INSERT
+			INTO T_TRUCK_OP_TUCHI(
+				TUCHI_ID,
+				OP_CD
+			)
+			VALUES(
+				#tuchiId#,
+				#opCd#
+			)
+	</insert>
+	<delete id="unlinkTruckOpTuchi" parameterClass="java.util.Map">
+		DELETE
+			FROM T_TRUCK_OP_TUCHI
+			WHERE (
+				TUCHI_ID = #tuchiId# AND
+				OP_CD IN ( $opList$ )
+			)
+	</delete>
 </sqlMap>

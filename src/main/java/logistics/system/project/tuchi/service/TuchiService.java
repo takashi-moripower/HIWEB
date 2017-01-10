@@ -5,8 +5,8 @@ import java.util.List;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 
 public interface TuchiService {
-	public  TuchiEntity getTuchiByCd(int tuchiCd);
+	public  TuchiEntity getTuchiById(int tuchiId ,boolean link );
 	public List<TuchiEntity> getTuchiByUser(String userId);
 
-	public int save( TuchiEntity entity );
+	public void save( TuchiEntity entity );
 }

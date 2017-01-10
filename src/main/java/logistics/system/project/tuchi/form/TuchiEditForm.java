@@ -3,6 +3,7 @@ package logistics.system.project.tuchi.form;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 
@@ -11,11 +12,11 @@ public class TuchiEditForm {
 	int tuchiId;
 	String userId;
 	String title;
-	String[] truckOp;
 	String dateStart;
 	String dateEnd;
 	String prefCd;
-	String[] syasyu;
+	List<String> syasyu;
+	List<String> truckOp;
 
 	public int getTuchiId() {
 		return tuchiId;
@@ -31,17 +32,6 @@ public class TuchiEditForm {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-
-	public String[] getTruckOp() {
-		if (truckOp == null) {
-			truckOp = new String[0];
-		}
-		return truckOp;
-	}
-
-	public void setTruckOp(String[] truckOp) {
-		this.truckOp = truckOp;
 	}
 
 	public String getTitle() {
@@ -76,17 +66,6 @@ public class TuchiEditForm {
 		this.prefCd = prefCd;
 	}
 
-	public String[] getSyasyu() {
-		if (syasyu == null) {
-			syasyu = new String[0];
-		}
-		return syasyu;
-	}
-
-	public void setSyasyu(String[] syasyu) {
-		this.syasyu = syasyu;
-	}
-
 	public void initEntity(TuchiEntity entity) {
 		entity.setTuchiId(getTuchiId());
 		entity.setUserId(getUserId());
@@ -104,6 +83,22 @@ public class TuchiEditForm {
 			return null;
 		}
 		return Timestamp.valueOf(str + " 00:00:00.00");
+	}
+
+	public List<String> getSyasyu() {
+		return syasyu;
+	}
+
+	public void setSyasyu(List<String> syasyu) {
+		this.syasyu = syasyu;
+	}
+
+	public List<String> getTruckOp() {
+		return truckOp;
+	}
+
+	public void setTruckOp(List<String> truckOp) {
+		this.truckOp = truckOp;
 	}
 
 }

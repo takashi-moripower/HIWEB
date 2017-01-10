@@ -185,4 +185,18 @@ public class Constants {
 //	public static final String TEPLATE_SEIKYU_ANKEN_LIST = "seikyuAnkenList.xml";
 	public static final String TEPLATE_SEIKYU_ANKEN_LIST = "logistics/system/project/flt/SeikyuTemplate.xls";
 
+
+	public static String getPrefName( String prefCd ){
+		if( prefCd == null || prefCd.equals("")){
+			return "全国";
+		}
+
+		for(PrefEntity item: MAST_PREF_LIST){
+			if(item.getPrefCd().equals(prefCd)){
+				return item.getPrefName();
+			}
+		}
+
+		return null;
+	}
 }

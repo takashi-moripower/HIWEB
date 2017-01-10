@@ -1,8 +1,5 @@
 package logistics.system.project.tuchi.controller;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,8 +8,9 @@ import java.util.List;
 import logistics.system.project.base.controller.BaseController;
 import logistics.system.project.common.Entity.SyasyuEntity;
 import logistics.system.project.common.Entity.TruckOpEntity;
-import logistics.system.project.common.form.AnkenSearchForm;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
+import logistics.system.project.tuchi.dao.RelationDao;
+import logistics.system.project.tuchi.dao.TuchiDao;
 import logistics.system.project.tuchi.form.TuchiEditForm;
 import logistics.system.project.tuchi.service.TuchiService;
 import logistics.system.project.utility.Constants;
@@ -34,6 +32,7 @@ public class TuchiController extends BaseController {
 		this.results = new HashMap<>();
 	}
 
+
 	@RequestMapping(value = "tuchi_list")
 	public ModelAndView list() {
 
@@ -54,7 +53,7 @@ public class TuchiController extends BaseController {
 
 		TuchiEntity e = new TuchiEntity();
 		e.setTitle("新規作成");
-		e.setUserId(  userSession.getUserId() );
+		e.setUserId(userSession.getUserId());
 
 		setData(e);
 
@@ -68,9 +67,9 @@ public class TuchiController extends BaseController {
 		TuchiEntity e = new TuchiEntity();
 		form.initEntity(e);
 
-		tuchiService.save( e );
+		tuchiService.save(e);
 
-//		setData(e);
+		// setData(e);
 
 		return "redirect:tuchi_list";
 	}
@@ -81,7 +80,7 @@ public class TuchiController extends BaseController {
 
 		String id = request.getParameter("tuchiId");
 
-		TuchiEntity e = tuchiService.getTuchiByCd( Integer.parseInt(id));
+		TuchiEntity e = tuchiService.getTuchiById(Integer.parseInt(id) , true);
 
 		setData(e);
 
@@ -92,11 +91,17 @@ public class TuchiController extends BaseController {
 
 		List<Object> list = new ArrayList<>();
 
+		List<String> values = e.getTruckOp();
+
+		if( values == null ){
+			values = new ArrayList<String>();
+		}
+
 		for (TruckOpEntity op : Constants.MAST_TRUCKOP_LIST) {
 			HashMap<String, Object> op2 = new HashMap<>();
 			op2.put("opName", op.getOpName());
 			op2.put("opCd", op.getOpCd());
-			op2.put("value", Arrays.asList(e.getTruckOp()).contains(op.getOpCd()));
+			op2.put("value", values.contains(op.getOpCd()));
 			list.add(op2);
 		}
 
@@ -107,11 +112,17 @@ public class TuchiController extends BaseController {
 
 		List<Object> list = new ArrayList<>();
 
+		List<String> values = e.getSyasyu();
+
+		if( values == null ){
+			values = new ArrayList<String>();
+		}
+
 		for (SyasyuEntity syasyu : Constants.MAST_SYASYU_LIST) {
 			HashMap<String, Object> op2 = new HashMap<>();
 			op2.put("syasyuCd", syasyu.getSyasyuCd());
 			op2.put("syasyuName", syasyu.getSyasyuName());
-			op2.put("value", Arrays.asList(e.getSyasyu()).contains(syasyu.getSyasyuCd()));
+			op2.put("value", values.contains(syasyu.getSyasyuCd()));
 			list.add(op2);
 		}
 
@@ -125,8 +136,23 @@ public class TuchiController extends BaseController {
 		results.put("syasyu", getSyasyuData(e));
 	}
 
+	@RequestMapping(value = "tuchi_debug")
+	public ModelAndView debug(){
+		clearResults();
+
+
+
+		return new ModelAndView("tuchi/debug",results);
+	}
+
+
 	@Autowired
 	@Qualifier("tuchiService")
 	private TuchiService tuchiService;
+
+
+	@Autowired
+	@Qualifier("tuchiDao")
+	private TuchiDao tuchiDao;
 
 }
