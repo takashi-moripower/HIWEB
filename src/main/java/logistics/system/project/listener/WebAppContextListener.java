@@ -34,41 +34,8 @@ public class WebAppContextListener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent event) {
 
+		Constants.initMasterList(event);
 
-
-		Constants.WEB_APP_CONTEXT = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
-
-		ShukaAreaService shukaAreaService = (ShukaAreaService) Constants.WEB_APP_CONTEXT.getBean("areaService");
-		AnkenListSearchService ankenListSearchService = (AnkenListSearchService) Constants.WEB_APP_CONTEXT.getBean("ankenListSearchService");
-
-
-
-
-		List<NisyuEntity> nisyuList = shukaAreaService.getAllNisyuList();
-
-		List<NisugateEntity> nisugateList = shukaAreaService.getAllNisugateList();
-
-		List<PrefEntity> prefList = shukaAreaService.getAllPrefList();
-
-		List<SyasyuEntity> syasyuList = ankenListSearchService.getSyasyuList();
-
-		List<TruckOpEntity> truckOpList = ankenListSearchService.getTruckOpList();
-
-
-
-
-
-//		event.getServletContext().setAttribute("nisyuList", nisyuList);
-//		event.getServletContext().setAttribute("nisugateList", nisugateList);
-//		event.getServletContext().setAttribute("prefList", prefList);
-//		event.getServletContext().setAttribute("syasyuList", syasyuList);
-//		event.getServletContext().setAttribute("truckOpList", truckOpList);
-
-		Constants.MAST_NISYU_LIST = nisyuList;
-		Constants.MAST_NISUGATE_LIST = nisugateList;
-		Constants.MAST_PREF_LIST = prefList;
-		Constants.MAST_SYASYU_LIST = syasyuList;
-		Constants.MAST_TRUCKOP_LIST = truckOpList;
 
 		Properties prop = (Properties) Constants.WEB_APP_CONTEXT.getBean("configProperties");
 		String ankenPicWebrootPathTmp = prop.getProperty("anken.pic.webroot.path.tmp");

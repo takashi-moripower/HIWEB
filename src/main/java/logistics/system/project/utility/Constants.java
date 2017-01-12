@@ -2,13 +2,18 @@ package logistics.system.project.utility;
 
 import java.util.List;
 
+import javax.servlet.ServletContextEvent;
+
 import logistics.system.project.common.Entity.NisugateEntity;
 import logistics.system.project.common.Entity.NisyuEntity;
 import logistics.system.project.common.Entity.PrefEntity;
 import logistics.system.project.common.Entity.SyasyuEntity;
 import logistics.system.project.common.Entity.TruckOpEntity;
+import logistics.system.project.common.service.AnkenListSearchService;
+import logistics.system.project.common.service.ShukaAreaService;
 
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class Constants {
 	public static final String TAB_TITLE = "tabtitle";
@@ -198,5 +203,23 @@ public class Constants {
 		}
 
 		return null;
+	}
+
+	/**
+	 *	各種マスターデータの取得、保持
+	 * @param event
+	 */
+	public static void initMasterList(ServletContextEvent event){
+		Constants.WEB_APP_CONTEXT = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
+
+		ShukaAreaService shukaAreaService = (ShukaAreaService) Constants.WEB_APP_CONTEXT.getBean("areaService");
+		AnkenListSearchService ankenListSearchService = (AnkenListSearchService) Constants.WEB_APP_CONTEXT.getBean("ankenListSearchService");
+
+		
+		Constants.MAST_NISYU_LIST = shukaAreaService.getAllNisyuList();
+		Constants.MAST_NISUGATE_LIST = shukaAreaService.getAllNisugateList();
+		Constants.MAST_PREF_LIST = shukaAreaService.getAllPrefList();
+		Constants.MAST_SYASYU_LIST = ankenListSearchService.getSyasyuList();
+		Constants.MAST_TRUCKOP_LIST = ankenListSearchService.getTruckOpList();
 	}
 }
