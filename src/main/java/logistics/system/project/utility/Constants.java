@@ -142,11 +142,11 @@ public class Constants {
 
 	public static WebApplicationContext WEB_APP_CONTEXT = null;
 
-	public static List<NisyuEntity> MAST_NISYU_LIST = null;
-	public static List<NisugateEntity> MAST_NISUGATE_LIST = null;
-	public static List<PrefEntity> MAST_PREF_LIST = null;
-	public static List<SyasyuEntity> MAST_SYASYU_LIST = null;
-	public static List<TruckOpEntity> MAST_TRUCKOP_LIST = null;
+	protected static List<NisyuEntity> MAST_NISYU_LIST = null;
+	protected static List<NisugateEntity> MAST_NISUGATE_LIST = null;
+	protected static List<PrefEntity> MAST_PREF_LIST = null;
+	protected static List<SyasyuEntity> MAST_SYASYU_LIST = null;
+	protected static List<TruckOpEntity> MAST_TRUCKOP_LIST = null;
 
 	public static final String CONNECT_COMMA = ",";
 
@@ -211,15 +211,54 @@ public class Constants {
 	 */
 	public static void initMasterList(ServletContextEvent event){
 		Constants.WEB_APP_CONTEXT = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
+	}
 
+	public static List<NisyuEntity> getNisyuList(){
+		if( MAST_NISYU_LIST == null ){
+			initAreaData();
+		}
+		return MAST_NISYU_LIST;
+	}
+
+	public static List<NisugateEntity> getNisutagaeList(){
+		if( MAST_NISUGATE_LIST == null ){
+			initAreaData();
+		}
+		return MAST_NISUGATE_LIST;
+	}
+
+	public static List<PrefEntity> getPrefList(){
+		if( MAST_PREF_LIST == null ){
+			initAreaData();
+		}
+		return MAST_PREF_LIST;
+	}
+
+	protected static void initAreaData(){
 		ShukaAreaService shukaAreaService = (ShukaAreaService) Constants.WEB_APP_CONTEXT.getBean("areaService");
+		MAST_NISYU_LIST = shukaAreaService.getAllNisyuList();
+		MAST_NISUGATE_LIST = shukaAreaService.getAllNisugateList();
+		MAST_PREF_LIST = shukaAreaService.getAllPrefList();
+	}
+
+	public static List<SyasyuEntity> getSyasyuList(){
+		if( MAST_SYASYU_LIST == null ){
+			initAnkenOpData();
+		}
+		return MAST_SYASYU_LIST;
+	}
+
+	public static List<TruckOpEntity> getTruckOpList(){
+		if( MAST_TRUCKOP_LIST == null ){
+			initAnkenOpData();
+		}
+		return MAST_TRUCKOP_LIST;
+	}
+
+	protected static void initAnkenOpData(){
 		AnkenListSearchService ankenListSearchService = (AnkenListSearchService) Constants.WEB_APP_CONTEXT.getBean("ankenListSearchService");
 
-		
-		Constants.MAST_NISYU_LIST = shukaAreaService.getAllNisyuList();
-		Constants.MAST_NISUGATE_LIST = shukaAreaService.getAllNisugateList();
-		Constants.MAST_PREF_LIST = shukaAreaService.getAllPrefList();
-		Constants.MAST_SYASYU_LIST = ankenListSearchService.getSyasyuList();
-		Constants.MAST_TRUCKOP_LIST = ankenListSearchService.getTruckOpList();
+		MAST_SYASYU_LIST = ankenListSearchService.getSyasyuList();
+		MAST_TRUCKOP_LIST = ankenListSearchService.getTruckOpList();
 	}
 }

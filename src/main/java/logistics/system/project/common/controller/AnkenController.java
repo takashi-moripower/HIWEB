@@ -194,21 +194,6 @@ public class AnkenController extends BaseController {
 					Constants.NINUSHI_ANKEN_TOROKU_TABTITLE,
 					Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE }, results);
 
-			// List<NisyuEntity> nisyuList = shukaAreaService.getAllNisyuList();
-			// List<NisugateEntity> nisugateList =
-			// shukaAreaService.getAllNisugateList();
-			// List<PrefEntity> prefList = shukaAreaService.getAllPrefList();
-			// List<SyasyuEntity> syasyuList =
-			// ankenListSearchService.getSyasyuList();
-			// List<TruckOpEntity> truckOpList =
-			// ankenListSearchService.getTruckOpList();
-			//
-			// ankenTorokuForm.setPrefList(prefList);
-			// ankenTorokuForm.setNisyuList(nisyuList);
-			// ankenTorokuForm.setNisugateList(nisugateList);
-			// ankenTorokuForm.setSyasyuList(syasyuList);
-			// ankenTorokuForm.setTruckOpList(truckOpList);
-
 			ankenTorokuForm.setPrefList(Constants.MAST_PREF_LIST);
 			ankenTorokuForm.setNisyuList(Constants.MAST_NISYU_LIST);
 			ankenTorokuForm.setNisugateList(Constants.MAST_NISUGATE_LIST);

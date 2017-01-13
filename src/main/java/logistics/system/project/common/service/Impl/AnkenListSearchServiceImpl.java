@@ -41,28 +41,28 @@ public class AnkenListSearchServiceImpl implements AnkenListSearchService {
 	@Autowired
 	@Qualifier("syasyuDao")
 	private SyasyuDao syasyuDao;
-	
+
 	@Value("#{configProperties['AnkenCountsPerPage']}")
 	private String ankenCountsPerPage;
 
 	@Override
 	public MemberEntity getMember(String companyCd) {
-		
+
 		return memberDao.getMemberByCd(companyCd);
 	}
 
 	@Override
 	public int getAnkenListCount(AnkenListParameter ankenListParameter) {
-		
+
 		return dao.getAnkenListCount(ankenListParameter);
 	}
-	
+
 	@Override
 	public List<AnkenListEntity> getAnkenList(AnkenListParameter ankenListParameter) {
-		
-		
+
+
 		List<AnkenListEntity> ankenList = dao.getAnkenList(ankenListParameter);
-		this.editAnkenList(ankenList, Constants.MAST_TRUCKOP_LIST, ankenListParameter);
+		this.editAnkenList(ankenList, Constants.getTruckOpList(), ankenListParameter);
 
 		return ankenList;
 	}

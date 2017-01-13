@@ -42,7 +42,7 @@ public class TuchiController extends BaseController {
 
 		results.put("list", l);
 
-		results.put("prefList", Constants.MAST_PREF_LIST);
+		results.put("prefList", Constants.getPrefList());
 
 		return new ModelAndView("tuchi/list", results);
 	}
@@ -97,7 +97,7 @@ public class TuchiController extends BaseController {
 			values = new ArrayList<String>();
 		}
 
-		for (TruckOpEntity op : Constants.MAST_TRUCKOP_LIST) {
+		for (TruckOpEntity op : Constants.getTruckOpList()) {
 			HashMap<String, Object> op2 = new HashMap<>();
 			op2.put("opName", op.getOpName());
 			op2.put("opCd", op.getOpCd());
@@ -118,7 +118,7 @@ public class TuchiController extends BaseController {
 			values = new ArrayList<String>();
 		}
 
-		for (SyasyuEntity syasyu : Constants.MAST_SYASYU_LIST) {
+		for (SyasyuEntity syasyu : Constants.getSyasyuList()) {
 			HashMap<String, Object> op2 = new HashMap<>();
 			op2.put("syasyuCd", syasyu.getSyasyuCd());
 			op2.put("syasyuName", syasyu.getSyasyuName());
@@ -131,7 +131,7 @@ public class TuchiController extends BaseController {
 
 	protected void setData(TuchiEntity e) {
 		results.put("tuchi", e);
-		results.put("prefList", Constants.MAST_PREF_LIST);
+		results.put("prefList", Constants.getPrefList());
 		results.put("truckOp", getTruckOpData(e));
 		results.put("syasyu", getSyasyuData(e));
 	}

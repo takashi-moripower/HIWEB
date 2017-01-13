@@ -450,7 +450,7 @@ public class AnkenModifyServiceImpl implements AnkenModifyService {
 				truckForm.setKosokuKbn(truckEntity.getKosokuKbn());
 				truckForm.setNenryoscKbn(truckEntity.getNenryoscKbn());
 				truckForm.setNenryoscMn(truckEntity.getNenryoscMn());
-				truckForm.setOpList(ComUtils.editOpList(truckEntity.getOpList(), Constants.MAST_TRUCKOP_LIST));
+				truckForm.setOpList(ComUtils.editOpList(truckEntity.getOpList(), Constants.getTruckOpList()));
 				truckForm.setOrderMn(truckEntity.getOrderMn());
 				truckForm.setSyasyuCd(truckEntity.getSyasyuCd());
 				truckForm.setSyasyuNm(truckEntity.getSyasyuNm());

@@ -213,12 +213,10 @@ public class ShukaAreaController extends BaseController {
 
 	private void buildSession() {
 		if (session.getAttribute("syasyuList") == null) {
-			List<SyasyuEntity> syasyuList = Constants.MAST_SYASYU_LIST;
-			session.setAttribute("syasyuList", syasyuList);
+			session.setAttribute("syasyuList", Constants.getSyasyuList());
 		}
 		if (session.getAttribute("truckOpList") == null) {
-			List<TruckOpEntity> truckoOpList = Constants.MAST_TRUCKOP_LIST;
-			session.setAttribute("truckOpList", truckoOpList);
+			session.setAttribute("truckOpList",  Constants.getTruckOpList());
 		}
 	}
 

@@ -65,7 +65,7 @@ public class AnkenDetailServiceImpl implements AnkenDetailService {
 			String ankenId = StringUtils.substring(ankenNo, 0, 15);
 			String truckNo = StringUtils.substring(ankenNo, 15, 16);
 			TruckEntity truck = truckDao.getTruckByPK(ankenId, truckNo);
-			truck.setOpList(ComUtils.editOpList(truck.getOpList(), Constants.MAST_TRUCKOP_LIST));
+			truck.setOpList(ComUtils.editOpList(truck.getOpList(), Constants.getTruckOpList()));
 			ankenDetailForm.setTruck(truck);
 
 
