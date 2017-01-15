@@ -42,7 +42,7 @@ public class MemberTorokuController extends BaseController {
 		}
 
 		MemberTorokuForm memberTorokuForm = memberTorokuService.getMember(companyCd);
-		memberTorokuForm.setPrefList(Constants.MAST_PREF_LIST);
+		memberTorokuForm.setPrefList(Constants.getPrefList());
 
 		results.put("memberTorokuForm", memberTorokuForm);
 
@@ -61,7 +61,7 @@ public class MemberTorokuController extends BaseController {
 		member.setGyomuSb(Constants.GYOMU_SB_NINUSHI);
 		member.setRyoritu("10");
 		memberTorokuForm.setMember(member);
-		memberTorokuForm.setPrefList(Constants.MAST_PREF_LIST);
+		memberTorokuForm.setPrefList(Constants.getPrefList());
 
 		results.put("memberTorokuForm", memberTorokuForm);
 
@@ -158,7 +158,7 @@ public class MemberTorokuController extends BaseController {
 		this.setHeader(new String[] { Constants.MEMBER_TOROKU_TABTITLE,
 				Constants.MEMBER_TOROKU_PAGETITLE }, results);
 
-		memberTorokuForm.setPrefList(Constants.MAST_PREF_LIST);
+		memberTorokuForm.setPrefList(Constants.getPrefList());
 		return new ModelAndView("member_toroku", results);
 	}
 

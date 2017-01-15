@@ -46,12 +46,10 @@ public class AnkenSearchListController extends BaseController {
 		HashMap<String, Object> results = new HashMap<String, Object>();
 
 		if (session.getAttribute("syasyuList") == null) {
-			List<SyasyuEntity> syasyuList = Constants.MAST_SYASYU_LIST;
-			session.setAttribute("syasyuList", syasyuList);
+			session.setAttribute("syasyuList", Constants.getSyasyuList());
 		}
 		if (session.getAttribute("truckOpList") == null) {
-			List<TruckOpEntity> truckoOpList = Constants.MAST_TRUCKOP_LIST;
-			session.setAttribute("truckOpList", truckoOpList);
+			session.setAttribute("truckOpList", Constants.getTruckOpList());
 		}
 
 		if ("index".equals(prePage)) {
@@ -111,12 +109,10 @@ public class AnkenSearchListController extends BaseController {
 				results);
 
 		if (session.getAttribute("syasyuList") == null) {
-			List<SyasyuEntity> syasyuList = Constants.MAST_SYASYU_LIST;
-			session.setAttribute("syasyuList", syasyuList);
+			session.setAttribute("syasyuList", Constants.getSyasyuList());
 		}
 		if (session.getAttribute("truckOpList") == null) {
-			List<TruckOpEntity> truckoOpList = Constants.MAST_TRUCKOP_LIST;
-			session.setAttribute("truckOpList", truckoOpList);
+			session.setAttribute("truckOpList", Constants.getSyasyuList());
 		}
 
 		AnkenSearchForm ankenSearchForm = null;

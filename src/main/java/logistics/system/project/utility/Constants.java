@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 
+import logistics.system.project.common.Entity.CityEntity;
 import logistics.system.project.common.Entity.NisugateEntity;
 import logistics.system.project.common.Entity.NisyuEntity;
 import logistics.system.project.common.Entity.PrefEntity;
@@ -147,6 +148,7 @@ public class Constants {
 	protected static List<PrefEntity> MAST_PREF_LIST = null;
 	protected static List<SyasyuEntity> MAST_SYASYU_LIST = null;
 	protected static List<TruckOpEntity> MAST_TRUCKOP_LIST = null;
+	protected static List<CityEntity> MAST_CITY_LIST = null;
 
 	public static final String CONNECT_COMMA = ",";
 
@@ -205,14 +207,14 @@ public class Constants {
 		return null;
 	}
 
-	/**
-	 *	各種マスターデータの取得、保持
-	 * @param event
-	 */
 	public static void initMasterList(ServletContextEvent event){
 		Constants.WEB_APP_CONTEXT = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
 	}
 
+	/**
+	 *	各種マスターデータの取得、保持
+	 * @param event
+	 */
 	public static List<NisyuEntity> getNisyuList(){
 		if( MAST_NISYU_LIST == null ){
 			initAreaData();
@@ -234,11 +236,19 @@ public class Constants {
 		return MAST_PREF_LIST;
 	}
 
+	public static List<CityEntity> getCityList(){
+		if( MAST_CITY_LIST == null ){
+			initAreaData();
+		}
+		return MAST_CITY_LIST;
+	}
+
 	protected static void initAreaData(){
 		ShukaAreaService shukaAreaService = (ShukaAreaService) Constants.WEB_APP_CONTEXT.getBean("areaService");
 		MAST_NISYU_LIST = shukaAreaService.getAllNisyuList();
 		MAST_NISUGATE_LIST = shukaAreaService.getAllNisugateList();
 		MAST_PREF_LIST = shukaAreaService.getAllPrefList();
+		MAST_CITY_LIST = shukaAreaService.getAllCities();
 	}
 
 	public static List<SyasyuEntity> getSyasyuList(){

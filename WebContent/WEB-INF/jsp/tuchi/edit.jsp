@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="logistics.system.project.tuchi.Entity.TuchiEntity"%>
 <html lang="en">
 <head>
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
@@ -7,81 +8,51 @@
 	content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
 
 <%@ include file="../common/header.jsp"%>
+<script src="<%=request.getContextPath()%>/resources/js/tuchi/edit.js"></script>
+
 </head>
 <body>
 	<div class="container">
 		<%@ include file="../common/nav.jsp"%>
 	</div>
-
 	<div class="container">
 		<h1>通知</h1>
 		<form method="post" class="form-horizontal" action="tuchi_post">
-			<input type="hidden" name="tuchiId"
-				value="<c:out value='${tuchi.tuchiId}' />" /> <input type="hidden"
-				name="userId" value="<c:out value='${tuchi.userId}'/>" />
+			<input type="hidden" name="tuchiId" value="${tuchi.tuchiId}" /> <input
+				type="hidden" name="userId" value="${tuchi.userId}" />
 
 			<table class="table table-bordered ">
 				<tbody>
 					<tr>
-						<th>タイトル</th>
-						<td><input type="text" name="title"
-							value="<c:out value="${tuchi.title}"/>" /></td>
+						<th style="width: 16rem">タイトル</th>
+						<td><input type="text" name="title" value="${tuchi.title}" /></td>
 					</tr>
 					<tr>
 						<th>地域</th>
 						<td><select name="prefCd">
-								<option value="">全国</option>
-								<c:forEach var="item" items="${prefList}" varStatus="status">
-									<option value="<c:out value='${item.prefCd}' />"
-										<c:if test="${item.prefCd == tuchi.prefCd}"> selected </c:if>><c:out
-											value="${item.prefName}" /></option>
+								<option value="0000">全国</option>
+								<c:forEach items="${prefList}" var="pref">
+									<option value="${pref.prefCd}" <c:if test="${pref.prefCd == tuchi.prefCd}">selected</c:if> >${pref.prefName}</option>
 								</c:forEach>
 						</select></td>
 					</tr>
-					<c:forEach var="item" items="${prefList}" varStatus="status">
-						<tr>
-							<th>市町村 <c:out value="${item.prefName}" /></th>
-							<td>
-
-
-
-
-							</td>
-						</tr>
-					</c:forEach>
 					<tr>
 						<th>開始日</th>
 						<td><input type="date" name="dateStart"
-							value="<c:out value='${tuchi.dateStartText}'/>" /></td>
+							value="${tuchi.dateStartText}" /></td>
 					</tr>
 					<tr>
 						<th>終了日</th>
 						<td><input type="date" name="dateEnd"
-							value="<c:out value='${tuchi.dateEndText}'/>" /></td>
+							value="${tuchi.dateEndText}" /></td>
 					</tr>
 					<tr>
-						<th>トラックオプション</th>
-						<td><c:forEach var="item" items="${truckOp}"
-								varStatus="status">
-								<label for="truckOp-<c:out value="${item.opCd}"/>"
-									class="checkbox-inline"><input
-									id='truckOp-<c:out value="${item.opCd}"/>' type="checkbox"
-									value="<c:out value="${item.opCd}" />"
-									<c:if test="${item.value}">checked="checked"</c:if>
-									name="truckOp" /> <c:out value="${item.opName}" /></label>
-							</c:forEach></td>
+						<th style="white-space: nowrap">トラックオプション</th>
+						<td></td>
 					</tr>
 					<tr>
 						<th>車種</th>
-						<td><c:forEach var="item" items="${syasyu}"
-								varStatus="status">
-								<label for="syasyu-<c:out value="${item.syasyuCd}"/>"
-									class="checkbox-inline"><input
-									id='syasyu-<c:out value="${item.syasyuCd}"/>' type="checkbox"
-									value="<c:out value="${item.syasyuCd}" />"
-									<c:if test="${item.value}">checked="checked"</c:if>
-									name="syasyu" /> <c:out value="${item.syasyuName}" /></label>
-							</c:forEach></td>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>
@@ -93,5 +64,6 @@
 			<p class="text-right">Copyright &#169; 2015 TRAIL Corporation</p>
 		</div>
 	</footer>
+
 </body>
 </html>

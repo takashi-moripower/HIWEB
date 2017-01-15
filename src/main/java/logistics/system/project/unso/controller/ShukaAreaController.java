@@ -7,8 +7,6 @@ import java.util.Map;
 
 import logistics.system.project.base.controller.BaseController;
 import logistics.system.project.common.Entity.CityEntity;
-import logistics.system.project.common.Entity.SyasyuEntity;
-import logistics.system.project.common.Entity.TruckOpEntity;
 import logistics.system.project.common.dao.TruckOpDao;
 import logistics.system.project.common.form.AnkenSearchForm;
 import logistics.system.project.common.service.AnkenListSearchService;

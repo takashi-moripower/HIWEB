@@ -13,12 +13,7 @@ import javax.validation.Valid;
 
 import logistics.system.project.base.controller.BaseController;
 import logistics.system.project.common.Entity.AnkenOrderEntity;
-import logistics.system.project.common.Entity.NisugateEntity;
-import logistics.system.project.common.Entity.NisyuEntity;
 import logistics.system.project.common.Entity.PostCodeEntity;
-import logistics.system.project.common.Entity.PrefEntity;
-import logistics.system.project.common.Entity.SyasyuEntity;
-import logistics.system.project.common.Entity.TruckOpEntity;
 import logistics.system.project.common.Entity.UserEntity;
 import logistics.system.project.common.exception.CustomException;
 import logistics.system.project.common.form.AnkenTorokuForm;
@@ -194,11 +189,11 @@ public class AnkenController extends BaseController {
 					Constants.NINUSHI_ANKEN_TOROKU_TABTITLE,
 					Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE }, results);
 
-			ankenTorokuForm.setPrefList(Constants.MAST_PREF_LIST);
-			ankenTorokuForm.setNisyuList(Constants.MAST_NISYU_LIST);
-			ankenTorokuForm.setNisugateList(Constants.MAST_NISUGATE_LIST);
-			ankenTorokuForm.setSyasyuList(Constants.MAST_SYASYU_LIST);
-			ankenTorokuForm.setTruckOpList(Constants.MAST_TRUCKOP_LIST);
+			ankenTorokuForm.setPrefList(Constants.getPrefList());
+			ankenTorokuForm.setNisyuList(Constants.getNisyuList());
+			ankenTorokuForm.setNisugateList(Constants.getNisutagaeList());
+			ankenTorokuForm.setSyasyuList(Constants.getSyasyuList());
+			ankenTorokuForm.setTruckOpList(Constants.getTruckOpList());
 
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, true);
 			return new ModelAndView("anken_edit", results);
@@ -406,17 +401,11 @@ public class AnkenController extends BaseController {
 		results.put("updateFlag", updateFlag);
 		results.put("ankenTorokuForm", ankenTorokuForm);
 
-		List<NisyuEntity> nisyuList = Constants.MAST_NISYU_LIST;
-		List<NisugateEntity> nisugateList = Constants.MAST_NISUGATE_LIST;
-		List<PrefEntity> prefList = Constants.MAST_PREF_LIST;
-		List<SyasyuEntity> syasyuList = Constants.MAST_SYASYU_LIST;
-		List<TruckOpEntity> truckOpList = Constants.MAST_TRUCKOP_LIST;
-
-		ankenTorokuForm.setPrefList(prefList);
-		ankenTorokuForm.setNisyuList(nisyuList);
-		ankenTorokuForm.setNisugateList(nisugateList);
-		ankenTorokuForm.setSyasyuList(syasyuList);
-		ankenTorokuForm.setTruckOpList(truckOpList);
+		ankenTorokuForm.setPrefList( Constants.getPrefList());
+		ankenTorokuForm.setNisyuList( Constants.getNisyuList() );
+		ankenTorokuForm.setNisugateList( Constants.getNisutagaeList());
+		ankenTorokuForm.setSyasyuList( Constants.getSyasyuList());
+		ankenTorokuForm.setTruckOpList( Constants.getTruckOpList());
 
 		return new ModelAndView("anken_edit", results);
 	}

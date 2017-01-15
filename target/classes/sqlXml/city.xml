@@ -19,6 +19,18 @@
 		<parameter property="prefCd" jdbcType="VARCHAR" javaType="java.lang.String" />
 	</parameterMap>
 
+
+	<select id="getAllCities" resultMap="cityResult">
+		SELECT  city.CITY_CD,
+				city.CITY_NM,
+				city.CITY_DISP,
+				city.DISP_CATEG,
+				city.PREF_CD,
+				0 as kensu
+		FROM
+			M_CITY AS city
+	</select>
+
 	<select id="getCitiesByPrefCd" parameterMap="getCitiesByPrefCdMap" resultMap="cityResult" >
 		<![CDATA[
 		SELECT  city.CITY_CD,

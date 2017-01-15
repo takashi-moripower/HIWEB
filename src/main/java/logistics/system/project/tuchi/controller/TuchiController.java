@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import logistics.system.project.base.controller.BaseController;
+import logistics.system.project.common.Entity.CityEntity;
 import logistics.system.project.common.Entity.SyasyuEntity;
 import logistics.system.project.common.Entity.TruckOpEntity;
+import logistics.system.project.common.service.ShukaAreaService;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 import logistics.system.project.tuchi.dao.RelationDao;
 import logistics.system.project.tuchi.dao.TuchiDao;
@@ -134,17 +136,20 @@ public class TuchiController extends BaseController {
 		results.put("prefList", Constants.getPrefList());
 		results.put("truckOp", getTruckOpData(e));
 		results.put("syasyu", getSyasyuData(e));
+		results.put("cityList", Constants.getCityList());
 	}
 
 	@RequestMapping(value = "tuchi_debug")
 	public ModelAndView debug(){
 		clearResults();
 
+		List<CityEntity> cities = Constants.getCityList();
+
+		results.put( "data",cities.size() );
 
 
 		return new ModelAndView("tuchi/debug",results);
 	}
-
 
 	@Autowired
 	@Qualifier("tuchiService")

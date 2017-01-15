@@ -17,12 +17,16 @@ public class CityDaoImpl extends BaseDao implements CityDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CityEntity> getCitiesByPrefCd(String prefCd, String createDt) {
-		
+
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("prefCd", prefCd);
 		param.put("createDt", createDt);
 		param.put("sysDate", ComUtils.getSysDate());
 		return (List<CityEntity>) getSqlMapClientTemplate().queryForList("getCitiesByPrefCd", param);
+	}
+
+	public List<CityEntity> getAllCities(){
+		return (List<CityEntity>) getSqlMapClientTemplate().queryForList("getAllCities");
 	}
 
 }

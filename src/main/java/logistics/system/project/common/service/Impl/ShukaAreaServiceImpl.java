@@ -57,6 +57,11 @@ public class ShukaAreaServiceImpl implements ShukaAreaService {
 	}
 
 	@Override
+	public List<CityEntity> getAllCities(){
+		return cityDao.getAllCities();
+	}
+
+	@Override
 	public List<PrefEntity> getAllPrefList() {
 
 		return prefDao.getAllPrefList();
@@ -83,5 +88,6 @@ public class ShukaAreaServiceImpl implements ShukaAreaService {
 	public String getPreNameByPrefCd(String prefCd) {
 		return prefDao.getPreNameByPrefCd(prefCd);
 	}
+
 
 }
