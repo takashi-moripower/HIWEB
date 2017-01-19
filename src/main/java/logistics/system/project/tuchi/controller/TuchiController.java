@@ -121,14 +121,28 @@ public class TuchiController extends BaseController {
 		}
 
 		for (SyasyuEntity syasyu : Constants.getSyasyuList()) {
-			HashMap<String, Object> op2 = new HashMap<>();
-			op2.put("syasyuCd", syasyu.getSyasyuCd());
-			op2.put("syasyuName", syasyu.getSyasyuName());
-			op2.put("value", values.contains(syasyu.getSyasyuCd()));
-			list.add(op2);
+			HashMap<String, Object> entity2 = new HashMap<>();
+			entity2.put("syasyuCd", syasyu.getSyasyuCd());
+			entity2.put("syasyuName", syasyu.getSyasyuName());
+			entity2.put("value", values.contains(syasyu.getSyasyuCd()));
+			list.add(entity2);
 		}
 
 		return list;
+	}
+
+	protected List<Object> getCityData( TuchiEntity e ){
+
+		List<Object> result = new ArrayList<>();
+		List<String> values = e.getCity();
+
+		for( CityEntity city : Constants.getCityList() ){
+			String prefCd = city.getPrefCd();
+			
+		}
+
+
+		return result;
 	}
 
 	protected void setData(TuchiEntity e) {
@@ -136,8 +150,15 @@ public class TuchiController extends BaseController {
 		results.put("prefList", Constants.getPrefList());
 		results.put("truckOp", getTruckOpData(e));
 		results.put("syasyu", getSyasyuData(e));
-		results.put("cityList", Constants.getCityList());
+
+
+		List<Object>cityData = getCityData(e);
+
+		results.put("cityData" ,  cityData );
+		results.put("debug" ,  cityData.size() );
 	}
+
+
 
 	@RequestMapping(value = "tuchi_debug")
 	public ModelAndView debug(){

@@ -32,10 +32,17 @@
 						<td><select name="prefCd">
 								<option value="0000">全国</option>
 								<c:forEach items="${prefList}" var="pref">
-									<option value="${pref.prefCd}" <c:if test="${pref.prefCd == tuchi.prefCd}">selected</c:if> >${pref.prefName}</option>
+									<option value="${pref.prefCd}"
+										<c:if test="${pref.prefCd == tuchi.prefCd}">selected</c:if>>${pref.prefName}</option>
 								</c:forEach>
 						</select></td>
 					</tr>
+					<c:forEach items="${cityData}" var="pref" varStatus="prefName">
+						<tr>
+							<th>${prefName.index}</th>
+							<td></td>
+						</tr>
+					</c:forEach>
 					<tr>
 						<th>開始日</th>
 						<td><input type="date" name="dateStart"

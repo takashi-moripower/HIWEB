@@ -19,6 +19,7 @@ public class TuchiEntity {
 	protected int mailCountDay;
 	protected List<String> truckOp;
 	protected List<String> syasyu;
+	protected List<String> city;
 
 
 	public int getTuchiId() {
@@ -128,5 +129,13 @@ public class TuchiEntity {
 
 	public void setSyasyu(List<String> syasyu) {
 		this.syasyu = syasyu;
+	}
+
+	public List<String> getCity() {
+		return city;
+	}
+
+	public void setCity(List<String> city) {
+		this.city = city;
 	}
 }
