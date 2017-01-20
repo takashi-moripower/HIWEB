@@ -3,6 +3,7 @@ package logistics.system.project.tuchi.form;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import logistics.system.project.tuchi.Entity.TuchiEntity;
@@ -17,6 +18,7 @@ public class TuchiEditForm {
 	String prefCd;
 	List<String> syasyu;
 	List<String> truckOp;
+	List<String> city;
 
 	public int getTuchiId() {
 		return tuchiId;
@@ -75,6 +77,7 @@ public class TuchiEditForm {
 		entity.setDateEnd(s2t(getDateEnd()));
 		entity.setTruckOp(getTruckOp());
 		entity.setSyasyu(getSyasyu());
+		entity.setCity(getCity());
 		return;
 	}
 
@@ -86,6 +89,9 @@ public class TuchiEditForm {
 	}
 
 	public List<String> getSyasyu() {
+		if( syasyu == null ){
+			syasyu =  new ArrayList<>();
+		}
 		return syasyu;
 	}
 
@@ -94,11 +100,25 @@ public class TuchiEditForm {
 	}
 
 	public List<String> getTruckOp() {
+		if( truckOp == null ){
+			truckOp = new ArrayList<>();
+		}
 		return truckOp;
 	}
 
 	public void setTruckOp(List<String> truckOp) {
 		this.truckOp = truckOp;
+	}
+
+	public List<String> getCity() {
+		if( city == null ){
+			city = new ArrayList<>();
+		}
+		return city;
+	}
+
+	public void setCity(List<String> city) {
+		this.city = city;
 	}
 
 }

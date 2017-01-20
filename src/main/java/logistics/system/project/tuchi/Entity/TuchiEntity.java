@@ -2,6 +2,7 @@ package logistics.system.project.tuchi.Entity;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import logistics.system.project.common.Entity.PrefEntity;
@@ -21,6 +22,14 @@ public class TuchiEntity {
 	protected List<String> syasyu;
 	protected List<String> city;
 
+	public TuchiEntity(){
+	}
+
+	public void initLinks(){
+		setTruckOp( new ArrayList<String>() );
+		setSyasyu( new ArrayList<String>() );
+		setCity( new ArrayList<String>() );
+	}
 
 	public int getTuchiId() {
 		return tuchiId;

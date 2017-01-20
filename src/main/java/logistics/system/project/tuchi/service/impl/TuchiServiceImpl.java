@@ -26,6 +26,10 @@ public class TuchiServiceImpl implements TuchiService {
 	@Qualifier("tuchiSyasyuRelationDao")
 	private RelationDao<Integer, String> tuchiSyasyu;
 
+	@Autowired
+	@Qualifier("tuchiCityRelationDao")
+	private RelationDao<Integer, String> tuchiCity;
+
 	@Override
 	public TuchiEntity getTuchiById(int tuchiId, boolean link) {
 		TuchiEntity entity = tuchiDao.getTuchiById(tuchiId);
@@ -33,6 +37,7 @@ public class TuchiServiceImpl implements TuchiService {
 		if (link) {
 			entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
 			entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
+			entity.setCity(tuchiCity.getValues(tuchiId));
 		}
 
 		return entity;
@@ -49,5 +54,6 @@ public class TuchiServiceImpl implements TuchiService {
 
 		tuchiTruckOp.save(entity.getTuchiId(), entity.getTruckOp());
 		tuchiSyasyu.save(entity.getTuchiId(), entity.getSyasyu());
+		tuchiCity.save(entity.getTuchiId(), entity.getCity());
 	}
 }

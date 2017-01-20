@@ -20,7 +20,6 @@
 		<form method="post" class="form-horizontal" action="tuchi_post">
 			<input type="hidden" name="tuchiId" value="${tuchi.tuchiId}" /> <input
 				type="hidden" name="userId" value="${tuchi.userId}" />
-
 			<table class="table table-bordered ">
 				<tbody>
 					<tr>
@@ -37,10 +36,30 @@
 								</c:forEach>
 						</select></td>
 					</tr>
-					<c:forEach items="${cityData}" var="pref" varStatus="prefName">
-						<tr>
-							<th>${prefName.index}</th>
-							<td></td>
+					<c:set var="cat" value="00" />
+					<c:forEach items="${prefList}" var="pref">
+						<tr pref_cd="${pref.prefCd}">
+							<th>${pref.prefName}</th>
+							<td>
+							<div>
+								<label for="city-all">
+									<input type="checkbox" name="all-city" id="all-city"/>
+									全域
+								</label>
+							</div>
+
+							<c:forEach items="${cityData}" var="city">
+									<c:if test="${city.prefCd == pref.prefCd }">
+										<c:if test="${cat != city.dispCateg }">
+											<p>${city.dispCateg}</p>
+											<c:set var="cat" value="${city.dispCateg}" />
+										</c:if>
+										<label for="city-${city.cityCd}">
+										<input type="checkbox" id="city-${city.cityCd}" name="city" value="${city.cityCd}" <c:if test="${city.selected}">checked</c:if>/>
+										${city.cityDisp}
+										</label>
+							</c:if>
+								</c:forEach></td>
 						</tr>
 					</c:forEach>
 					<tr>
@@ -55,11 +74,30 @@
 					</tr>
 					<tr>
 						<th style="white-space: nowrap">トラックオプション</th>
-						<td></td>
+						<td>
+							<c:forEach items="${truckOp}" var="op" >
+							<label for="truckOp-${op.opCd}">
+							<input type="checkbox" id="op-${op.opCd}" name="truckOp"  value="${op.opCd}" <c:if test="${op.selected}">checked</c:if> />
+							${op.opName}
+							</label>
+							</c:forEach>
+						</td>
 					</tr>
 					<tr>
 						<th>車種</th>
-						<td></td>
+						<td>
+							<c:forEach items="${syasyu}" var="syasyu" >
+							<label for="syasyu-${syasyu.syasyuCd}">
+							<input
+							type="checkbox"
+							id="syasyu-${syasyu.syasyuCd}"
+							name="syasyu"  value="${syasyu.syasyuCd}"
+							<c:if test="${syasyu.selected}">checked</c:if>
+							/>
+							${syasyu.syasyuName}
+							</label>
+							</c:forEach>
+						</td>
 					</tr>
 				</tbody>
 			</table>

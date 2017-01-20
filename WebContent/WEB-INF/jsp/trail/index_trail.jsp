@@ -14,6 +14,7 @@
 			<li><a href="tuchi_debug">debug</a></li>
 			<li><a href="tuchi_list">list</a></li>
 			<li><a href="tuchi_add">add</a></li>
+			<li><a href="tuchi_edit?tuchiId=4">edit</a></li>
 		</ul>
 	</div>
 

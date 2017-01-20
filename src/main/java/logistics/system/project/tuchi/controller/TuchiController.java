@@ -56,13 +56,14 @@ public class TuchiController extends BaseController {
 		TuchiEntity e = new TuchiEntity();
 		e.setTitle("新規作成");
 		e.setUserId(userSession.getUserId());
+		e.initLinks();
 
 		setData(e);
 
 		return new ModelAndView("tuchi/edit", results);
 	}
 
-	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
+//	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
 	public String AddPost(@ModelAttribute("tuchiEditForm") TuchiEditForm form) {
 		clearResults();
 
@@ -71,10 +72,26 @@ public class TuchiController extends BaseController {
 
 		tuchiService.save(e);
 
-		// setData(e);
-
 		return "redirect:tuchi_list";
+
 	}
+
+
+	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
+	public ModelAndView AddPostDebug(@ModelAttribute("tuchiEditForm") TuchiEditForm form) {
+		clearResults();
+
+		TuchiEntity e = new TuchiEntity();
+		form.initEntity(e);
+
+		tuchiService.save(e);
+
+		results.put( "data",  e.getCity() );
+		return new ModelAndView("tuchi/debug",results);
+	}
+
+
+
 
 	@RequestMapping(value = "tuchi_edit", method = RequestMethod.GET)
 	public ModelAndView edit() {
@@ -103,7 +120,7 @@ public class TuchiController extends BaseController {
 			HashMap<String, Object> op2 = new HashMap<>();
 			op2.put("opName", op.getOpName());
 			op2.put("opCd", op.getOpCd());
-			op2.put("value", values.contains(op.getOpCd()));
+			op2.put("selected", values.contains(op.getOpCd()));
 			list.add(op2);
 		}
 
@@ -124,7 +141,7 @@ public class TuchiController extends BaseController {
 			HashMap<String, Object> entity2 = new HashMap<>();
 			entity2.put("syasyuCd", syasyu.getSyasyuCd());
 			entity2.put("syasyuName", syasyu.getSyasyuName());
-			entity2.put("value", values.contains(syasyu.getSyasyuCd()));
+			entity2.put("selected", values.contains(syasyu.getSyasyuCd()));
 			list.add(entity2);
 		}
 
@@ -137,14 +154,25 @@ public class TuchiController extends BaseController {
 		List<String> values = e.getCity();
 
 		for( CityEntity city : Constants.getCityList() ){
-			String prefCd = city.getPrefCd();
-			
+			HashMap<String,Object> city2 = new HashMap<>();
+			city2.put("prefCd", city.getPrefCd());
+			city2.put("cityCd", city.getCityCd());
+			city2.put("cityDisp", city.getCityDisp());
+			city2.put("dispCateg", city.getDispCateg());
+			city2.put("selected", values.contains( city.getCityCd() ));
+
+			result.add(city2);
 		}
 
 
 		return result;
 	}
 
+	/**
+	 * edit画面用　データ処理
+	 * 主にチェックボックスの内容
+	 * @param e
+	 */
 	protected void setData(TuchiEntity e) {
 		results.put("tuchi", e);
 		results.put("prefList", Constants.getPrefList());
@@ -155,7 +183,6 @@ public class TuchiController extends BaseController {
 		List<Object>cityData = getCityData(e);
 
 		results.put("cityData" ,  cityData );
-		results.put("debug" ,  cityData.size() );
 	}
 
 
