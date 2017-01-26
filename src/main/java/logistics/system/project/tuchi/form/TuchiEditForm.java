@@ -68,7 +68,7 @@ public class TuchiEditForm {
 		this.prefCd = prefCd;
 	}
 
-	public void initEntity(TuchiEntity entity) {
+	public void updateEntity( TuchiEntity entity ){
 		entity.setTuchiId(getTuchiId());
 		entity.setUserId(getUserId());
 		entity.setTitle(getTitle());

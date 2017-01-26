@@ -9,4 +9,7 @@ public interface TuchiService {
 	public List<TuchiEntity> getTuchiByUser(String userId);
 
 	public void save( TuchiEntity entity );
+
+
+	public boolean isMatch( String ankenId );
 }

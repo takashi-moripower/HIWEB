@@ -8,6 +8,7 @@ import logistics.system.project.common.Entity.ContactRRKEntity;
 import logistics.system.project.common.Entity.NohinEntity;
 import logistics.system.project.common.Entity.SyukaEntity;
 import logistics.system.project.common.Entity.TruckEntity;
+import logistics.system.project.common.Entity.TruckOpEntity;
 import logistics.system.project.common.Entity.UserEntity;
 import logistics.system.project.common.dao.AnkenDao;
 import logistics.system.project.common.dao.ContactRRKDao;
@@ -54,72 +55,80 @@ public class AnkenDetailServiceImpl implements AnkenDetailService {
 		AnkenDetailForm ankenDetailForm = new AnkenDetailForm();
 
 		AnkenDetailEntity ankenDetail = dao.getAnkenDetail(ankenNo);
-		if (ankenDetail != null) {
 
-			if (!StringUtils.isBlank(ankenDetail.getJutuKigen())) {
-				ankenDetail.setJutuKigen(ComUtils.editDate(ankenDetail.getJutuKigen(), "yyyyMMdd",
-						"yyyy/MM/dd (E)"));
-			}
-			ankenDetailForm.setAnkenDetail(ankenDetail);
 
-			String ankenId = StringUtils.substring(ankenNo, 0, 15);
-			String truckNo = StringUtils.substring(ankenNo, 15, 16);
-			TruckEntity truck = truckDao.getTruckByPK(ankenId, truckNo);
+		if( ankenDetail == null ){
+			return ankenDetailForm;
+		}
+
+		if (!StringUtils.isBlank(ankenDetail.getJutuKigen())) {
+			ankenDetail.setJutuKigen(ComUtils.editDate(ankenDetail.getJutuKigen(), "yyyyMMdd",
+					"yyyy/MM/dd (E)"));
+		}
+
+		ankenDetailForm.setAnkenDetail(ankenDetail);
+
+		String ankenId = StringUtils.substring(ankenNo, 0, 15);
+		String truckNo = StringUtils.substring(ankenNo, 15, 16);
+		TruckEntity truck = truckDao.getTruckByPK(ankenId, truckNo);
+		if( truck != null ){
 			truck.setOpList(ComUtils.editOpList(truck.getOpList(), Constants.getTruckOpList()));
-			ankenDetailForm.setTruck(truck);
+		}
+		ankenDetailForm.setTruck(truck);
 
 
-			List<SyukaEntity> syukaList = syukaDao.getSyukaByAnkenId(ankenId);
-			List<NohinEntity> nohinList = nohinDao.getNohinByAnkenId(ankenId);
+		List<SyukaEntity> syukaList = syukaDao.getSyukaByAnkenId(ankenId);
+		List<NohinEntity> nohinList = nohinDao.getNohinByAnkenId(ankenId);
 
-			for (SyukaEntity syuka : syukaList){
-				syuka.setSyukaDay(ComUtils.editDate(syuka.getSyukaDay(), "yyyyMMdd",
-						"yyyy/MM/dd (E)"));
-				if (!StringUtils.isBlank(syuka.getSyukaTime())) {
-					String str = syuka.getSyukaTime();
-					syuka.setSyukaTime(StringUtils.left(str, 2) + ":" + StringUtils.right(str, 2));
-				}
-				if (!StringUtils.isBlank(syuka.getPostCode())) {
-					String str = syuka.getPostCode();
-					syuka.setPostCode(StringUtils.left(str, 3) + "-" + StringUtils.right(str, 4));
-				}
+		for (SyukaEntity syuka : syukaList){
+			syuka.setSyukaDay(ComUtils.editDate(syuka.getSyukaDay(), "yyyyMMdd",
+					"yyyy/MM/dd (E)"));
+			if (!StringUtils.isBlank(syuka.getSyukaTime())) {
+				String str = syuka.getSyukaTime();
+				syuka.setSyukaTime(StringUtils.left(str, 2) + ":" + StringUtils.right(str, 2));
 			}
-
-			for (NohinEntity nohin : nohinList){
-				nohin.setNohinDay(ComUtils.editDate(nohin.getNohinDay(), "yyyyMMdd",
-						"yyyy/MM/dd (E)"));
-				if (!StringUtils.isBlank(nohin.getNohinTime())) {
-					String str = nohin.getNohinTime();
-					nohin.setNohinTime(StringUtils.left(str, 2) + ":" + StringUtils.right(str, 2));
-				}
-				if (!StringUtils.isBlank(nohin.getPostCode())) {
-					String str = nohin.getPostCode();
-					nohin.setPostCode(StringUtils.left(str, 3) + "-" + StringUtils.right(str, 4));
-				}
-			}
-
-			ankenDetailForm.setSyukaList(syukaList);
-			ankenDetailForm.setNohinList(nohinList);
-
-			if (StringUtils.isNotBlank(ankenDetail.getPicName1())) {
-				String tmpName = new Date().getTime() + "1.jpg";
-				AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 1);
-				ankenDetail.setPicTmpNm1(tmpName);
-			}
-
-			if (StringUtils.isNotBlank(ankenDetail.getPicName2())) {
-				String tmpName = new Date().getTime() + "2.jpg";
-				AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 2);
-				ankenDetail.setPicTmpNm2(tmpName);
-			}
-
-			if (StringUtils.isNotBlank(ankenDetail.getPicName3())) {
-				String tmpName = new Date().getTime() + "3.jpg";
-				AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 3);
-				ankenDetail.setPicTmpNm3(tmpName);
+			if (!StringUtils.isBlank(syuka.getPostCode())) {
+				String str = syuka.getPostCode();
+				syuka.setPostCode(StringUtils.left(str, 3) + "-" + StringUtils.right(str, 4));
 			}
 		}
+
+		for (NohinEntity nohin : nohinList){
+			nohin.setNohinDay(ComUtils.editDate(nohin.getNohinDay(), "yyyyMMdd",
+					"yyyy/MM/dd (E)"));
+			if (!StringUtils.isBlank(nohin.getNohinTime())) {
+				String str = nohin.getNohinTime();
+				nohin.setNohinTime(StringUtils.left(str, 2) + ":" + StringUtils.right(str, 2));
+			}
+			if (!StringUtils.isBlank(nohin.getPostCode())) {
+				String str = nohin.getPostCode();
+				nohin.setPostCode(StringUtils.left(str, 3) + "-" + StringUtils.right(str, 4));
+			}
+		}
+
+		ankenDetailForm.setSyukaList(syukaList);
+		ankenDetailForm.setNohinList(nohinList);
+
+		if (StringUtils.isNotBlank(ankenDetail.getPicName1())) {
+			String tmpName = new Date().getTime() + "1.jpg";
+			AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 1);
+			ankenDetail.setPicTmpNm1(tmpName);
+		}
+
+		if (StringUtils.isNotBlank(ankenDetail.getPicName2())) {
+			String tmpName = new Date().getTime() + "2.jpg";
+			AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 2);
+			ankenDetail.setPicTmpNm2(tmpName);
+		}
+
+		if (StringUtils.isNotBlank(ankenDetail.getPicName3())) {
+			String tmpName = new Date().getTime() + "3.jpg";
+			AnkenPicUtils.copyPicToTmp(ankenDetail.getAnkenId(), tmpName, 3);
+			ankenDetail.setPicTmpNm3(tmpName);
+		}
+
 		return ankenDetailForm;
+
 	}
 
 	@Override

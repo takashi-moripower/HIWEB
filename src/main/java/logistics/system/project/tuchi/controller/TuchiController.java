@@ -63,7 +63,7 @@ public class TuchiController extends BaseController {
 		return new ModelAndView("tuchi/edit", results);
 	}
 
-//	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
+	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
 	public String AddPost(@ModelAttribute("tuchiEditForm") TuchiEditForm form) {
 		clearResults();
 
@@ -75,23 +75,6 @@ public class TuchiController extends BaseController {
 		return "redirect:tuchi_list";
 
 	}
-
-
-	@RequestMapping(value = "tuchi_post", method = RequestMethod.POST)
-	public ModelAndView AddPostDebug(@ModelAttribute("tuchiEditForm") TuchiEditForm form) {
-		clearResults();
-
-		TuchiEntity e = new TuchiEntity();
-		form.initEntity(e);
-
-		tuchiService.save(e);
-
-		results.put( "data",  e.getCity() );
-		return new ModelAndView("tuchi/debug",results);
-	}
-
-
-
 
 	@RequestMapping(value = "tuchi_edit", method = RequestMethod.GET)
 	public ModelAndView edit() {

@@ -56,4 +56,10 @@ public class TuchiServiceImpl implements TuchiService {
 		tuchiSyasyu.save(entity.getTuchiId(), entity.getSyasyu());
 		tuchiCity.save(entity.getTuchiId(), entity.getCity());
 	}
+
+	@Override
+	public boolean isMatch(String ankenId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
 }
