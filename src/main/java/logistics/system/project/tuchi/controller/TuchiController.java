@@ -1,21 +1,8 @@
 package logistics.system.project.tuchi.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import logistics.system.project.base.controller.BaseController;
-import logistics.system.project.common.Entity.CityEntity;
-import logistics.system.project.common.Entity.SyasyuEntity;
-import logistics.system.project.common.Entity.TruckOpEntity;
-import logistics.system.project.common.service.ShukaAreaService;
-import logistics.system.project.tuchi.Entity.TuchiEntity;
-import logistics.system.project.tuchi.dao.RelationDao;
-import logistics.system.project.tuchi.dao.TuchiDao;
-import logistics.system.project.tuchi.form.TuchiEditForm;
-import logistics.system.project.tuchi.service.TuchiService;
-import logistics.system.project.utility.Constants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +11,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import logistics.system.project.base.controller.BaseController;
+import logistics.system.project.common.Entity.CityEntity;
+import logistics.system.project.common.Entity.SyasyuEntity;
+import logistics.system.project.common.Entity.TruckOpEntity;
+import logistics.system.project.tuchi.Entity.TuchiEntity;
+import logistics.system.project.tuchi.dao.TuchiDao;
+import logistics.system.project.tuchi.form.TuchiEditForm;
+import logistics.system.project.tuchi.service.TuchiService;
+import logistics.system.project.utility.Constants;
 
 @Controller
 public class TuchiController extends BaseController {
@@ -68,7 +65,7 @@ public class TuchiController extends BaseController {
 		clearResults();
 
 		TuchiEntity e = new TuchiEntity();
-		form.initEntity(e);
+		form.updateEntity(e);
 
 		tuchiService.save(e);
 
