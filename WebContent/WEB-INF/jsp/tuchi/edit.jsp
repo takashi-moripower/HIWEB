@@ -1,5 +1,13 @@
 <!DOCTYPE html>
+<%@page import="java.util.List"%>
 <%@page import="logistics.system.project.tuchi.Entity.TuchiEntity"%>
+<%@page import="logistics.system.project.common.Entity.PrefEntity"%>
+<%@page import="logistics.system.project.common.Entity.CityEntity"%>
+<%@page import="logistics.system.project.common.Entity.TruckOpEntity"%>
+<%@page import="logistics.system.project.common.Entity.SyasyuEntity"%>
+<%@page import="logistics.system.project.common.Entity.MemberEntity"%>
+<%@page import="logistics.system.project.tuchi.form.TuchiEditForm"%>
+<%@page import="logistics.system.project.utility.Constants"%>
 <html lang="en">
 <head>
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
@@ -9,6 +17,13 @@
 
 <%@ include file="../common/header.jsp"%>
 <script src="<%=request.getContextPath()%>/resources/js/tuchi/edit.js"></script>
+<script>
+
+</script>
+<%
+	TuchiEditForm form = (TuchiEditForm) request.getAttribute("form");
+	List<MemberEntity> ninushiList = (List<MemberEntity>) request.getAttribute("ninushiList");
+%>
 
 </head>
 <body>
@@ -17,86 +32,137 @@
 	</div>
 	<div class="container">
 		<h1>通知</h1>
-		<form method="post" class="form-horizontal" action="tuchi_post">
-			<input type="hidden" name="tuchiId" value="${tuchi.tuchiId}" /> <input
-				type="hidden" name="userId" value="${tuchi.userId}" />
+		<%
+		List<String> errors = (List<String>)request.getAttribute("errors");
+		if( errors != null ){
+			%>
+		<div class="panel panel-danger">
+			<div class="panel-body text-danger">
+				<ul>
+				<% for(String error : errors){ %>
+					<li><%= error %></li>
+				<% } %>
+				</ul>
+			</div>
+		</div>
+		<%
+		}
+		%>
+		<form method="post" class="form-horizontal" action="tuchi_edit">
+			<input type="hidden" name="tuchiId" value="${form.tuchiId}" /> <input
+				type="hidden" name="userId" value="${form.userId}" />
 			<table class="table table-bordered ">
 				<tbody>
 					<tr>
 						<th style="width: 16rem">タイトル</th>
-						<td><input type="text" name="title" value="${tuchi.title}" /></td>
+						<td><input type="text" name="title" value="${form.title}" /></td>
+					</tr>
+					<tr>
+						<th>荷主</th>
+						<td>
+							<select name="companyCd">
+								<option value="">
+								指定なし
+								</option>
+								<% for(MemberEntity m : ninushiList){ %>
+								<option value="<%= m.getCompanyCd() %>">
+									<%= m.getCompanyNm() %>
+								</option>
+								<% } %>
+							</select>
+						</td>
 					</tr>
 					<tr>
 						<th>地域</th>
 						<td><select name="prefCd">
-								<option value="0000">全国</option>
-								<c:forEach items="${prefList}" var="pref">
-									<option value="${pref.prefCd}"
-										<c:if test="${pref.prefCd == tuchi.prefCd}">selected</c:if>>${pref.prefName}</option>
-								</c:forEach>
+								<option value="00">全国</option>
+								<%
+									for (PrefEntity p : Constants.getPrefList()) {
+										String sel = (p.getPrefCd().equals(form.getPrefCd())) ? "selected" : "";
+								%>
+								<option value="<%=p.getPrefCd()%>" <%=sel%>>
+									<%=p.getPrefName()%>
+								</option>
+								<%
+									}
+								%>
 						</select></td>
 					</tr>
-					<c:set var="cat" value="00" />
-					<c:forEach items="${prefList}" var="pref">
-						<tr pref_cd="${pref.prefCd}">
-							<th>${pref.prefName}</th>
-							<td>
+					<%
+						for (PrefEntity p : Constants.getPrefList()) {
+					%>
+					<tr pref_cd="<%=p.getPrefCd()%>" style="display:hidden">
+						<th><%=p.getPrefName()%></th>
+						<td>
 							<div>
-								<label for="city-all">
-									<input type="checkbox" name="all-city" id="all-city"/>
-									全域
+								<label for="city-all"> <input type="checkbox"
+									name="all-city" id="all-city" /> 全域
 								</label>
 							</div>
+							<%
+						 	String cat = "00";
 
-							<c:forEach items="${cityData}" var="city">
-									<c:if test="${city.prefCd == pref.prefCd }">
-										<c:if test="${cat != city.dispCateg }">
-											<p>${city.dispCateg}</p>
-											<c:set var="cat" value="${city.dispCateg}" />
-										</c:if>
-										<label for="city-${city.cityCd}">
-										<input type="checkbox" id="city-${city.cityCd}" name="city" value="${city.cityCd}" <c:if test="${city.selected}">checked</c:if>/>
-										${city.cityDisp}
+						 	for (CityEntity c : Constants.getCityList()) {
+							 	if (c.getPrefCd().equals(p.getPrefCd())) {
+								 	if (!cat.equals(c.getDispCateg())) {
+					 					cat = c.getDispCateg();
+										%><p><%=c.getDispCateg()%></p> <%
+								 	}
+					 				String checked = (form.getCity().contains(c.getCityCd())) ? "checked" : "";
+									 %>
+										<label for="city-<%=c.getCityCd()%>">
+										 	<input type="checkbox" id="city-<%=c.getCityCd()%>" name="city" value="<%=c.getCityCd()%>" <%=checked%> />
+								 	 		<%=c.getCityDisp()%>
 										</label>
-							</c:if>
-								</c:forEach></td>
-						</tr>
-					</c:forEach>
+									<%
+							 	}
+						 	}
+						 %>
+						</td>
+					</tr>
+					<%
+						}
+					%>
 					<tr>
 						<th>開始日</th>
 						<td><input type="date" name="dateStart"
-							value="${tuchi.dateStartText}" /></td>
+							value="${form.dateStart}" /></td>
 					</tr>
 					<tr>
 						<th>終了日</th>
 						<td><input type="date" name="dateEnd"
-							value="${tuchi.dateEndText}" /></td>
+							value="${form.dateEnd}" /></td>
 					</tr>
 					<tr>
 						<th style="white-space: nowrap">トラックオプション</th>
 						<td>
-							<c:forEach items="${truckOp}" var="op" >
-							<label for="truckOp-${op.opCd}">
-							<input type="checkbox" id="op-${op.opCd}" name="truckOp"  value="${op.opCd}" <c:if test="${op.selected}">checked</c:if> />
-							${op.opName}
+						<%
+						for(TruckOpEntity t: Constants.getTruckOpList()){
+							String checked = form.getTruckOp().contains( t.getOpCd() ) ? "checked" : "";
+						%>
+							<label for="truckOp-<%=t.getOpCd() %>">
+								<input type="checkbox" id="truckOp-<%=t.getOpCd() %>" name="truckOp" value="<%=t.getOpCd() %>" <%= checked %>/>
+								<%= t.getOpName() %>
 							</label>
-							</c:forEach>
+						<%
+						}
+						%>
 						</td>
 					</tr>
 					<tr>
-						<th>車種</th>
+						<th style="white-space: nowrap">車種</th>
 						<td>
-							<c:forEach items="${syasyu}" var="syasyu" >
-							<label for="syasyu-${syasyu.syasyuCd}">
-							<input
-							type="checkbox"
-							id="syasyu-${syasyu.syasyuCd}"
-							name="syasyu"  value="${syasyu.syasyuCd}"
-							<c:if test="${syasyu.selected}">checked</c:if>
-							/>
-							${syasyu.syasyuName}
+						<%
+						for(SyasyuEntity s: Constants.getSyasyuList()){
+							String checked = form.getSyasyu().contains( s.getSyasyuCd() ) ? "checked" : "";
+						%>
+							<label for="syasyu-<%=s.getSyasyuCd() %>">
+								<input type="checkbox" id="syasyu-<%=s.getSyasyuCd() %>" name="syasyu" value="<%=s.getSyasyuCd() %>" <%= checked %>/>
+								<%= s.getSyasyuName() %>
 							</label>
-							</c:forEach>
+						<%
+						}
+						%>
 						</td>
 					</tr>
 				</tbody>

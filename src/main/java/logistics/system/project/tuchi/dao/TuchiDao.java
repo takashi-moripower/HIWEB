@@ -10,5 +10,8 @@ public interface TuchiDao {
 	public List<TuchiEntity> getTuchiByUser( String userId );
 	public int save( TuchiEntity entity );
 
-	public String[] getTruckOp( int tuchiCd );
+	public String[] getTruckOp( int tuchiId );
+	public void delete( int tuchiId );
+
+	public List<Integer> getMatchTuchi( String ankenId );
 }

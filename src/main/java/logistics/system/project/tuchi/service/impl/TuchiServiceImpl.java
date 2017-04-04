@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import logistics.system.project.common.dao.AnkenDao;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 import logistics.system.project.tuchi.dao.RelationDao;
 import logistics.system.project.tuchi.dao.TuchiDao;
@@ -17,6 +18,10 @@ public class TuchiServiceImpl implements TuchiService {
 	@Autowired
 	@Qualifier("tuchiDao")
 	private TuchiDao tuchiDao;
+
+	@Autowired
+	@Qualifier("ankenDao")
+	private AnkenDao ankenDao;
 
 	@Autowired
 	@Qualifier("tuchiTruckOpRelationDao")
@@ -58,8 +63,20 @@ public class TuchiServiceImpl implements TuchiService {
 	}
 
 	@Override
-	public boolean isMatch(String ankenId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
+	public void delete( int tuchiId){
+		tuchiDao.delete( tuchiId );
+	}
+
+	@Override
+	public void checkMatching(String ankenId) {
+		System.out.println("anken:"+  ankenId);
+		List<Integer> l = tuchiDao.getMatchTuchi(ankenId);
+		if( l == null ){
+			System.out.println("EMPTY");
+		}
+
+		for( Integer tuchiId : l ){
+			System.out.println(tuchiId);
+		}
 	}
 }

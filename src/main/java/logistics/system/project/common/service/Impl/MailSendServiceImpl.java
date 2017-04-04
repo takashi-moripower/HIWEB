@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import logistics.system.project.common.Entity.AnkenDetailEntity;
 import logistics.system.project.common.Entity.MailSendEntity;
 import logistics.system.project.common.Entity.MemberEntity;
@@ -20,13 +26,6 @@ import logistics.system.project.common.service.MailSendService;
 import logistics.system.project.utility.Constants;
 import logistics.system.project.utility.EmailSendTool;
 import logistics.system.project.utility.Freemarker;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 
 @Service("mailSendService")
 public class MailSendServiceImpl implements MailSendService {
@@ -81,6 +80,9 @@ public class MailSendServiceImpl implements MailSendService {
 	@Value("#{configProperties['mail.send.mode']}")
 	private String mailSendMode;
 
+	@Value("#{configProperties['mail.send.filter']}")
+	private String mailSendFilter;
+
 	@Override
 	public void insertMailSend(MailSendEntity mailSendEntity) {
 		mailSendDao.insertMailSend(mailSendEntity);
@@ -110,17 +112,17 @@ public class MailSendServiceImpl implements MailSendService {
 	public void insertDoSendMail(MailSendEntity mailSendEntity) {
 		mailSendEntity.setMailSendKs(mailSendEntity.getMailSendKs() + 1);
 
-		EmailSendTool sendEmail = new EmailSendTool(mailSmtpHost,mailSmtpPort,
-				mailSmtpUsername, mailSmtpUserPass, mailSmtpAddr, mailSendEntity.getMailSendTo(),
-				mailSendEntity.getMailSendSub(), mailSendEntity.getMailSendText(), mailUserPersonName, "", "");
+		EmailSendTool sendEmail = new EmailSendTool(mailSmtpHost, mailSmtpPort, mailSmtpUsername, mailSmtpUserPass,
+				mailSmtpAddr, mailSendEntity.getMailSendTo(), mailSendEntity.getMailSendSub(),
+				mailSendEntity.getMailSendText(), mailUserPersonName, "", "");
 		try {
-			if("0".equals(mailSendMode) || mailSendEntity.getMailSendTo().indexOf("@keel.co.jp") >=0 ){
+			if ("0".equals(mailSendMode) || mailSendEntity.getMailSendTo().indexOf(mailSendFilter) >= 0) {
 				sendEmail.send();
 			}
 			mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_SATUS_1);
 			updateMailSendStatusAndKs(mailSendEntity);
 		} catch (Exception ex) {
-			if (mailSendEntity.getMailSendKs()>= Constants.MAX_MAIL_SEND_KS) {
+			if (mailSendEntity.getMailSendKs() >= Constants.MAX_MAIL_SEND_KS) {
 				mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_SATUS_9);
 				updateMailSendStatusAndKs(mailSendEntity);
 			} else {
@@ -138,7 +140,7 @@ public class MailSendServiceImpl implements MailSendService {
 
 		AnkenDetailEntity ankenDetail = this.ankenDao.getAnkenDetail(ankenNo);
 
-		//   (1)《案件受注情报》的登録者ＩＤ -〉 《ユーザマスタ》.ログインＩＤ
+		// (1)《案件受注情报》的登録者ＩＤ -〉 《ユーザマスタ》.ログインＩＤ
 		UserEntity user = this.personalDao.getUserByCd(ankenDetail.getCreateId());
 		if (user != null) {
 			sendTo.add(user.getLoginId());
@@ -147,7 +149,7 @@ public class MailSendServiceImpl implements MailSendService {
 		// (2) 《案件情報》的登録者の会社コード -〉 《会社マスタ》.会社EMAIL
 		String seikyuKsCd = user.getCompanyCd();
 
-		if(StringUtils.isNotBlank(seikyuKsCd)) {
+		if (StringUtils.isNotBlank(seikyuKsCd)) {
 			MemberEntity seikyuKsCom = this.memberDao.getMemberByCd(seikyuKsCd);
 			if (seikyuKsCom != null && StringUtils.isNotBlank(seikyuKsCom.getCompanyEmail())) {
 				sendTo.add(seikyuKsCom.getCompanyEmail());
@@ -160,8 +162,8 @@ public class MailSendServiceImpl implements MailSendService {
 			if (upuser != null) {
 				sendTo.add(upuser.getLoginId());
 			}
-			//(3-2) 更新ユーザの会社メール
-			if(upuser != null) {
+			// (3-2) 更新ユーザの会社メール
+			if (upuser != null) {
 				MemberEntity member = this.memberDao.getMemberByCd(upuser.getCompanyCd());
 				if (member != null && StringUtils.isNotBlank(member.getCompanyEmail())) {
 					sendTo.add(member.getCompanyEmail());
@@ -169,15 +171,14 @@ public class MailSendServiceImpl implements MailSendService {
 			}
 		}
 
-		//(4) 更新ユーザのメール
+		// (4) 更新ユーザのメール
 		UserEntity upuser = this.personalDao.getUserByCd(userId);
 		if (upuser != null) {
 			sendTo.add(upuser.getLoginId());
 		}
 
-
 		// (4-2) 更新ユーザの会社コード -〉 《会社マスタ》.会社EMAIL
-		if(upuser != null) {
+		if (upuser != null) {
 			MemberEntity member = this.memberDao.getMemberByCd(upuser.getCompanyCd());
 			if (member != null && StringUtils.isNotBlank(member.getCompanyEmail())) {
 				sendTo.add(member.getCompanyEmail());
@@ -192,7 +193,8 @@ public class MailSendServiceImpl implements MailSendService {
 			}
 		}
 
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd(E) HH:mm", Locale.JAPANESE);
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd(E) HH:mm",
+		// Locale.JAPANESE);
 		for (String maddr : sendTo) {
 			if (StringUtils.isBlank(maddr)) {
 				continue;
@@ -204,17 +206,18 @@ public class MailSendServiceImpl implements MailSendService {
 			mailSendEntity.setCreateId(userId);
 			mailSendEntity.setUpdateId(userId);
 
-			String subject = MessageFormat.format(mailSubTemplate, new String[]{ankenNo, ankenDetail.getStatusNm().replace("済み", "")});
+			String subject = MessageFormat.format(mailSubTemplate,
+					new String[] { ankenNo, ankenDetail.getStatusNm().replace("済み", "") });
 
 			mailSendEntity.setMailSendSub(subject);
 
 			Map dataMap = new HashMap();
 			dataMap.put("ankenNo", ankenNo);
-//			dataMap.put("updateDt", sdf.format(updateDt));
+			// dataMap.put("updateDt", sdf.format(updateDt));
 			dataMap.put("updateDt", ankenDetail.getUpdateDt());
 			dataMap.put("statusNm", ankenDetail.getStatusNm().replace("済み", ""));
-//			dataMap.put("ankenId", ankenDetail.getAnkenId());
-//			dataMap.put("ankenNo", ankenNo); // TODO
+			// dataMap.put("ankenId", ankenDetail.getAnkenId());
+			// dataMap.put("ankenNo", ankenNo); // TODO
 
 			String text = Freemarker.getTemplateString(Constants.FTL_PACKAGE, Constants.FTL_MAIL_FILE_NAME, dataMap);
 			mailSendEntity.setMailSendText(text);

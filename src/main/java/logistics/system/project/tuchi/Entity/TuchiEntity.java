@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import logistics.system.project.common.Entity.PrefEntity;
 import logistics.system.project.utility.Constants;
 
 public class TuchiEntity {
@@ -146,5 +145,11 @@ public class TuchiEntity {
 
 	public void setCity(List<String> city) {
 		this.city = city;
+	}
+
+	public String getText(){
+		String a = "aaaAAAaaa";
+
+		return a;
 	}
 }

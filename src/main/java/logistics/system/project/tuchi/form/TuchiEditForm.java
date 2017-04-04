@@ -1,19 +1,23 @@
 package logistics.system.project.tuchi.form;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import logistics.system.project.tuchi.Entity.TuchiEntity;
+import logistics.system.project.utility.annotation.NotEmpty;
 
 public class TuchiEditForm {
-
+	@Valid
 	int tuchiId;
 	String userId;
+	@NotEmpty(field = "タイトル", message = "{field.not.empty}")
 	String title;
+	@NotEmpty(field = "開始日時", message = "{field.not.empty}")
 	String dateStart;
+	@NotEmpty(field = "終了日時", message = "{field.not.empty}")
 	String dateEnd;
 	String prefCd;
 	List<String> syasyu;
@@ -68,7 +72,61 @@ public class TuchiEditForm {
 		this.prefCd = prefCd;
 	}
 
-	public void updateEntity( TuchiEntity entity ){
+	public Timestamp s2t(String str) {
+		if (str == null || str == "") {
+			return null;
+		}
+		return Timestamp.valueOf(str + " 00:00:00.00");
+	}
+
+	public List<String> getSyasyu() {
+		if (syasyu == null) {
+			syasyu = new ArrayList<>();
+		}
+		return syasyu;
+	}
+
+	public void setSyasyu(List<String> syasyu) {
+		this.syasyu = syasyu;
+	}
+
+	public List<String> getTruckOp() {
+		if (truckOp == null) {
+			truckOp = new ArrayList<>();
+		}
+		return truckOp;
+	}
+
+	public void setTruckOp(List<String> truckOp) {
+		this.truckOp = truckOp;
+	}
+
+	public List<String> getCity() {
+		if (city == null) {
+			city = new ArrayList<>();
+		}
+		return city;
+	}
+
+	public void setCity(List<String> city) {
+		this.city = city;
+	}
+
+	public void initForm(TuchiEntity entity) {
+		setTuchiId(entity.getTuchiId());
+		setUserId(entity.getUserId());
+		setCity(entity.getCity());
+		setTitle(entity.getTitle());
+		setPrefCd(entity.getPrefCd());
+		setDateStart(entity.getDateStartText());
+		setDateEnd(entity.getDateEndText());
+		setTruckOp(entity.getTruckOp());
+		setSyasyu(entity.getSyasyu());
+		setCity(entity.getCity());
+
+	}
+
+	public void updateEntity(TuchiEntity entity) {
 		entity.setTuchiId(getTuchiId());
 		entity.setUserId(getUserId());
 		entity.setTitle(getTitle());
@@ -81,44 +139,7 @@ public class TuchiEditForm {
 		return;
 	}
 
-	public Timestamp s2t(String str) {
-		if (str == null || str == "") {
-			return null;
-		}
-		return Timestamp.valueOf(str + " 00:00:00.00");
+	public String getText(){
+		return "123";
 	}
-
-	public List<String> getSyasyu() {
-		if( syasyu == null ){
-			syasyu =  new ArrayList<>();
-		}
-		return syasyu;
-	}
-
-	public void setSyasyu(List<String> syasyu) {
-		this.syasyu = syasyu;
-	}
-
-	public List<String> getTruckOp() {
-		if( truckOp == null ){
-			truckOp = new ArrayList<>();
-		}
-		return truckOp;
-	}
-
-	public void setTruckOp(List<String> truckOp) {
-		this.truckOp = truckOp;
-	}
-
-	public List<String> getCity() {
-		if( city == null ){
-			city = new ArrayList<>();
-		}
-		return city;
-	}
-
-	public void setCity(List<String> city) {
-		this.city = city;
-	}
-
 }

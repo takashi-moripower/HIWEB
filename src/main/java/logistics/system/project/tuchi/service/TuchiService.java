@@ -5,11 +5,13 @@ import java.util.List;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 
 public interface TuchiService {
-	public  TuchiEntity getTuchiById(int tuchiId ,boolean link );
+	public TuchiEntity getTuchiById(int tuchiId, boolean link);
+
 	public List<TuchiEntity> getTuchiByUser(String userId);
 
-	public void save( TuchiEntity entity );
+	public void save(TuchiEntity entity);
 
+	public void checkMatching(String ankenId);
 
-	public boolean isMatch( String ankenId );
+	public void delete( int tuchiId );
 }

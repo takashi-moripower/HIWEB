@@ -1,17 +1,12 @@
 package logistics.system.project.tuchi.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import logistics.system.project.base.dao.BaseDao;
-import logistics.system.project.common.Entity.TruckOpEntity;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 import logistics.system.project.tuchi.dao.TuchiDao;
-import logistics.system.project.utility.Constants;
 
 @Repository("tuchiDao")
 public class TuchiDaoImpl extends BaseDao implements TuchiDao {
@@ -53,4 +48,13 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 		return 0;
 	}
 
+	@Override
+	public void delete( int tuchiId ){
+		getSqlMapClientTemplate().delete("deleteTuchi", tuchiId );
+	}
+
+	@Override
+	public List<Integer> getMatchTuchi( String ankenId ){
+		return getSqlMapClientTemplate().queryForList("getMatchTuchi", ankenId);
+	}
 }

@@ -11,23 +11,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import logistics.system.project.base.controller.BaseController;
-import logistics.system.project.common.Entity.AnkenOrderEntity;
-import logistics.system.project.common.Entity.PostCodeEntity;
-import logistics.system.project.common.Entity.UserEntity;
-import logistics.system.project.common.exception.CustomException;
-import logistics.system.project.common.form.AnkenTorokuForm;
-import logistics.system.project.common.service.AnkenDetailService;
-import logistics.system.project.common.service.AnkenModifyService;
-import logistics.system.project.common.service.PostCodeService;
-import logistics.system.project.ninushi.form.NohinForm;
-import logistics.system.project.ninushi.form.SyukaForm;
-import logistics.system.project.ninushi.form.TruckForm;
-import logistics.system.project.utility.AnkenPicUtils;
-import logistics.system.project.utility.ComUtils;
-import logistics.system.project.utility.Constants;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,6 +25,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import logistics.system.project.base.controller.BaseController;
+import logistics.system.project.common.Entity.AnkenOrderEntity;
+import logistics.system.project.common.Entity.PostCodeEntity;
+import logistics.system.project.common.Entity.UserEntity;
+import logistics.system.project.common.exception.CustomException;
+import logistics.system.project.common.form.AnkenTorokuForm;
+import logistics.system.project.common.service.AnkenDetailService;
+import logistics.system.project.common.service.AnkenModifyService;
+import logistics.system.project.common.service.PostCodeService;
+import logistics.system.project.ninushi.form.NohinForm;
+import logistics.system.project.ninushi.form.SyukaForm;
+import logistics.system.project.ninushi.form.TruckForm;
+import logistics.system.project.tuchi.service.TuchiService;
+import logistics.system.project.utility.AnkenPicUtils;
+import logistics.system.project.utility.ComUtils;
+import logistics.system.project.utility.Constants;
+import logistics.system.project.utility.IdConverter;
+import net.sf.json.JSONObject;
 
 @Controller
 public class AnkenController extends BaseController {
@@ -68,8 +70,8 @@ public class AnkenController extends BaseController {
 	@RequestMapping(value = "ankenToroku")
 	public ModelAndView inputCaseInfo(
 			// @RequestBody AnkenTorokuForm ankenTorokuForm,
-			@ModelAttribute("ankenTorokuForm") @Valid AnkenTorokuForm ankenTorokuForm,
-			BindingResult ankenerrors, HttpServletRequest request) {
+			@ModelAttribute("ankenTorokuForm") @Valid AnkenTorokuForm ankenTorokuForm, BindingResult ankenerrors,
+			HttpServletRequest request) {
 		HashMap<String, Object> results = new HashMap<String, Object>();
 
 		boolean updateFlag = request.getParameter("updateFlag") == null ? false
@@ -78,116 +80,93 @@ public class AnkenController extends BaseController {
 
 		if (Constants.GYOMU_SB_TRAIL.equals(userSession.getGyomuSb())) {
 			if (StringUtils.isBlank(ankenTorokuForm.getSeikyuKsCd())) {
-				ankenerrors.rejectValue("seikyuKsCd", "field.not.selected",
-						new String[] { "荷主" }, "荷主が選択されていません。");
+				ankenerrors.rejectValue("seikyuKsCd", "field.not.selected", new String[] { "荷主" }, "荷主が選択されていません。");
 			}
-
-//			if (StringUtils.isBlank(ankenTorokuForm.getShihraiKsCd())) {
-//				ankenerrors.rejectValue("shihraiKsCd", "field.not.selected",
-//						new String[] { "運送" }, "運送が選択されていません。");
-//			}
 		}
 
-		if (Constants.GYOMU_SB_NINUSHI.equals(userSession.getGyomuSb()) &&
-				!ankenerrors.hasErrors()) {
+		if (Constants.GYOMU_SB_NINUSHI.equals(userSession.getGyomuSb()) && !ankenerrors.hasErrors()) {
 
 			String minSyukaDate = "";
 			String minNohinDate = "";
 
-			String orderDate = ComUtils.convertJapanDate(
-					StringUtils.trimToEmpty(ankenTorokuForm.getOrderDate()), "yyyy/MM/dd (E)",
-					"yyyyMMdd");
+			String orderDate = ComUtils.convertJapanDate(StringUtils.trimToEmpty(ankenTorokuForm.getOrderDate()),
+					"yyyy/MM/dd (E)", "yyyyMMdd");
 			if (ComUtils.getSysDate().compareTo(orderDate) > 0) {
-				ankenerrors.rejectValue("orderDate",
-						"date.before.more.than.after", new String[] { "受注期限" },
+				ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "受注期限" },
 						"受注期限に過去の日付を指定しています。");
 			}
 
 			for (SyukaForm syukaForm : ankenTorokuForm.getSyukaList()) {
-				String syukaDay = ComUtils.convertJapanDate(
-						StringUtils.trimToEmpty(syukaForm.getSyukaDay()), "yyyy/MM/dd (E)", "yyyyMMdd");
+				String syukaDay = ComUtils.convertJapanDate(StringUtils.trimToEmpty(syukaForm.getSyukaDay()),
+						"yyyy/MM/dd (E)", "yyyyMMdd");
 				if (orderDate.compareTo(syukaDay) > 0) {
-					ankenerrors.rejectValue("orderDate",
-							"date.before.more.than.after",
-							new String[] { "集荷日" }, "受注期限が集荷日より以前の日付になっています。");
+					ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "集荷日" },
+							"受注期限が集荷日より以前の日付になっています。");
 				}
 
-				String syukaTime = StringUtils
-						.isEmpty(syukaForm.getSyukaTime()) ? "" : syukaForm
-						.getSyukaTime().replace(":", "");
+				String syukaTime = StringUtils.isEmpty(syukaForm.getSyukaTime()) ? ""
+						: syukaForm.getSyukaTime().replace(":", "");
 				String syukaDate = ComUtils.convertJapanDate(
-						StringUtils.trimToEmpty(syukaForm.getSyukaDay()) + syukaTime,
-						"yyyy/MM/dd (E)HHmm", "yyyyMMddHHmm");
+						StringUtils.trimToEmpty(syukaForm.getSyukaDay()) + syukaTime, "yyyy/MM/dd (E)HHmm",
+						"yyyyMMddHHmm");
 
-//				String syukaDate = syukaDay + syukaTime;
+				// String syukaDate = syukaDay + syukaTime;
 
 				minSyukaDate = "".equals(minSyukaDate) ? syukaDate
-						: (minSyukaDate.compareTo(syukaDate) > 0 ? syukaDate
-								: minSyukaDate);
+						: (minSyukaDate.compareTo(syukaDate) > 0 ? syukaDate : minSyukaDate);
 
-				syuka_time = StringUtils.isEmpty(syuka_time) ? "" : syuka_time
-						.replace(":", "");
-				String sysDate = ComUtils.convertDate(ComUtils.getSysDate()
-						+ syuka_time, "yyyyMMddHHmm", "yyyyMMddHHmm");
+				syuka_time = StringUtils.isEmpty(syuka_time) ? "" : syuka_time.replace(":", "");
+				String sysDate = ComUtils.convertDate(ComUtils.getSysDate() + syuka_time, "yyyyMMddHHmm",
+						"yyyyMMddHHmm");
 
-//				String sysDate = ComUtils.getSysDate()+ syuka_time;
+				// String sysDate = ComUtils.getSysDate()+ syuka_time;
 
 				if (ComUtils.getSysDate().compareTo(syukaDay) > 0) {
-					ankenerrors.rejectValue("orderDate",
-							"date.before.more.than.after",
-							new String[] { "集荷日" }, "集荷日が過去の日付になっています。");
+					ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "集荷日" },
+							"集荷日が過去の日付になっています。");
 				} else if (sysDate.compareTo(syukaDate) > 0) {
-					ankenerrors.rejectValue("orderDate",
-							"date.before.more.than.after",
-							new String[] { "集荷日" }, "集荷日時が過去の時間になっています。");
+					ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "集荷日" },
+							"集荷日時が過去の時間になっています。");
 				}
 			}
 
 			for (NohinForm nohinForm : ankenTorokuForm.getNohinList()) {
-				String nohinDay = ComUtils.convertJapanDate(
-						nohinForm.getNohinDay(), "yyyy/MM/dd (E)", "yyyyMMdd");
-				String nohinTime = StringUtils
-						.isEmpty(nohinForm.getNohinTime()) ? "" : nohinForm
-						.getNohinTime().replace(":", "");
-				String nohinDate = ComUtils.convertJapanDate(
-						nohinForm.getNohinDay() + nohinTime,
-						"yyyy/MM/dd (E)HHmm", "yyyyMMddHHmm");
+				String nohinDay = ComUtils.convertJapanDate(nohinForm.getNohinDay(), "yyyy/MM/dd (E)", "yyyyMMdd");
+				String nohinTime = StringUtils.isEmpty(nohinForm.getNohinTime()) ? ""
+						: nohinForm.getNohinTime().replace(":", "");
+				String nohinDate = ComUtils.convertJapanDate(nohinForm.getNohinDay() + nohinTime, "yyyy/MM/dd (E)HHmm",
+						"yyyyMMddHHmm");
 
-//				String nohinDate = nohinDay + nohinTime;
+				// String nohinDate = nohinDay + nohinTime;
 
 				minNohinDate = "".equals(minNohinDate) ? nohinDate
-						: (minNohinDate.compareTo(nohinDate) > 0 ? nohinDate
-								: minNohinDate);
+						: (minNohinDate.compareTo(nohinDate) > 0 ? nohinDate : minNohinDate);
 
-				syuka_time = StringUtils.isEmpty(syuka_time) ? "" : syuka_time
-						.replace(":", "");
-				String sysDate = ComUtils.convertDate(ComUtils.getSysDate()
-						+ syuka_time, "yyyyMMddHHmm", "yyyyMMddHHmm");
+				syuka_time = StringUtils.isEmpty(syuka_time) ? "" : syuka_time.replace(":", "");
+				String sysDate = ComUtils.convertDate(ComUtils.getSysDate() + syuka_time, "yyyyMMddHHmm",
+						"yyyyMMddHHmm");
 
-//				String sysDate = ComUtils.getSysDate()+ syuka_time;
+				// String sysDate = ComUtils.getSysDate()+ syuka_time;
 
 				if (ComUtils.getSysDate().compareTo(nohinDay) > 0) {
-					ankenerrors.rejectValue("orderDate",
-							"date.before.more.than.after",
-							new String[] { "納品日" }, "納品日が過去の日付になっています。");
+					ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "納品日" },
+							"納品日が過去の日付になっています。");
 				} else if (sysDate.compareTo(nohinDate) > 0) {
-					ankenerrors.rejectValue("orderDate",
-							"date.before.more.than.after",
-							new String[] { "納品日" }, "納品日時が過去の時間になっています。");
+					ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "納品日" },
+							"納品日時が過去の時間になっています。");
 				}
 			}
 
 			if (minSyukaDate.compareTo(minNohinDate) > 0) {
-				ankenerrors.rejectValue("orderDate",
-						"date.before.more.than.after", new String[] { "集荷日" },
+				ankenerrors.rejectValue("orderDate", "date.before.more.than.after", new String[] { "集荷日" },
 						"納品日時が集荷日時より以前の日付になっています。");
 			}
 		}
 
 		if (ankenerrors.hasErrors()) {
-			this.setHeader(new String[] {
-					Constants.NINUSHI_ANKEN_TOROKU_TABTITLE,
-					Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE }, results);
+			this.setHeader(
+					new String[] { Constants.NINUSHI_ANKEN_TOROKU_TABTITLE, Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE },
+					results);
 
 			ankenTorokuForm.setPrefList(Constants.getPrefList());
 			ankenTorokuForm.setNisyuList(Constants.getNisyuList());
@@ -201,20 +180,17 @@ public class AnkenController extends BaseController {
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, false);
 		}
 
-		this.setHeader(new String[] {
-				Constants.NINUSHI_ANKEN_TOROKU_CONFIRM_TABTITLE,
+		this.setHeader(new String[] { Constants.NINUSHI_ANKEN_TOROKU_CONFIRM_TABTITLE,
 				Constants.NINUSHI_ANKEN_TOROKU_CONFIRM_PAGETITLE }, results);
 		return new ModelAndView("anken_confirm", results);
 	}
 
 	@RequestMapping(value = "ankenTorokuConfirm")
-	public ModelAndView caseInfoConfirm(
-			@ModelAttribute("ankenTorokuForm") AnkenTorokuForm ankenTorokuForm,
+	public ModelAndView caseInfoConfirm(@ModelAttribute("ankenTorokuForm") AnkenTorokuForm ankenTorokuForm,
 			HttpServletRequest request) {
 
 		HashMap<String, Object> results = new HashMap<String, Object>();
-		this.setHeader(new String[] {
-				Constants.NINUSHI_ANKEN_TOROKU_COMPLETE_TABTITLE,
+		this.setHeader(new String[] { Constants.NINUSHI_ANKEN_TOROKU_COMPLETE_TABTITLE,
 				Constants.NINUSHI_ANKEN_TOROKU_COMPLETE_PAGETITLE }, results);
 
 		boolean updateFlag = request.getParameter("updateFlag") == null ? false
@@ -225,20 +201,17 @@ public class AnkenController extends BaseController {
 
 		UserEntity userEntity = (UserEntity) session.getAttribute("user");
 
-
-		if(Constants.GYOMU_SB_NINUSHI.equals(this.userSession.getGyomuSb())) {
-			for(TruckForm truckForm : ankenTorokuForm.getTruckList()) {
+		if (Constants.GYOMU_SB_NINUSHI.equals(this.userSession.getGyomuSb())) {
+			for (TruckForm truckForm : ankenTorokuForm.getTruckList()) {
 				truckForm.setOrderMn(truckForm.getYosanMn());
 			}
 		}
 
-		if(Constants.GYOMU_SB_NINUSHI.equals(userEntity.getGyomuSb())) {
+		if (Constants.GYOMU_SB_NINUSHI.equals(userEntity.getGyomuSb())) {
 			ankenTorokuForm.setSeikyuKsCd(userEntity.getCompanyCd());
 		}
 
 		String userId = userEntity.getUserId();
-//		String ankenId = ankenTorokuForm.getAnkenId();
-//		String ankenNo = ankenTorokuForm.getAnkenNo();
 
 		List<AnkenOrderEntity> ankenOrderList = null;
 		List<String> ankenNoList = new ArrayList<String>();
@@ -246,45 +219,19 @@ public class AnkenController extends BaseController {
 
 			try {
 				ankenOrderList = ankenModifyService.updateAnken(ankenTorokuForm, userSession);
-				for(AnkenOrderEntity ankenOrder : ankenOrderList) {
+				for (AnkenOrderEntity ankenOrder : ankenOrderList) {
 					ankenNoList.add(ComUtils.formatAnkenNo(ankenOrder.getAnkenNo()));
 				}
 
-//				HashMap<String, List<String>> ankenNoMap = new HashMap<String, List<String>>();
-//				ankenNoMap.put("ankenNoList", ankenNoList);
-//
-//				results.put("result", ankenNoMap);
-//				return new ModelAndView("anken_complete", results);
-			}
-			catch(CustomException e) {
+			} catch (CustomException e) {
 				results.put("showErrorMessFlag", true);
 				results.put("errormessage", e.getMessage());
 				return new ModelAndView("anken_confirm", results);
-			}
-			catch(Exception ex){
+			} catch (Exception ex) {
 				results.put("showErrorMessFlag", true);
 				results.put("errormessage", "案件更新に失敗しました。");
 				return new ModelAndView("anken_confirm", results);
 			}
-			// int count = ankenModifyService.getCountNot10(ankenId, updateDt);
-			// if(count == 1) {
-			// try {
-			//
-			// ankenModifyService.deleteAnken(ankenId, updateDt);
-			// }
-			// catch (Exception e) {
-			// results.put("showErrorMessFlag", true);
-			// results.put("errormessage", "案件削除失敗しました。");
-			// return new ModelAndView("anken_confirm", results);
-			// }
-			// }
-			// else {
-			// results.put("showErrorMessFlag", true);
-			// results.put("errormessage", ComUtils.formatAnkenNo(ankenNo) +
-			// this.anken_not_editable);
-			// return new ModelAndView("anken_confirm", results);
-			// }
-
 		}
 
 		else {
@@ -295,16 +242,6 @@ public class AnkenController extends BaseController {
 			ankenTorokuForm.setCreateDt(current);
 			ankenTorokuForm.setUpdateDt(current);
 
-//			if (Constants.GYOMU_SB_NINUSHI.equals(this.userSession.getGyomuSb())) {
-//				for (TruckForm truckForm : ankenTorokuForm.getTruckList()) {
-//					truckForm.setOrderMn(truckForm.getYosanMn());
-//				}
-//			}
-//
-//			if (Constants.GYOMU_SB_NINUSHI.equals(userEntity.getGyomuSb())) {
-//				ankenTorokuForm.setSeikyuKsCd(userEntity.getCompanyCd());
-//			}
-
 			StringBuffer startSeq = new StringBuffer();
 			startSeq = startSeq.append(this.userSession.getCompanyCd());
 
@@ -313,19 +250,14 @@ public class AnkenController extends BaseController {
 
 			String maxSeq = ankenDetailService.getMaxSeqNo(startSeq.toString());
 			int nowSeq = maxSeq == null ? 1 : Integer.valueOf(maxSeq) + 1;
-			ankenTorokuForm.setAnkenNo(userEntity.getCompanyCd()+ Constants.CONNECT_DASH + sysData + String.format("%03d", nowSeq) + "1"+ Constants.CONNECT_DASH + "01");
-			ankenTorokuForm.setAnkenId(userEntity.getCompanyCd() + sysData+ String.format("%03d", nowSeq));
+			ankenTorokuForm.setAnkenNo(userEntity.getCompanyCd() + Constants.CONNECT_DASH + sysData
+					+ String.format("%03d", nowSeq) + "1" + Constants.CONNECT_DASH + "01");
+			ankenTorokuForm.setAnkenId(userEntity.getCompanyCd() + sysData + String.format("%03d", nowSeq));
 
 			ankenOrderList = ankenModifyService.insertAnken(ankenTorokuForm, userSession);
 			for (AnkenOrderEntity ankenOrder : ankenOrderList) {
 				ankenNoList.add(ComUtils.formatAnkenNo(ankenOrder.getAnkenNo()));
 			}
-
-//			HashMap<String, List<String>> ankenNoMap = new HashMap<String, List<String>>();
-//			ankenNoMap.put("ankenNoList", ankenNoList);
-//
-//			results.put("result", ankenNoMap);
-//			return new ModelAndView("anken_complete", results);
 		}
 
 		AnkenPicUtils.dealPic(ankenTorokuForm.getPicTmpNm1(), ankenTorokuForm.getAnkenId(), 1,
@@ -340,12 +272,19 @@ public class AnkenController extends BaseController {
 
 		results.put("result", ankenNoMap);
 
+		//	案件が通知対象かどうか調べる
+		for (String ankenNo : ankenNoList) {
+			String ankenId = IdConverter.AnkenNo2Id(ankenNo);
+			if (ankenId != null) {
+				TuchiService.checkMatching(ankenId);
+			}
+		}
+
 		return new ModelAndView("anken_complete", results);
 	}
 
 	@RequestMapping(value = "beforeUpdate", method = RequestMethod.GET)
-	public ModelAndView beforeUpdate(@RequestParam("ankenNo") String ankenNo,
-			@RequestParam("updateDt") String updateDt,
+	public ModelAndView beforeUpdate(@RequestParam("ankenNo") String ankenNo, @RequestParam("updateDt") String updateDt,
 			RedirectAttributes redirectAttributes) {
 
 		ankenNo = ankenNo.replaceAll("-", "");
@@ -357,8 +296,7 @@ public class AnkenController extends BaseController {
 		int count = ankenModifyService.getCountNot10(ankenId, updateDt);
 
 		if (count == 1) {
-			AnkenTorokuForm ankenTorokuForm = ankenModifyService
-					.getAnkenEditable(ankenNo);
+			AnkenTorokuForm ankenTorokuForm = ankenModifyService.getAnkenEditable(ankenNo);
 
 			if (StringUtils.isNotBlank(ankenTorokuForm.getPicNm1())) {
 				String tmpName = new Date().getTime() + "1.jpg";
@@ -379,8 +317,7 @@ public class AnkenController extends BaseController {
 			}
 
 			redirectAttributes.addAttribute("updateFlag", true);
-			redirectAttributes.addFlashAttribute("ankenTorokuForm",
-					ankenTorokuForm);
+			redirectAttributes.addFlashAttribute("ankenTorokuForm", ankenTorokuForm);
 			return new ModelAndView("redirect:createcase");
 		} else {
 			redirectAttributes.addFlashAttribute("showErrorMessFlag", true);
@@ -391,28 +328,27 @@ public class AnkenController extends BaseController {
 	}
 
 	@RequestMapping(value = "ankenback", method = RequestMethod.POST)
-	public ModelAndView back(
-			@ModelAttribute("ankenTorokuForm") AnkenTorokuForm ankenTorokuForm,
-			Boolean updateFlag, RedirectAttributes redirectAttributes) {
+	public ModelAndView back(@ModelAttribute("ankenTorokuForm") AnkenTorokuForm ankenTorokuForm, Boolean updateFlag,
+			RedirectAttributes redirectAttributes) {
 		HashMap<String, Object> results = new HashMap<String, Object>();
-		this.setHeader(new String[] { Constants.NINUSHI_ANKEN_TOROKU_TABTITLE,
-				Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE }, results);
+		this.setHeader(
+				new String[] { Constants.NINUSHI_ANKEN_TOROKU_TABTITLE, Constants.NINUSHI_ANKEN_TOROKU_PAGETITLE },
+				results);
 
 		results.put("updateFlag", updateFlag);
 		results.put("ankenTorokuForm", ankenTorokuForm);
 
-		ankenTorokuForm.setPrefList( Constants.getPrefList());
-		ankenTorokuForm.setNisyuList( Constants.getNisyuList() );
-		ankenTorokuForm.setNisugateList( Constants.getNisutagaeList());
-		ankenTorokuForm.setSyasyuList( Constants.getSyasyuList());
-		ankenTorokuForm.setTruckOpList( Constants.getTruckOpList());
+		ankenTorokuForm.setPrefList(Constants.getPrefList());
+		ankenTorokuForm.setNisyuList(Constants.getNisyuList());
+		ankenTorokuForm.setNisugateList(Constants.getNisutagaeList());
+		ankenTorokuForm.setSyasyuList(Constants.getSyasyuList());
+		ankenTorokuForm.setTruckOpList(Constants.getTruckOpList());
 
 		return new ModelAndView("anken_edit", results);
 	}
 
 	@RequestMapping(value = "ankenUploadPic", method = RequestMethod.POST)
-	public ModelAndView ankenUploadPic(
-			@RequestParam("picFile") MultipartFile file,
+	public ModelAndView ankenUploadPic(@RequestParam("picFile") MultipartFile file,
 			@ModelAttribute("ankenTorokuForm") AnkenTorokuForm ankenTorokuForm,
 			@RequestParam("currPic") String currPic) {
 
@@ -441,8 +377,7 @@ public class AnkenController extends BaseController {
 				}
 
 				String orgName = file.getOriginalFilename();
-				String fileExt = orgName
-						.substring(orgName.lastIndexOf(".") + 1);
+				String fileExt = orgName.substring(orgName.lastIndexOf(".") + 1);
 
 				String[] exts = anken_pic_upload_allowd_ext.split(",");
 
@@ -487,9 +422,8 @@ public class AnkenController extends BaseController {
 	}
 
 	@RequestMapping(value = "ankenTmpPic/{picTmpNm}_{idx}", method = RequestMethod.GET)
-	public ModelAndView getAnkenUploadPicTmp(
-			@PathVariable("picTmpNm") String picTmpNm,
-			@PathVariable("idx") String idx) throws IOException {
+	public ModelAndView getAnkenUploadPicTmp(@PathVariable("picTmpNm") String picTmpNm, @PathVariable("idx") String idx)
+			throws IOException {
 		String tmpFilePath = AnkenPicUtils.getTmpFilePath(picTmpNm);
 		showPic(tmpFilePath);
 
@@ -497,8 +431,8 @@ public class AnkenController extends BaseController {
 	}
 
 	@RequestMapping(value = "ankenPic/{ankenId}_{idx}", method = RequestMethod.GET)
-	public ModelAndView getAnkenPic(@PathVariable("ankenId") String ankenId,
-			@PathVariable("idx") String idx) throws IOException {
+	public ModelAndView getAnkenPic(@PathVariable("ankenId") String ankenId, @PathVariable("idx") String idx)
+			throws IOException {
 		String filePath = AnkenPicUtils.getDestFilePath(ankenId, Integer.parseInt(idx));
 		showPic(filePath);
 
@@ -518,8 +452,7 @@ public class AnkenController extends BaseController {
 			File file = new File(filePath);
 
 			if (!file.exists()) {
-				filePath = request.getServletContext().getRealPath("/")
-						+ "resources" + File.separator + "image"
+				filePath = request.getServletContext().getRealPath("/") + "resources" + File.separator + "image"
 						+ File.separator + "noPicture.jpg";
 			}
 
@@ -559,13 +492,12 @@ public class AnkenController extends BaseController {
 	@RequestMapping(value = "getPostCode", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
 	public ModelAndView getPostCodeInfo() {
 		String postCode = request.getParameter("postCode");
-		PostCodeEntity postCodeEntity = postCodeService
-				.getPostCodeInfo(postCode);
+		PostCodeEntity postCodeEntity = postCodeService.getPostCodeInfo(postCode);
 
 		JSONObject json;
-		synchronized(JSONObject.class){
-			 json = JSONObject.fromObject(postCodeEntity);
-	    }
+		synchronized (JSONObject.class) {
+			json = JSONObject.fromObject(postCodeEntity);
+		}
 
 		String jsonStr = json.toString();
 		response.setCharacterEncoding("utf-8");
@@ -591,6 +523,10 @@ public class AnkenController extends BaseController {
 	@Autowired
 	@Qualifier("ankenDetailService")
 	private AnkenDetailService ankenDetailService;
+
+	@Autowired
+	@Qualifier("tuchiService")
+	private TuchiService TuchiService;
 
 	// @Autowired
 	// @Qualifier("ankenDetailService")
