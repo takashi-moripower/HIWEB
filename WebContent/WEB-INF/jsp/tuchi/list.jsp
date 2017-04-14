@@ -14,16 +14,24 @@
 	</div>
 
 	<div class="container">
-		<h1>通知</h1>
-		<ul>
-			<li><a href="tuchi_add">新規追加</a></li>
-		</ul>
+	<h1>通知</h1>
+		<nav class="navbar ">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<ul class="nav navbar-nav">
+						<li><a class="btn btn-default" href="tuchi_add">新規追加</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
 					<th>Id</th>
 					<th>Title</th>
 					<th>user</th>
+					<th>配信先</th>
 					<th>都道府県</th>
 					<th>開始</th>
 					<th>終了</th>
@@ -35,7 +43,8 @@
 					<tr>
 						<td><c:out value="${item.tuchiId}" /></td>
 						<th><c:out value="${item.title}" /></th>
-						<td><c:out value="${item.userId}" /></td>
+						<td><c:out value="${item.userNm}" /></td>
+						<td><c:out value="${item.email}" /></td>
 						<td><c:out value="${item.prefName}" /></td>
 						<td><c:out value="${item.dateStartText}" /></td>
 						<td><c:out value="${item.dateEndText}" /></td>

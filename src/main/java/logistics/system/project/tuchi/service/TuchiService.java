@@ -11,7 +11,12 @@ public interface TuchiService {
 
 	public void save(TuchiEntity entity);
 
-	public void checkMatching(String ankenId);
+	public void delete(int tuchiId);
 
-	public void delete( int tuchiId );
+	public int checkMatching(String ankenId);
+
+	public int checkAll();
+
+	public void sendMail();
+
 }

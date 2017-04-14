@@ -10,6 +10,7 @@ import logistics.system.project.utility.Constants;
 public class TuchiEntity {
 	protected int tuchiId;
 	protected String userId;
+	protected String email;
 	protected String ninusiCd;
 	protected String prefCd;
 	protected Timestamp dateStart;
@@ -20,6 +21,7 @@ public class TuchiEntity {
 	protected List<String> truckOp;
 	protected List<String> syasyu;
 	protected List<String> city;
+	protected String userNm;
 
 	public TuchiEntity(){
 	}
@@ -46,11 +48,22 @@ public class TuchiEntity {
 		this.userId = userId;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getNinusiCd() {
 		return ninusiCd;
 	}
 
 	public void setNinusiCd(String ninusiCd) {
+		if( ninusiCd == null || ninusiCd.isEmpty() ){
+			ninusiCd = null;
+		}
 		this.ninusiCd = ninusiCd;
 	}
 
@@ -147,9 +160,11 @@ public class TuchiEntity {
 		this.city = city;
 	}
 
-	public String getText(){
-		String a = "aaaAAAaaa";
+	public String getUserNm() {
+		return userNm;
+	}
 
-		return a;
+	public void setUserNm(String userNm) {
+		this.userNm = userNm;
 	}
 }

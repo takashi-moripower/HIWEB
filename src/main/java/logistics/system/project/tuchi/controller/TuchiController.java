@@ -3,7 +3,9 @@ package logistics.system.project.tuchi.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import logistics.system.project.tuchi.dao.TuchiDao;
 import logistics.system.project.tuchi.form.TuchiEditForm;
 import logistics.system.project.tuchi.service.TuchiService;
 import logistics.system.project.utility.Constants;
-import logistics.system.project.utility.IdConverter;
 
 @Controller
 public class TuchiController extends BaseController {
@@ -40,12 +41,16 @@ public class TuchiController extends BaseController {
 
 		clearResults();
 
-		List<TuchiEntity> l = tuchiService.getTuchiByUser(null);
+		String userId;
+		if (userSession.getGyomuSb().equals(Constants.GYOMU_SB_TRAIL)) {
+			userId = null;
+		} else {
+			userId = userSession.getUserId();
+		}
+
+		List<TuchiEntity> l = tuchiService.getTuchiByUser(userId);
 
 		results.put("list", l);
-
-		results.put("prefList", Constants.getPrefList());
-
 
 		return new ModelAndView("tuchi/list", results);
 	}
@@ -67,38 +72,41 @@ public class TuchiController extends BaseController {
 
 		TuchiEntity e = tuchiService.getTuchiById(Integer.parseInt(id), true);
 
-
 		return editMain(e);
 	}
 
-	protected ModelAndView editMain(TuchiEntity e){
+	protected ModelAndView editMain(TuchiEntity e) {
 		clearResults();
 
 		TuchiEditForm form = new TuchiEditForm();
-		form.initForm( e );
+		form.initForm(e);
 
-		results.put("form",form );
+		results.put("form", form);
 
 		MemberListParameter params = new MemberListParameter();
-		params.setGyomuSb( Constants.GYOMU_SB_NINUSHI);
+		params.setGyomuSb(Constants.GYOMU_SB_NINUSHI);
 		results.put("ninushiList", memberListSearchService.getMemberList(params));
 
 		return new ModelAndView("tuchi/edit", results);
 	}
 
 	@RequestMapping(value = "tuchi_edit", method = RequestMethod.POST)
-	public ModelAndView editPost(@Valid @ModelAttribute("tuchiEditForm") TuchiEditForm form , BindingResult result) {
+	public ModelAndView editPost(@Valid @ModelAttribute("tuchiEditForm") TuchiEditForm form, BindingResult result) {
 		clearResults();
 
-		if( result.hasErrors() ){
+		if (result.hasErrors()) {
 
 			List<String> errors = new ArrayList<>();
 
-			for( ObjectError e : result.getAllErrors() ){
+			for (ObjectError e : result.getAllErrors()) {
 				errors.add(e.getDefaultMessage());
 			}
-			results.put("form",form );
-			results.put("errors",errors );
+			results.put("form", form);
+			results.put("errors", errors);
+
+			MemberListParameter params = new MemberListParameter();
+			params.setGyomuSb(Constants.GYOMU_SB_NINUSHI);
+			results.put("ninushiList", memberListSearchService.getMemberList(params));
 
 			return new ModelAndView("tuchi/edit", results);
 		}
@@ -109,9 +117,7 @@ public class TuchiController extends BaseController {
 		tuchiService.save(e);
 
 		return new ModelAndView("redirect:tuchi_list");
-
 	}
-
 
 	@RequestMapping(value = "tuchi_delete", method = RequestMethod.GET)
 	public String delete() {
@@ -122,21 +128,41 @@ public class TuchiController extends BaseController {
 		return "redirect:tuchi_list";
 	}
 
-
-	@RequestMapping(value = "tuchi_debug")
-	public ModelAndView debug() {
+	@RequestMapping(value = "tuchi_debug_search")
+	public ModelAndView debug_tuchi_search() {
 		clearResults();
 
-		String ankenNo = "S00901-1703310011-01";
+		int checked = tuchiService.checkAll();
 
-		String ankenId = IdConverter.AnkenNo2Id(ankenNo);
-
-		tuchiService.checkMatching(ankenId);
-
-		results.put("data", ankenId);
+		results.put("data", checked);
 
 		return new ModelAndView("tuchi/debug", results);
 	}
+
+	@RequestMapping(value = "tuchi_debug_send")
+	public ModelAndView debugSendMail() {
+		clearResults();
+
+		tuchiService.sendMail();
+
+		return new ModelAndView("tuchi/debug", results);
+	}
+
+	@RequestMapping(value = "tuchi_debug")
+	public ModelAndView debug(HttpServletRequest request) {
+		clearResults();
+		String baseUrl = String.format("%s://%s:%d%s/", request.getScheme(), request.getServerName(),
+				request.getServerPort(), request.getContextPath());
+
+		return new ModelAndView("tuchi/debug", results);
+	}
+
+
+
+	@Autowired
+	@Qualifier("testProperties")
+    private Properties prop;
+
 
 	@Autowired
 	@Qualifier("tuchiService")

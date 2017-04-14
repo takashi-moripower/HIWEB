@@ -13,6 +13,9 @@ public class TuchiEditForm {
 	@Valid
 	int tuchiId;
 	String userId;
+	@NotEmpty(field = "配信先", message = "{field.not.empty}")
+	String email;
+	String ninusiCd;
 	@NotEmpty(field = "タイトル", message = "{field.not.empty}")
 	String title;
 	@NotEmpty(field = "開始日時", message = "{field.not.empty}")
@@ -38,6 +41,22 @@ public class TuchiEditForm {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNinusiCd() {
+		return ninusiCd;
+	}
+
+	public void setNinusiCd(String ninusiCd) {
+		this.ninusiCd = ninusiCd;
 	}
 
 	public String getTitle() {
@@ -115,6 +134,8 @@ public class TuchiEditForm {
 	public void initForm(TuchiEntity entity) {
 		setTuchiId(entity.getTuchiId());
 		setUserId(entity.getUserId());
+		setEmail(entity.getEmail());
+		setNinusiCd( entity.getNinusiCd() );
 		setCity(entity.getCity());
 		setTitle(entity.getTitle());
 		setPrefCd(entity.getPrefCd());
@@ -129,6 +150,8 @@ public class TuchiEditForm {
 	public void updateEntity(TuchiEntity entity) {
 		entity.setTuchiId(getTuchiId());
 		entity.setUserId(getUserId());
+		entity.setEmail(getEmail());
+		entity.setNinusiCd(getNinusiCd());
 		entity.setTitle(getTitle());
 		entity.setPrefCd(getPrefCd());
 		entity.setDateStart(s2t(getDateStart()));
@@ -137,9 +160,5 @@ public class TuchiEditForm {
 		entity.setSyasyu(getSyasyu());
 		entity.setCity(getCity());
 		return;
-	}
-
-	public String getText(){
-		return "123";
 	}
 }

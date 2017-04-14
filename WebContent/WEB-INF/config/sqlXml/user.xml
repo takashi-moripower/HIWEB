@@ -155,6 +155,15 @@
 		]]>
 	</select>
 
+	<select id="getUserNmById" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT
+			USER_NM
+		FROM
+			M_USER
+		WHERE
+			USER_ID = #value#
+	</select>
+
 	<update id="updateUser" parameterClass="logistics.system.project.common.Entity.UserEntity">
 		UPDATE
 		M_USER

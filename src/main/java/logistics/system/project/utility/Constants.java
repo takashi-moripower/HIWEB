@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import logistics.system.project.common.Entity.CityEntity;
 import logistics.system.project.common.Entity.NisugateEntity;
 import logistics.system.project.common.Entity.NisyuEntity;
@@ -13,10 +16,9 @@ import logistics.system.project.common.Entity.TruckOpEntity;
 import logistics.system.project.common.service.AnkenListSearchService;
 import logistics.system.project.common.service.ShukaAreaService;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
 public class Constants {
+
+
 	public static final String TAB_TITLE = "tabtitle";
 
 	public static final String PAGE_TITLE = "pageTitle";
@@ -160,11 +162,15 @@ public class Constants {
 	public static final int MAX_MAIL_SEND_KS = 3;
 
 	// 0:送信待ち
-	public static final String MAIL_SEND_SATUS_0 = "0";
+	public static final String MAIL_SEND_STATUS_WAITING = "0";
 	// 1:送信済み
-	public static final String MAIL_SEND_SATUS_1 = "1";
+	public static final String MAIL_SEND_STATUS_SEND = "1";
 	// 9:送信エラー
-	public static final String MAIL_SEND_SATUS_9 = "9";
+	public static final String MAIL_SEND_STATUS_ERROR = "9";
+
+	public static final int MAIL_SEND_MODE_NOFILTER = 0;
+
+	public static final int MAIL_SEND_MODE_FILTER = 1;
 
 	public static final String TEPLATE_WAYBILL = "waybill.html";
 
@@ -192,13 +198,22 @@ public class Constants {
 //	public static final String TEPLATE_SEIKYU_ANKEN_LIST = "seikyuAnkenList.xml";
 	public static final String TEPLATE_SEIKYU_ANKEN_LIST = "logistics/system/project/flt/SeikyuTemplate.xls";
 
+	public static final int MAX_TUCHI_MAIL = 25;
+
+	public static final int TUCHI_QUEUE_STATE_FILTERED = -1;
+	public static final int TUCHI_QUEUE_STATE_UNSEND = 0;
+	public static final int TUCHI_QUEUE_STATE_FAILED01 = 1;
+	public static final int TUCHI_QUEUE_STATE_FAILED02 = 2;
+
+	public static final String TUCHI_EMAIL_SUBJECT = "新規案件が登録されました";
+
 
 	public static String getPrefName( String prefCd ){
-		if( prefCd == null || prefCd.equals("")){
+		if( prefCd == null || prefCd.equals("") || prefCd.equals("00")){
 			return "全国";
 		}
 
-		for(PrefEntity item: MAST_PREF_LIST){
+		for(PrefEntity item: getPrefList()){
 			if(item.getPrefCd().equals(prefCd)){
 				return item.getPrefName();
 			}

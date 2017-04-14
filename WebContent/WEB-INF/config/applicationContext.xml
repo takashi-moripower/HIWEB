@@ -20,6 +20,14 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="testProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:test.properties</value>
+			</list>
+		</property>
+	</bean>
 
 
 	<bean
@@ -60,6 +68,8 @@
 	<context:component-scan base-package="logistics.system.project.tuchi.service*" />
 
 	<context:component-scan base-package="logistics.system.project.tuchi.dao*" />
+
+	<context:component-scan base-package="logistics.system.project.tuchi.component*" />
 
 	<bean
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"

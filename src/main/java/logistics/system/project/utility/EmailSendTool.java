@@ -38,14 +38,18 @@ public class EmailSendTool {
 
 	private String personalName = "";
 
+	private String contextFormat = CONTEXT_FORMAT_PLAIN;
+
+	public static final String CONTEXT_FORMAT_PLAIN = "text/plain;charset=UTF-8";
+	public static final String CONTEXT_FORMAT_HTML = "text/html;charset=UTF-8";
+
 	public EmailSendTool() {
 	}
 
-	public EmailSendTool(String host, String port, String username, String password, String mailFrom,
-			String mailTo, String subject, String text, String personalName,
-			String headName, String headValue) {
+	public EmailSendTool(String host, String port, String username, String password, String mailFrom, String mailTo,
+			String subject, String text, String personalName, String headName, String headValue) {
 		this.host = host;
-		this.port =  port;
+		this.port = port;
 		this.username = username;
 		this.mailFrom = mailFrom;
 		this.password = password;
@@ -63,10 +67,14 @@ public class EmailSendTool {
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", port);
 		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.localhost", "localhost");
 		Session session = Session.getDefaultInstance(props, auth);
 		MimeMessage message = new MimeMessage(session);
-		message.setSubject(mailSubject);
-		message.setText(mailBody);
+//		message.setSubject(mailSubject);
+		message.setSubject(mailSubject,"UTF-8");
+
+//		message.setText(mailBody);
+		message.setContent(mailBody, contextFormat );
 		message.setHeader(mailHeadName, mailHeadValue);
 
 		message.setSentDate(new Date());
@@ -172,6 +180,7 @@ public class EmailSendTool {
 	public void setPersonalName(String personalName) {
 		this.personalName = personalName;
 	}
+
 	public String getPort() {
 		return port;
 	}
@@ -179,4 +188,14 @@ public class EmailSendTool {
 	public void setPort(String port) {
 		this.port = port;
 	}
+
+	public String getContextFormat() {
+		return contextFormat;
+	}
+
+	public void setContextFormat(String contextFormat) {
+		this.contextFormat = contextFormat;
+	}
+
+
 }

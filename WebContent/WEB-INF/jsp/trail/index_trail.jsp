@@ -10,16 +10,25 @@
 </head>
 <body>
 	<div class="container">
-		<ul>
-			<li><a href="tuchi_debug">debug</a></li>
-			<li><a href="tuchi_list">list</a></li>
-			<li><a href="tuchi_add">add</a></li>
-			<li><a href="tuchi_edit?tuchiId=4">edit</a></li>
-		</ul>
-	</div>
-
-	<div class="container">
 		<%@ include file="../common/nav.jsp"%>
+		<nav class="navbar ">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<ul class="nav navbar-nav">
+						<li><a class="btn btn-default"
+							href="<c:url value="/tuchi_debug"/>">debug</a></li>
+					</ul>
+					<ul class="nav navbar-nav">
+						<li><a class="btn btn-default"
+							href="<c:url value="/tuchi_debug_search"/>">search</a></li>
+					</ul>
+					<ul class="nav navbar-nav">
+						<li><a class="btn btn-default"
+							href="<c:url value="/tuchi_debug_send"/>">send mail</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
 
 		<form:form class="form-horizontal">
 			<fieldset>
@@ -40,6 +49,27 @@
 								<a class="btn btn-info btn-lg"
 									href="<c:url value="/initAnkenSearch?prePage=index"></c:url>"
 									style="margin-top: 20px; padding: 15px;">詳細検索</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">案件通知</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-group form-inline">
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<%-- <a class="btn btn-info btn-lg"  href="<c:url value="trail/anken/toroku"></c:url>" style="margin-top:20px;padding:15px;">新規案件登録</a> --%>
+								<a class="btn btn-info btn-lg" href="tuchi_list"
+									style="margin-top: 20px; padding: 15px;">通知条件一覧</a>
+							</div>
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<a class="btn btn-info btn-lg"
+									href="<c:url value="/tuchi_add"></c:url>"
+									style="margin-top: 20px; padding: 15px;">新規作成</a>
 							</div>
 						</div>
 					</div>

@@ -58,14 +58,21 @@
 						<td><input type="text" name="title" value="${form.title}" /></td>
 					</tr>
 					<tr>
+						<th>送信先Email</th>
+						<td><input type="email" name="email"
+							value="${form.email}" /></td>
+					</tr>
+					<tr>
 						<th>荷主</th>
 						<td>
-							<select name="companyCd">
+							<select name="ninusiCd">
 								<option value="">
 								指定なし
 								</option>
-								<% for(MemberEntity m : ninushiList){ %>
-								<option value="<%= m.getCompanyCd() %>">
+								<% for(MemberEntity m : ninushiList){
+									String sel = (m.getCompanyCd().equals(form.getNinusiCd())) ? "selected" : "";
+								%>
+								<option value="<%= m.getCompanyCd() %>" <%=sel%>>
 									<%= m.getCompanyNm() %>
 								</option>
 								<% } %>
@@ -124,12 +131,12 @@
 						}
 					%>
 					<tr>
-						<th>開始日</th>
+						<th>受注期限・開始</th>
 						<td><input type="date" name="dateStart"
 							value="${form.dateStart}" /></td>
 					</tr>
 					<tr>
-						<th>終了日</th>
+						<th>受注期限・終了</th>
 						<td><input type="date" name="dateEnd"
 							value="${form.dateEnd}" /></td>
 					</tr>

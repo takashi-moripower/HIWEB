@@ -8,6 +8,8 @@
 		class="logistics.system.project.tuchi.Entity.TuchiEntity">
 		<result column="TUCHI_ID" jdbcType="INTEGER" property="tuchiId" />
 		<result column="USER_ID" jdbcType="CHAR" property="userId" />
+		<result column="EMAIL" jdbcType="CHAR" property="email" />
+		<result column="USER_NM" jdbcType="CHAR" property="userNm" />
 		<result column="NINUSI_CD" jdbcType="CHAR" property="ninusiCd" />
 		<result column="PREF_CD" jdbcType="CHAR" property="prefCd" />
 		<result column="DATE_START" jdbcType="TIMESTAMP" property="dateStart" />
@@ -17,61 +19,153 @@
 		<result column="MAIL_COUNT_DAY" jdbcType="INTEGER" property="mailCountDay" />
 	</resultMap>
 
-	<sql id="Base_Column_List">
-		TUCHI_ID,
-		USER_ID,
-		NINUSI_CD,
-		PREF_CD,
-		DATE_START,
-		DATE_END,
-		TITLE,
-		MAIL_COUNT,
-		MAIL_COUNT_DAY
+	<sql id="TuchiSelectDefault">
+		SELECT
+			TUCHI_ID,
+			T_TUCHI.USER_ID as USER_ID,
+			T_TUCHI.EMAIL as EMAIL,
+			M_USER.USER_NM as USER_NM,
+			NINUSI_CD,
+			PREF_CD,
+			DATE_START,
+			DATE_END,
+			TITLE,
+			MAIL_COUNT,
+			MAIL_COUNT_DAY
+		FROM T_TUCHI
+		JOIN M_USER ON M_USER.USER_ID = T_TUCHI.USER_ID
 	</sql>
 
 	<select id="getTuchiByCd" parameterClass="java.lang.Integer"
 		resultMap="tuchiResult">
-		select
-		<include refid="Base_Column_List" />
-		from t_tuchi
+		<include refid="TuchiSelectDefault" />
 		where TUCHI_ID = #value#
 	</select>
 
 	<select id="getTuchiByUser" parameterClass="java.lang.String"
 		resultMap="tuchiResult">
-		select
-		<include refid="Base_Column_List" />
-		from t_tuchi
+		<include refid="TuchiSelectDefault" />
 		<dynamic>
 			<isNotEmpty>
-				where USER_ID = #value#
+				WHERE T_TUCHI.USER_ID = #value#
 			</isNotEmpty>
 		</dynamic>
 	</select>
+
 	<select id="getNextTuchiId" resultClass="java.lang.Integer">
 		SELECT
 			MAX(TUCHI_ID) + 1
 		FROM T_TUCHI
 	</select>
-	<select id="getTruckOpByTuchiCd" parameterClass="java.lang.Integer" resultClass="java.lang.String">
-		SELECT
-			OP_CD
-		FROM T_TRUCK_OP_TUCHI
-		WHERE TUCHI_ID = #value#
-	</select>
+
 	<select id="getMatchTuchi" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		<![CDATA[
+SELECT
+	T_TUCHI.TUCHI_ID
+FROM T_TUCHI
+	JOIN T_ANKEN ON T_ANKEN.ANKEN_ID = #value#
+	JOIN T_SYUKA ON T_SYUKA.ANKEN_ID = #value#
+	LEFT OUTER JOIN M_PREF ON M_PREF.PREF_CD = T_TUCHI.PREF_CD
+WHERE
+    STR_TO_DATE( T_ANKEN.JUTU_KG , '%Y%m%d') > T_TUCHI.DATE_START AND
+    STR_TO_DATE( T_ANKEN.JUTU_KG , '%Y%m%d') < T_TUCHI.DATE_END AND
+    (
+    	T_TUCHI.PREF_CD = "00" OR
+    	(
+    		M_PREF.PREF_NM = T_SYUKA.PREF_NM AND
+    		(
+    		NOT EXISTS ( SELECT * FROM T_CITY_TUCHI WHERE T_CITY_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
+	    		EXISTS (
+					SELECT *
+					FROM T_CITY_TUCHI
+					JOIN  M_CITY ON M_CITY.CITY_CD = T_CITY_TUCHI.CITY_CD
+	    			WHERE T_CITY_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID AND
+	    			T_SYUKA.CITY_NM LIKE CONCAT( M_CITY.CITY_NM , "%")
+    			)
+    		)
+    	)
+   	) AND
+   	(
+   		NOT EXISTS ( SELECT * FROM T_SYASYU_TUCHI WHERE T_SYASYU_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
+   		EXISTS (
+   			SELECT *
+   			FROM T_SYASYU_TUCHI
+   			JOIN T_TRUCK ON T_TRUCK.SYASYU_CD = T_SYASYU_TUCHI.SYASYU_CD
+   			WHERE T_SYASYU_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID AND T_TRUCK.ANKEN_ID = T_SYUKA.ANKEN_ID
+   		)
+   	) AND
+   	(
+   		NOT EXISTS ( SELECT * FROM T_TRUCK_OP_TUCHI WHERE T_TRUCK_OP_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
+   		EXISTS (
+   			SELECT *
+   			FROM T_TRUCK_OP_TUCHI
+   			JOIN T_TRUCK ON T_TRUCK.OP_LIST LIKE CONCAT("%",T_TRUCK_OP_TUCHI.OP_CD,"%" )
+   			WHERE T_TRUCK_OP_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID
+   				AND T_TRUCK.ANKEN_ID = T_SYUKA.ANKEN_ID
+   		)
+   	)
+   	ORDER BY T_SYUKA.SYUKA_DAY ASC
+       	]]>
+	</select>
+	<select id="debugSelect" resultClass="java.lang.String" parameterClass="java.lang.String">
+		$value$
+	</select>
+
+	<select id="getTuchiDestEmails" resultClass="java.lang.String" parameterClass="java.lang.Integer">
 		SELECT
-			T_TUCHI.TUCHI_ID
-		FROM T_TUCHI
-		JOIN T_SYUKA ON T_SYUKA.ANKEN_ID = #value#
-		LEFT OUTER JOIN M_PREF ON M_PREF.PREF_CD = T_TUCHI.PREF_CD
+			T_TUCHI.EMAIL
+		FROM
+			T_TUCHI_QUEUE
+		JOIN
+			T_TUCHI ON T_TUCHI_QUEUE.TUCHI_ID = T_TUCHI.TUCHI_ID
+		GROUP BY
+			T_TUCHI.EMAIL
+		LIMIT
+			#value#
+	</select>
+
+	<select id="getTuchiQueueByEmail" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		<![CDATA[
+		SELECT
+			T_TUCHI_QUEUE.*
+		FROM
+			T_TUCHI_QUEUE
+		JOIN
+			T_TUCHI ON T_TUCHI_QUEUE.TUCHI_ID = T_TUCHI.TUCHI_ID
+		JOIN
+			T_ANKEN ON T_TUCHI_QUEUE.ANKEN_ID = T_ANKEN.ANKEN_ID
 		WHERE
-	        T_SYUKA.SYUKA_DAY &gt; T_TUCHI.DATE_START AND
-            T_SYUKA.SYUKA_DAY &lt; T_TUCHI.DATE_END AND
-            (
-            	T_TUCHI.PREF_CD = "00" OR
-            	M_PREF.PREF_NM = T_SYUKA.PREF_NM
-           	)
+			T_TUCHI.EMAIL = #value# AND
+			T_TUCHI_QUEUE.STATUS <> -1
+		GROUP BY
+			T_TUCHI_QUEUE.ANKEN_ID
+		ORDER BY
+			T_ANKEN.JUTU_KG
+       	]]>
+	</select>
+
+	<select id="getAnkenForTuchi" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		SELECT
+			T_ANKEN.JUTU_KG AS JUTU_KG,
+			T_SYUKA.SYUKA_DAY AS DAY_FROM,
+			T_SYUKA.PREF_NM AS PREF_FROM,
+			T_SYUKA.CITY_NM AS CITY_FROM,
+			T_NOHIN.NOHIN_DAY AS DAY_TO,
+			T_NOHIN.PREF_NM AS PREF_TO,
+			T_NOHIN.CITY_NM AS CITY_TO,
+			(SELECT COUNT(*) FROM T_SYUKA AS CS WHERE CS.ANKEN_ID = T_ANKEN.ANKEN_ID) AS COUNT_FROM,
+			(SELECT COUNT(*) FROM T_NOHIN AS CN WHERE CN.ANKEN_ID = T_ANKEN.ANKEN_ID) AS COUNT_TO
+		FROM
+			T_ANKEN
+		JOIN
+			T_SYUKA ON T_SYUKA.ANKEN_ID = T_ANKEN.ANKEN_ID
+		JOIN
+			T_NOHIN ON T_NOHIN.ANKEN_ID = T_ANKEN.ANKEN_ID
+		WHERE
+			T_ANKEN.ANKEN_ID = #ankenId#
+		ORDER BY
+			T_NOHIN.NOHIN_DAY ASC, T_NOHIN.NOHIN_TIME ASC , T_SYUKA.SYUKA_DAY ASC , T_SYUKA.SYUKA_TIME ASC
+		LIMIT 1
 	</select>
 
 	<update id="updateTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
@@ -79,37 +173,85 @@
 		T_TUCHI
 		SET
 			TITLE =	#title#,
+			NINUSI_CD = #ninusiCd#,
+			EMAIL = #email#,
 			PREF_CD = #prefCd#,
 			DATE_START = #dateStart#,
 			DATE_END = #dateEnd#
 		WHERE TUCHI_ID = #tuchiId#
 		AND USER_ID = #userId#
 	</update>
+
+	<update id="tuchiIncreaseCount" parameterClass="java.lang.Integer">
+		UPDATE
+			T_TUCHI
+		SET
+			MAIL_COUNT = MAIL_COUNT+1,
+			MAIL_COUNT_DAY = MAIL_COUNT_DAY+1
+		WHERE
+			TUCHI_ID = #value#
+	</update>
+	<update id="setQueueStatus" parameterClass="java.util.Map">
+		UPDATE
+			T_TUCHI_QUEUE
+		SET
+			STATUS = #status#
+		WHERE
+			ID = #id#
+	</update>
+
 	<insert id="insertTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
-			INSERT
-			INTO T_TUCHI (
-				TUCHI_ID,
-				USER_ID,
-				TITLE,
-				PREF_CD,
-				DATE_START,
-				DATE_END
-			)
-			VALUES(
-				#tuchiId#,
-				#userId#,
-				#title#,
-				#prefCd#,
-				#dateStart#,
-				#dateEnd#
-			)
+		INSERT
+		INTO T_TUCHI (
+			TUCHI_ID,
+			USER_ID,
+			EMAIL,
+			NINUSI_CD,
+			TITLE,
+			PREF_CD,
+			DATE_START,
+			DATE_END
+		)
+		VALUES(
+			#tuchiId#,
+			#userId#,
+			#email#,
+			#ninusiCd#,
+			#title#,
+			#prefCd#,
+			#dateStart#,
+			#dateEnd#
+		)
+	</insert>
+	<insert id="addTuchiQueue" parameterClass="java.util.Map">
+
+   	INSERT
+		INTO T_TUCHI_QUEUE( ANKEN_ID , TUCHI_ID )
+		SELECT * FROM (SELECT #ankenId#,#tuchiId#) as buffer
+		WHERE NOT EXISTS (
+			SELECT *
+				FROM T_TUCHI_QUEUE
+				JOIN T_TUCHI ON T_TUCHI.TUCHI_ID = T_TUCHI_QUEUE.TUCHI_ID
+			WHERE
+				ANKEN_ID = #ankenId# AND
+				T_TUCHI.EMAIL = ( SELECT EMAIL FROM T_TUCHI WHERE TUCHI_ID = #tuchiId# )
+		) LIMIT 1
 	</insert>
 
     <delete id="deleteTuchi" parameterClass="java.lang.Integer">
     	DELETE
-      	FROM
-      	T_TUCHI
-       	WHERE TUCHI_ID = #value#
+      		FROM T_TUCHI
+       	WHERE
+       		TUCHI_ID = #value#
+    </delete>
+
+    <delete id="removeTuchiQueue" parameterClass="java.lang.Integer">
+		DELETE
+			T_TUCHI_QUEUE
+		FROM
+			T_TUCHI_QUEUE
+		WHERE
+			T_TUCHI_QUEUE.ID = #value#
     </delete>
 
 

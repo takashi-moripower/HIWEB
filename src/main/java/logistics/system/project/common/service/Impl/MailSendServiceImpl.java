@@ -119,11 +119,11 @@ public class MailSendServiceImpl implements MailSendService {
 			if ("0".equals(mailSendMode) || mailSendEntity.getMailSendTo().indexOf(mailSendFilter) >= 0) {
 				sendEmail.send();
 			}
-			mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_SATUS_1);
+			mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_STATUS_SEND);
 			updateMailSendStatusAndKs(mailSendEntity);
 		} catch (Exception ex) {
 			if (mailSendEntity.getMailSendKs() >= Constants.MAX_MAIL_SEND_KS) {
-				mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_SATUS_9);
+				mailSendEntity.setMailSendStatus(Constants.MAIL_SEND_STATUS_ERROR);
 				updateMailSendStatusAndKs(mailSendEntity);
 			} else {
 				updateMailSendKs(mailSendEntity);

@@ -1,5 +1,6 @@
 package logistics.system.project.tuchi.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -49,12 +50,69 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	}
 
 	@Override
-	public void delete( int tuchiId ){
-		getSqlMapClientTemplate().delete("deleteTuchi", tuchiId );
+	public void delete(int tuchiId) {
+		getSqlMapClientTemplate().delete("deleteTuchi", tuchiId);
 	}
 
 	@Override
-	public List<Integer> getMatchTuchi( String ankenId ){
+	public List<Integer> getMatchTuchi(String ankenId) {
 		return getSqlMapClientTemplate().queryForList("getMatchTuchi", ankenId);
 	}
+
+	@Override
+	public int addQueue(List<Integer> tuchiIds, String ankenId) {
+		int count = 0;
+		for (Integer tuchiId : tuchiIds) {
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("tuchiId", tuchiId);
+			param.put("ankenId", ankenId);
+
+			getSqlMapClientTemplate().insert("addTuchiQueue", param);
+			count++;
+		}
+		return count;
+	}
+
+	@Override
+	public void removeQueue(int QueueId) {
+		getSqlMapClientTemplate().delete("removeTuchiQueue", QueueId);
+	}
+
+	@Override
+	public List<String> getDestEmails(int limit) {
+		return getSqlMapClientTemplate().queryForList("getTuchiDestEmails", limit);
+	}
+
+	@Override
+	public void increaseCount(List<Integer> tuchiIds) {
+		for (Integer tuchiId : tuchiIds) {
+			getSqlMapClientTemplate().update("tuchiIncreaseCount", tuchiId);
+		}
+	}
+
+	@Override
+	public void setQueueStatus(int id, int status) {
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("id", id);
+		param.put("status", status);
+		getSqlMapClientTemplate().update("setQueueStatus", param);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> getQueues(String email) {
+		return getSqlMapClientTemplate().queryForList("getTuchiQueueByEmail", email);
+	}
+
+	@Override
+	public HashMap<String,Object> getAnkenForTuchi( String ankenId ){
+		return (HashMap<String,Object>)getSqlMapClientTemplate().queryForObject("getAnkenForTuchi",ankenId);
+	}
+
+
+	@Override
+	public List<String> debug(String sql) {
+		return getSqlMapClientTemplate().queryForList("debugSelect", sql);
+	}
+
+
 }
