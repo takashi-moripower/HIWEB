@@ -3,13 +3,13 @@ package logistics.system.project.tuchi.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -22,6 +22,8 @@ import logistics.system.project.base.controller.BaseController;
 import logistics.system.project.common.parameterClass.MemberListParameter;
 import logistics.system.project.common.service.MemberListSearchService;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
+import logistics.system.project.tuchi.component.DynamicPropertyComponent;
+import logistics.system.project.tuchi.component.MailSendComponent;
 import logistics.system.project.tuchi.dao.TuchiDao;
 import logistics.system.project.tuchi.form.TuchiEditForm;
 import logistics.system.project.tuchi.service.TuchiService;
@@ -151,18 +153,38 @@ public class TuchiController extends BaseController {
 	@RequestMapping(value = "tuchi_debug")
 	public ModelAndView debug(HttpServletRequest request) {
 		clearResults();
-		String baseUrl = String.format("%s://%s:%d%s/", request.getScheme(), request.getServerName(),
-				request.getServerPort(), request.getContextPath());
+
+
+		results.put("data", baseUrl);
+		return new ModelAndView("tuchi/debug", results);
+	}
+
+	@RequestMapping( value="tuchi_init_base_url")
+	public ModelAndView initBaseUrl(HttpServletRequest request){
+
+		String baseUrl = mailSendComponent.getBaseUrl(request);
+		dynamicPropertyComponent.init(request);
+		dynamicPropertyComponent.setProperty("base_url", baseUrl);
+		dynamicPropertyComponent.store("");
+
+		results.put("data", baseUrl);
+
 
 		return new ModelAndView("tuchi/debug", results);
 	}
 
-
+	@Value("#{dynamicProperties['test_url']}")
+	private String testUrl;
+	@Value("#{dynamicProperties['base_url']}")
+	private String baseUrl;
 
 	@Autowired
-	@Qualifier("testProperties")
-    private Properties prop;
+	@Qualifier("mailSendComponent")
+	private MailSendComponent mailSendComponent;
 
+	@Autowired
+	@Qualifier("dynamicPropertyComponent")
+	private DynamicPropertyComponent dynamicPropertyComponent;
 
 	@Autowired
 	@Qualifier("tuchiService")

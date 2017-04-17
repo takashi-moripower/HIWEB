@@ -19,6 +19,8 @@ import logistics.system.project.utility.Constants;
 
 @Service("tuchiService")
 public class TuchiServiceImpl implements TuchiService {
+	@Value("#{dynamicProperties['base_url']}")
+	private String baseUrl;
 
 	@Autowired
 	@Qualifier("tuchiDao")
@@ -47,9 +49,6 @@ public class TuchiServiceImpl implements TuchiService {
 	@Autowired
 	@Qualifier("mailSendComponent")
 	private MailSendComponent mailSendComponent;
-
-	@Value("#{configProperties['mail.link.base.url']}")
-	private String baseUrl;
 
 	@Override
 	public TuchiEntity getTuchiById(int tuchiId, boolean link) {
@@ -181,6 +180,9 @@ public class TuchiServiceImpl implements TuchiService {
 		}else{
 			result += String.format("<td>%s %s</td>", data.get("PREF_TO"), data.get("CITY_TO") );
 		}
+
+		String $url = this.baseUrl + "initAnkenDetail?ankenNo="+ankenId + "101";
+		result += String.format("<td><a href='%s'>link</a></td>", $url);
 
 		result = "<tr>" + result + "</tr>";
 
