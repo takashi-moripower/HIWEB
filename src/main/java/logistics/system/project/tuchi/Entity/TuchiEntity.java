@@ -1,7 +1,5 @@
 package logistics.system.project.tuchi.Entity;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,14 +10,14 @@ public class TuchiEntity {
 	protected String userId;
 	protected String email;
 	protected String ninusiCd;
-	protected String prefCd;
-	protected Timestamp dateStart;
-	protected Timestamp dateEnd;
+	protected String dateStart;
+	protected String dateEnd;
 	protected String title;
 	protected int mailCount;
 	protected int mailCountDay;
 	protected List<String> truckOp;
 	protected List<String> syasyu;
+	protected List<String> pref;
 	protected List<String> city;
 	protected String userNm;
 
@@ -67,27 +65,19 @@ public class TuchiEntity {
 		this.ninusiCd = ninusiCd;
 	}
 
-	public String getPrefCd() {
-		return prefCd;
-	}
-
-	public void setPrefCd(String prefCd) {
-		this.prefCd = prefCd;
-	}
-
-	public Timestamp getDateStart() {
+	public String getDateStart() {
 		return dateStart;
 	}
 
-	public void setDateStart(Timestamp dateStart) {
+	public void setDateStart(String dateStart) {
 		this.dateStart = dateStart;
 	}
 
-	public Timestamp getDateEnd() {
+	public String getDateEnd() {
 		return dateEnd;
 	}
 
-	public void setDateEnd(Timestamp dateEnd) {
+	public void setDateEnd(String dateEnd) {
 		this.dateEnd = dateEnd;
 	}
 
@@ -116,7 +106,15 @@ public class TuchiEntity {
 	}
 
 	public String getPrefName(){
-		return Constants.getPrefName(prefCd);
+		if( pref==null || pref.size() == 0 ){
+			return "全国";
+		}
+
+		String result = "";
+		for(String prefCd : pref){
+			result += Constants.getPrefName(prefCd) + " ";
+		}
+		return result;
 	}
 
 	public String getDateStartText() {
@@ -127,13 +125,11 @@ public class TuchiEntity {
 		return d2s(dateEnd);
 	}
 
-	static public final String DATE_PATTERN = "yyyy-MM-dd";
-
-	static public String d2s(java.util.Date date) {
+	static public String d2s(String date) {
 		if (date == null) {
 			return null;
 		}
-		return (new SimpleDateFormat(DATE_PATTERN)).format(date);
+		return date;
 	}
 
 	public List<String> getTruckOp() {
@@ -152,6 +148,13 @@ public class TuchiEntity {
 		this.syasyu = syasyu;
 	}
 
+	public List<String> getPref() {
+		return pref;
+	}
+
+	public void setPref(List<String> pref) {
+		this.pref = pref;
+	}
 	public List<String> getCity() {
 		return city;
 	}

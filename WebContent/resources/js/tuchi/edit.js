@@ -3,9 +3,14 @@
  */
 
 $(function(){
+	$('.pref-selecter').hide();
+	$('.pref-result').on('click', function() {
+		$('.pref-selecter').show();
+		$('.pref-result').hide();
+	});
 
-	$("select[name='prefCd']").on('change',onPrefChange);
-	setPref();
+	$('input[name="pref"]').on('change', onChangePref);
+	$('input[name="pref"]').trigger('change');
 
 	$("input[name^='city']").on('change',checkCities);
 	checkCities();
@@ -13,20 +18,29 @@ $(function(){
 	$("input[name='all-city']").on('change',onAllCity);
 });
 
-function onPrefChange(e){
-	setPref();
-	$("input[name^='city']").prop("checked",false);
-	$("input[type='checkbox'][name='all-city']").prop("checked",true);
+
+function onChangePref(){
+	pref = $('input[name="pref"]:checked').map(function() {
+		return $(this).val();
+	}).get();
+
+	if( pref.length == 1 ){
+		prefCd = pref[0];
+		activateCity( $("div.city-selecter[pref_cd='"+prefCd+"']") );
+		inactivateCity( $("div.city-selecter[pref_cd!='"+prefCd+"']") );
+	}else{
+		inactivateCity( $("div.city-selecter") );
+	}
 }
 
-function setPref(){
-	perfCd = $("select[name='prefCd']").val();
+function activateCity( target ){
+	target.show();
+	target.find("input[name='city']").removeAttr('disabled');
+}
 
-	$("tr[pref_cd]").hide();
-
-	if( perfCd != "" ){
-		$("tr[pref_cd=" + perfCd + "]").show();
-	}
+function inactivateCity( target ){
+	target.hide();
+	target.find("input[name='city']").attr('disabled','disabled');
 }
 
 function onAllCity(e){

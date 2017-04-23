@@ -4,16 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import logistics.system.project.base.controller.BaseController;
-import logistics.system.project.common.Entity.AnkenListEntity;
-import logistics.system.project.common.Entity.SyasyuEntity;
-import logistics.system.project.common.Entity.TruckOpEntity;
-import logistics.system.project.common.form.AnkenSearchForm;
-import logistics.system.project.common.parameterClass.AnkenListParameter;
-import logistics.system.project.common.service.AnkenListSearchService;
-import logistics.system.project.utility.ComUtils;
-import logistics.system.project.utility.Constants;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import logistics.system.project.base.controller.BaseController;
+import logistics.system.project.common.Entity.AnkenListEntity;
+import logistics.system.project.common.form.AnkenSearchForm;
+import logistics.system.project.common.parameterClass.AnkenListParameter;
+import logistics.system.project.common.service.AnkenListSearchService;
+import logistics.system.project.utility.ComUtils;
+import logistics.system.project.utility.Constants;
 
 @Controller
 public class AnkenSearchListController extends BaseController {
@@ -112,7 +110,7 @@ public class AnkenSearchListController extends BaseController {
 			session.setAttribute("syasyuList", Constants.getSyasyuList());
 		}
 		if (session.getAttribute("truckOpList") == null) {
-			session.setAttribute("truckOpList", Constants.getSyasyuList());
+			session.setAttribute("truckOpList", Constants.getTruckOpList());
 		}
 
 		AnkenSearchForm ankenSearchForm = null;

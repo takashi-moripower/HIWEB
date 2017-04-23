@@ -4,6 +4,17 @@ import java.util.HashMap;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
 import logistics.system.project.base.controller.BaseController;
 import logistics.system.project.common.Entity.NinushiKensuEntity;
 import logistics.system.project.common.Entity.UserEntity;
@@ -15,17 +26,6 @@ import logistics.system.project.utility.ComUtils;
 import logistics.system.project.utility.Constants;
 import logistics.system.project.utility.MD5Util;
 import logistics.system.project.utility.WebUtils;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class LoginController extends BaseController {
@@ -159,15 +159,13 @@ public class LoginController extends BaseController {
 			this.setHeader(new String[] { Constants.TRAIL_INDEX_TABTITLE,
 					Constants.TRAIL_INDEX_PAGETITLE, userSession.getUsername() }, results);
 
-			ModelAndView r = new ModelAndView("trail/index_trail", results);
-			return r;
-
-
-//			return new ModelAndView("trail/index_trail", results);
+			return new ModelAndView("trail/index_trail", results);
 		}
 
 		return new ModelAndView("", results);
 	}
+
+
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public ModelAndView logout() {
 		session.removeAttribute("user");

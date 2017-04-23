@@ -2,6 +2,10 @@ package logistics.system.project.common.service.Impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import logistics.system.project.common.Entity.AreaEntity;
 import logistics.system.project.common.Entity.CityEntity;
 import logistics.system.project.common.Entity.NisugateEntity;
@@ -13,10 +17,6 @@ import logistics.system.project.common.dao.NisugateDao;
 import logistics.system.project.common.dao.NisyuDao;
 import logistics.system.project.common.dao.PrefDao;
 import logistics.system.project.common.service.ShukaAreaService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 @Service("areaService")
 public class ShukaAreaServiceImpl implements ShukaAreaService {
@@ -74,7 +74,6 @@ public class ShukaAreaServiceImpl implements ShukaAreaService {
 
 	@Override
 	public List<NisyuEntity> getAllNisyuList() {
-		System.out.println("test21");
 		return nisyuDao.getAllNisyuList();
 	}
 

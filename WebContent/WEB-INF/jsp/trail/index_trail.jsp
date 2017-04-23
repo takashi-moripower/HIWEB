@@ -11,25 +11,6 @@
 <body>
 	<div class="container">
 		<%@ include file="../common/nav.jsp"%>
-		<nav class="navbar ">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<ul class="nav navbar-nav">
-						<li><a class="btn btn-default"
-							href="<c:url value="/tuchi_debug"/>">debug</a></li>
-					</ul>
-					<ul class="nav navbar-nav">
-						<li><a class="btn btn-default"
-							href="<c:url value="/tuchi_debug_search"/>">search</a></li>
-					</ul>
-					<ul class="nav navbar-nav">
-						<li><a class="btn btn-default"
-							href="<c:url value="/tuchi_debug_send"/>">send mail</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
 		<form:form class="form-horizontal">
 			<fieldset>
 				<div class="panel panel-default">
@@ -112,6 +93,37 @@
 							<div class="col-md-5">
 								<a class="btn btn-info btn-lg"
 									href="<%=request.getContextPath()%>/changePassword">ﾊﾟｽﾜｰﾄﾞ変更</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">デバッグ用</h4>
+					</div>
+					<div class="panel-body">
+						<div class="form-group form-inline">
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<a class="btn btn-info btn-lg"
+									href="<%=request.getContextPath()%>/tuchi_debug"
+									style="margin-top: 20px; padding: 15px;">debug</a>
+							</div>
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<a class="btn btn-info btn-lg"
+									href="<%=request.getContextPath()%>/tuchi_debug_search"
+									style="margin-top: 20px; padding: 15px;">通知検索</a>
+							</div>
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<a class="btn btn-info btn-lg"
+									href="<%=request.getContextPath()%>/tuchi_debug_send">通知発送</a>
+							</div>
+							<div class="col-md-1"></div>
+							<div class="col-md-5">
+								<a class="btn btn-info btn-lg"
+									href="<%=request.getContextPath()%>/tuchi_init_base_url">url設定</a>
 							</div>
 						</div>
 					</div>

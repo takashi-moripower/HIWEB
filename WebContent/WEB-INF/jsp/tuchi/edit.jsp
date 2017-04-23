@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@page import="java.util.List"%>
 <%@page import="logistics.system.project.tuchi.Entity.TuchiEntity"%>
+<%@page import="logistics.system.project.common.Entity.AreaEntity"%>
 <%@page import="logistics.system.project.common.Entity.PrefEntity"%>
 <%@page import="logistics.system.project.common.Entity.CityEntity"%>
 <%@page import="logistics.system.project.common.Entity.TruckOpEntity"%>
@@ -31,151 +32,172 @@
 		<%@ include file="../common/nav.jsp"%>
 	</div>
 	<div class="container">
-		<h1>通知</h1>
-		<%
-		List<String> errors = (List<String>)request.getAttribute("errors");
-		if( errors != null ){
-			%>
-		<div class="panel panel-danger">
-			<div class="panel-body text-danger">
-				<ul>
-				<% for(String error : errors){ %>
-					<li><%= error %></li>
-				<% } %>
-				</ul>
-			</div>
-		</div>
-		<%
-		}
-		%>
-		<form method="post" class="form-horizontal" action="tuchi_edit">
+
+		<form method="post" class="form-horizontal" action="tuchi_edit"
+			method="POST">
 			<input type="hidden" name="tuchiId" value="${form.tuchiId}" /> <input
 				type="hidden" name="userId" value="${form.userId}" />
-			<table class="table table-bordered ">
-				<tbody>
-					<tr>
-						<th style="width: 16rem">タイトル</th>
-						<td><input type="text" name="title" value="${form.title}" /></td>
-					</tr>
-					<tr>
-						<th>送信先Email</th>
-						<td><input type="email" name="email"
-							value="${form.email}" /></td>
-					</tr>
-					<tr>
-						<th>荷主</th>
-						<td>
-							<select name="ninusiCd">
-								<option value="">
-								指定なし
-								</option>
-								<% for(MemberEntity m : ninushiList){
-									String sel = (m.getCompanyCd().equals(form.getNinusiCd())) ? "selected" : "";
-								%>
-								<option value="<%= m.getCompanyCd() %>" <%=sel%>>
-									<%= m.getCompanyNm() %>
-								</option>
-								<% } %>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<th>地域</th>
-						<td><select name="prefCd">
-								<option value="00">全国</option>
+			<fieldset>
+				<%
+					List<String> errors = (List<String>) request.getAttribute("errors");
+					if (errors != null) {
+				%>
+
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<ul>
+						<%
+							for (String error : errors) {
+						%>
+						<li><%=error%></li>
+						<%
+							}
+						%>
+					</ul>
+				</div>
+				<%
+					}
+				%>
+
+				<input name="func" type="hidden" value="ankenSearch"> <input
+					id="prefName" name="prefName" type="hidden" value=""> <input
+					id="panelClosed" name="panelClosed" type="hidden" value="">
+				<!-- 検索条件　▼ -->
+				<div class="panel panel-default">
+					<!-- 検索条件(heading) 　▼ -->
+					<div class="panel-heading">
+						<h4 class="panel-title">通知条件</h4>
+					</div>
+					<!-- 検索条件(body) 　▼ -->
+					<div id="search_detail" class="panel-body">
+						<div class="form-group  form-inline">
+							<label class="col-md-3 control-label">タイトル</label>
+							<div class="col-md-8">
+								<input type="text" name="title" value="${form.title}" />
+							</div>
+						</div>
+						<div class="form-group  form-inline">
+							<label class="col-md-3 control-label">送信先Email</label>
+							<div class="col-md-8">
+								<input type="email" name="email" value="${form.email}" />
+							</div>
+						</div>
+
+						<div class="form-group  form-inline">
+							<label class="col-md-3 control-label">荷主</label>
+							<div class="col-md-8">
+								<select name="ninusiCd">
+									<option value="">指定なし</option>
+									<%
+										for (MemberEntity m : ninushiList) {
+											String sel = (m.getCompanyCd().equals(form.getNinusiCd())) ? "selected" : "";
+											String buf = String.format("<option value='%s' %s>%s</option>", m.getCompanyCd(), sel,
+													m.getCompanyNm());
+											out.println(buf);
+										}
+									%>
+								</select>
+							</div>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-md-3 control-label">都道府県</label>
+							<div class="col-md-21">
+								<a class="pref-result"><%=form.getPrefName()%></a>
+								<div class="pref-selecter panel panel-default">
+									<div class="panel-body">
+										<%
+											for (AreaEntity a : Constants.getAreaList()) {
+												out.println("<div class='row'><div class='col-md-2'>" + a.getAreaName() + "</div>");
+												for (PrefEntity p : form.getPrefByArea(a.getAreaCd())) {
+													List<String> pr = form.getPref();
+													String checked = form.getPref().contains(p.getPrefCd()) ? "checked" : "";
+													String buf = p.getPrefName();
+													buf = String.format("<input type='checkbox' %s id='pref-%s' name='pref' value='%s' />", checked,
+															p.getPrefCd(), p.getPrefCd()) + buf;
+													buf = String.format("<label for='pref-%s' class='col-md-2'>", p.getPrefCd()) + buf + "</label>";
+													out.println(buf);
+												}
+												out.println("</div>");
+											}
+										%>
+									</div>
+								</div>
+							</div>
+						</div>
+						<%
+							for (PrefEntity p : Constants.getPrefList()) {
+								request.setAttribute("prefCd", p.getPrefCd());
+						%>
+						<jsp:include page="edit_city.jsp" />
+						<%
+							}
+						%>
+						<div class="form-group form-inline">
+							<label class="col-md-3 control-label">車種</label>
+							<div class="col-md-21">
 								<%
-									for (PrefEntity p : Constants.getPrefList()) {
-										String sel = (p.getPrefCd().equals(form.getPrefCd())) ? "selected" : "";
-								%>
-								<option value="<%=p.getPrefCd()%>" <%=sel%>>
-									<%=p.getPrefName()%>
-								</option>
-								<%
+									for (SyasyuEntity s : Constants.getSyasyuList()) {
+										String checked = form.getSyasyu().contains(s.getSyasyuCd()) ? "checked" : "";
+										String buf = s.getSyasyuName();
+										buf = String.format("<input type='checkbox' id='syasyu-%s' name='syasyu' value='%s' %s/>",
+												s.getSyasyuCd(), s.getSyasyuCd(), checked) + buf;
+										buf = String.format("<label for='syasyu-%s'>", s.getSyasyuCd()) + buf + "&nbsp;</label>";
+										out.println(buf);
 									}
 								%>
-						</select></td>
-					</tr>
-					<%
-						for (PrefEntity p : Constants.getPrefList()) {
-					%>
-					<tr pref_cd="<%=p.getPrefCd()%>" style="display:hidden">
-						<th><%=p.getPrefName()%></th>
-						<td>
-							<div>
-								<label for="city-all"> <input type="checkbox"
-									name="all-city" id="all-city" /> 全域
-								</label>
 							</div>
-							<%
-						 	String cat = "00";
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-md-3 control-label">集荷日付</label>
+							<div class="col-md-21">
+								<div class="input-group date">
+									<input id="dateStart" name="dateStart" type="text"
+										class="form-control" value="<%=form.getDateStart()%>"
+										size="12"> <span class="input-group-addon "><i
+										class="glyphicon glyphicon-th"></i></span>
+								</div>
+								<p class="form-control-static">～</p>
+								<div class="input-group date">
+									<input id="dateEnd" name="dateEnd" type="text"
+										class="form-control" value="<%=form.getDateEnd()%>"
+										size="12"> <span class="input-group-addon "><i
+										class="glyphicon glyphicon-th"></i></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group form-inline">
+							<label class="col-md-3 control-label">オプション</label>
+							<div class="col-md-21">
+								<%
+									for (TruckOpEntity t : Constants.getTruckOpList()) {
+										String checked = form.getTruckOp().contains(t.getOpCd()) ? "checked" : "";
+										String buf = t.getOpName();
+										buf = String.format("<input type='checkbox' id='truckOp-%s' name='truckOp' value='%s' %s/>",
+												t.getOpCd(), t.getOpCd(), checked) + buf;
+										buf = String.format("<label for='truckOp-%s'>", t.getOpCd()) + buf + "&nbsp;</label>";
+										out.println(buf);
+									}
+								%>
+							</div>
+						</div>
+						<div class="form-group form-inline">
+							<a href="tuchi_list"
+								class="btn btn-default col-md-3 col-md-offset-18"> 一覧に戻る </a>
+							<button type="submit" class="btn btn-info col-md-3">保存</button>
+						</div>
 
-						 	for (CityEntity c : Constants.getCityList()) {
-							 	if (c.getPrefCd().equals(p.getPrefCd())) {
-								 	if (!cat.equals(c.getDispCateg())) {
-					 					cat = c.getDispCateg();
-										%><p><%=c.getDispCateg()%></p> <%
-								 	}
-					 				String checked = (form.getCity().contains(c.getCityCd())) ? "checked" : "";
-									 %>
-										<label for="city-<%=c.getCityCd()%>">
-										 	<input type="checkbox" id="city-<%=c.getCityCd()%>" name="city" value="<%=c.getCityCd()%>" <%=checked%> />
-								 	 		<%=c.getCityDisp()%>
-										</label>
-									<%
-							 	}
-						 	}
-						 %>
-						</td>
-					</tr>
-					<%
-						}
-					%>
-					<tr>
-						<th>受注期限・開始</th>
-						<td><input type="date" name="dateStart"
-							value="${form.dateStart}" /></td>
-					</tr>
-					<tr>
-						<th>受注期限・終了</th>
-						<td><input type="date" name="dateEnd"
-							value="${form.dateEnd}" /></td>
-					</tr>
-					<tr>
-						<th style="white-space: nowrap">トラックオプション</th>
-						<td>
-						<%
-						for(TruckOpEntity t: Constants.getTruckOpList()){
-							String checked = form.getTruckOp().contains( t.getOpCd() ) ? "checked" : "";
-						%>
-							<label for="truckOp-<%=t.getOpCd() %>">
-								<input type="checkbox" id="truckOp-<%=t.getOpCd() %>" name="truckOp" value="<%=t.getOpCd() %>" <%= checked %>/>
-								<%= t.getOpName() %>
-							</label>
-						<%
-						}
-						%>
-						</td>
-					</tr>
-					<tr>
-						<th style="white-space: nowrap">車種</th>
-						<td>
-						<%
-						for(SyasyuEntity s: Constants.getSyasyuList()){
-							String checked = form.getSyasyu().contains( s.getSyasyuCd() ) ? "checked" : "";
-						%>
-							<label for="syasyu-<%=s.getSyasyuCd() %>">
-								<input type="checkbox" id="syasyu-<%=s.getSyasyuCd() %>" name="syasyu" value="<%=s.getSyasyuCd() %>" <%= checked %>/>
-								<%= s.getSyasyuName() %>
-							</label>
-						<%
-						}
-						%>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<button type="submit">submit</button>
+					</div>
+					<!-- 基本情報(body) 　▲ -->
+				</div>
+				<!-- 検索条件　▲-->
+			</fieldset>
 		</form>
+		<!-- フォーム　▲-->
+
+
 	</div>
 	<footer>
 		<div class="container">

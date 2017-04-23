@@ -7,7 +7,7 @@ import logistics.system.project.tuchi.Entity.TuchiEntity;
 public interface TuchiService {
 	public TuchiEntity getTuchiById(int tuchiId, boolean link);
 
-	public List<TuchiEntity> getTuchiByUser(String userId);
+	public List<TuchiEntity> getTuchiByUser(String userId , boolean link);
 
 	public void save(TuchiEntity entity);
 

@@ -7,6 +7,7 @@ import javax.servlet.ServletContextEvent;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import logistics.system.project.common.Entity.AreaEntity;
 import logistics.system.project.common.Entity.CityEntity;
 import logistics.system.project.common.Entity.NisugateEntity;
 import logistics.system.project.common.Entity.NisyuEntity;
@@ -123,6 +124,8 @@ public class Constants {
 
 	public static final String SEIKYU_KANRI_PAGETITLE = "請求管理";
 
+	public static final String AREA_ALL = "全域";
+
 	// 00:　案件削除
 	public static final String ANKEN_STATUS_00 = "00";
 
@@ -148,9 +151,11 @@ public class Constants {
 	protected static List<NisyuEntity> MAST_NISYU_LIST = null;
 	protected static List<NisugateEntity> MAST_NISUGATE_LIST = null;
 	protected static List<PrefEntity> MAST_PREF_LIST = null;
+	protected static List<CityEntity> MAST_CITY_LIST = null;
+	protected static List<AreaEntity> MAST_AREA_LIST = null;
+
 	protected static List<SyasyuEntity> MAST_SYASYU_LIST = null;
 	protected static List<TruckOpEntity> MAST_TRUCKOP_LIST = null;
-	protected static List<CityEntity> MAST_CITY_LIST = null;
 
 	public static final String CONNECT_COMMA = ",";
 
@@ -244,6 +249,13 @@ public class Constants {
 		return MAST_NISUGATE_LIST;
 	}
 
+	public static List<AreaEntity> getAreaList(){
+		if( MAST_AREA_LIST == null ){
+			initAreaData();
+		}
+		return MAST_AREA_LIST;
+	}
+
 	public static List<PrefEntity> getPrefList(){
 		if( MAST_PREF_LIST == null ){
 			initAreaData();
@@ -264,6 +276,7 @@ public class Constants {
 		MAST_NISUGATE_LIST = shukaAreaService.getAllNisugateList();
 		MAST_PREF_LIST = shukaAreaService.getAllPrefList();
 		MAST_CITY_LIST = shukaAreaService.getAllCities();
+		MAST_AREA_LIST = shukaAreaService.getAllArea();
 	}
 
 	public static List<SyasyuEntity> getSyasyuList(){

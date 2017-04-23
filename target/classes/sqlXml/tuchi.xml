@@ -11,7 +11,6 @@
 		<result column="EMAIL" jdbcType="CHAR" property="email" />
 		<result column="USER_NM" jdbcType="CHAR" property="userNm" />
 		<result column="NINUSI_CD" jdbcType="CHAR" property="ninusiCd" />
-		<result column="PREF_CD" jdbcType="CHAR" property="prefCd" />
 		<result column="DATE_START" jdbcType="TIMESTAMP" property="dateStart" />
 		<result column="DATE_END" jdbcType="TIMESTAMP" property="dateEnd" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
@@ -26,7 +25,6 @@
 			T_TUCHI.EMAIL as EMAIL,
 			M_USER.USER_NM as USER_NM,
 			NINUSI_CD,
-			PREF_CD,
 			DATE_START,
 			DATE_END,
 			TITLE,
@@ -60,31 +58,33 @@
 
 	<select id="getMatchTuchi" parameterClass="java.lang.String" resultClass="java.lang.Integer">
 		<![CDATA[
+
 SELECT
-	T_TUCHI.TUCHI_ID
+	T_TUCHI.TUCHI_ID,
+	M_PREF.PREF_NM
 FROM T_TUCHI
 	JOIN T_ANKEN ON T_ANKEN.ANKEN_ID = #value#
 	JOIN T_SYUKA ON T_SYUKA.ANKEN_ID = #value#
-	LEFT OUTER JOIN M_PREF ON M_PREF.PREF_CD = T_TUCHI.PREF_CD
+	JOIN T_ANKEN_ORDER ON T_ANKEN_ORDER.ANKEN_ID = #value#
+	LEFT OUTER JOIN T_PREF_TUCHI ON T_PREF_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID
+	LEFT OUTER JOIN M_PREF ON T_PREF_TUCHI.PREF_CD = M_PREF.PREF_CD
 WHERE
-    STR_TO_DATE( T_ANKEN.JUTU_KG , '%Y%m%d') > T_TUCHI.DATE_START AND
-    STR_TO_DATE( T_ANKEN.JUTU_KG , '%Y%m%d') < T_TUCHI.DATE_END AND
-    (
-    	T_TUCHI.PREF_CD = "00" OR
-    	(
-    		M_PREF.PREF_NM = T_SYUKA.PREF_NM AND
-    		(
-    		NOT EXISTS ( SELECT * FROM T_CITY_TUCHI WHERE T_CITY_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
-	    		EXISTS (
+	T_ANKEN_ORDER.ANKEN_STATUS = 10 AND
+	M_PREF.PREF_NM IS NULL OR(
+		M_PREF.PREF_NM = T_SYUKA.PREF_NM AND(
+			NOT EXISTS ( SELECT * FROM T_CITY_TUCHI WHERE T_CITY_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR(
+				EXISTS(
 					SELECT *
 					FROM T_CITY_TUCHI
 					JOIN  M_CITY ON M_CITY.CITY_CD = T_CITY_TUCHI.CITY_CD
 	    			WHERE T_CITY_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID AND
 	    			T_SYUKA.CITY_NM LIKE CONCAT( M_CITY.CITY_NM , "%")
-    			)
-    		)
-    	)
-   	) AND
+				)
+			)
+		)
+	) AND
+    STR_TO_DATE( T_SYUKA.SYUKA_DAY , '%Y%m%d') > T_TUCHI.DATE_START AND
+    STR_TO_DATE( T_SYUKA.SYUKA_DAY , '%Y%m%d') < T_TUCHI.DATE_END AND
    	(
    		NOT EXISTS ( SELECT * FROM T_SYASYU_TUCHI WHERE T_SYASYU_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
    		EXISTS (
@@ -175,7 +175,6 @@ WHERE
 			TITLE =	#title#,
 			NINUSI_CD = #ninusiCd#,
 			EMAIL = #email#,
-			PREF_CD = #prefCd#,
 			DATE_START = #dateStart#,
 			DATE_END = #dateEnd#
 		WHERE TUCHI_ID = #tuchiId#
@@ -208,7 +207,6 @@ WHERE
 			EMAIL,
 			NINUSI_CD,
 			TITLE,
-			PREF_CD,
 			DATE_START,
 			DATE_END
 		)
@@ -218,7 +216,6 @@ WHERE
 			#email#,
 			#ninusiCd#,
 			#title#,
-			#prefCd#,
 			#dateStart#,
 			#dateEnd#
 		)

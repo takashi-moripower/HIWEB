@@ -1,12 +1,16 @@
 package logistics.system.project.tuchi.form;
 
-import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
 
+import logistics.system.project.common.Entity.PrefEntity;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
+import logistics.system.project.utility.Constants;
 import logistics.system.project.utility.annotation.NotEmpty;
 
 public class TuchiEditForm {
@@ -22,10 +26,10 @@ public class TuchiEditForm {
 	String dateStart;
 	@NotEmpty(field = "終了日時", message = "{field.not.empty}")
 	String dateEnd;
-	String prefCd;
 	List<String> syasyu;
 	List<String> truckOp;
 	List<String> city;
+	List<String> pref;
 
 	public int getTuchiId() {
 		return tuchiId;
@@ -83,21 +87,6 @@ public class TuchiEditForm {
 		this.dateEnd = dateEnd;
 	}
 
-	public String getPrefCd() {
-		return prefCd;
-	}
-
-	public void setPrefCd(String prefCd) {
-		this.prefCd = prefCd;
-	}
-
-	public Timestamp s2t(String str) {
-		if (str == null || str == "") {
-			return null;
-		}
-		return Timestamp.valueOf(str + " 00:00:00.00");
-	}
-
 	public List<String> getSyasyu() {
 		if (syasyu == null) {
 			syasyu = new ArrayList<>();
@@ -131,16 +120,74 @@ public class TuchiEditForm {
 		this.city = city;
 	}
 
+	public List<String> getPref() {
+		if (pref == null) {
+			pref = new ArrayList<>();
+		}
+		return pref;
+	}
+
+	public void setPref(List<String> pref) {
+		this.pref = pref;
+	}
+
+	public String getPrefName() {
+		if (getPref().size() == 0) {
+			return "全国";
+		}
+
+		String result = "";
+		for (String prefCd : pref) {
+			result += Constants.getPrefName(prefCd) + " ";
+		}
+		return result;
+	}
+
+//	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd (E)";
+	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd";
+	public static final String DATE_PATTERN_DB = "yyyy-MM-dd ";
+
+//	public static Locale LOCALE = new Locale("ja", "JP", "JP");
+	public static SimpleDateFormat DATE_FORMAT_FORM = new SimpleDateFormat(DATE_PATTERN_FORM );
+	public static SimpleDateFormat DATE_FORMAT_DB = new SimpleDateFormat(DATE_PATTERN_DB );
+
+	public static String formatDate(String source, SimpleDateFormat srcFormat, SimpleDateFormat destFormat) {
+		String dest = null;
+		Date date;
+
+		try {
+			date = srcFormat.parse(source);
+		} catch (ParseException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			date = new Date();
+		}
+
+		dest = destFormat.format(date);
+
+		System.out.println("DATE FORMAT CONVERTED [" + source + "]  >>>  [" + dest+"]");
+
+		return dest;
+	}
+
+	public static String DateDB2Form(String str) {
+		return formatDate(str, DATE_FORMAT_DB, DATE_FORMAT_FORM);
+	}
+
+	public static String DateForm2DB(String str) {
+		return formatDate(str, DATE_FORMAT_FORM, DATE_FORMAT_DB);
+	}
+
 	public void initForm(TuchiEntity entity) {
 		setTuchiId(entity.getTuchiId());
 		setUserId(entity.getUserId());
 		setEmail(entity.getEmail());
-		setNinusiCd( entity.getNinusiCd() );
+		setNinusiCd(entity.getNinusiCd());
 		setCity(entity.getCity());
 		setTitle(entity.getTitle());
-		setPrefCd(entity.getPrefCd());
-		setDateStart(entity.getDateStartText());
-		setDateEnd(entity.getDateEndText());
+		setPref(entity.getPref());
+		setDateStart(DateDB2Form(entity.getDateStart()));
+		setDateEnd(DateDB2Form(entity.getDateEnd()));
 		setTruckOp(entity.getTruckOp());
 		setSyasyu(entity.getSyasyu());
 		setCity(entity.getCity());
@@ -153,12 +200,23 @@ public class TuchiEditForm {
 		entity.setEmail(getEmail());
 		entity.setNinusiCd(getNinusiCd());
 		entity.setTitle(getTitle());
-		entity.setPrefCd(getPrefCd());
-		entity.setDateStart(s2t(getDateStart()));
-		entity.setDateEnd(s2t(getDateEnd()));
+		entity.setPref(getPref());
+		entity.setDateStart( DateForm2DB( getDateStart()));
+		entity.setDateEnd( DateForm2DB( getDateEnd()));
 		entity.setTruckOp(getTruckOp());
 		entity.setSyasyu(getSyasyu());
 		entity.setCity(getCity());
 		return;
 	}
+
+	public static List<PrefEntity> getPrefByArea(String areaCd) {
+		List<PrefEntity> result = new ArrayList<PrefEntity>();
+		for (PrefEntity p : Constants.getPrefList()) {
+			if (p.getAreaCd().equals(areaCd)) {
+				result.add(p);
+			}
+		}
+		return result;
+	}
+
 }

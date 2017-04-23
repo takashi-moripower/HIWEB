@@ -50,7 +50,7 @@ public class TuchiController extends BaseController {
 			userId = userSession.getUserId();
 		}
 
-		List<TuchiEntity> l = tuchiService.getTuchiByUser(userId);
+		List<TuchiEntity> l = tuchiService.getTuchiByUser(userId, true);
 
 		results.put("list", l);
 
@@ -115,7 +115,6 @@ public class TuchiController extends BaseController {
 
 		TuchiEntity e = new TuchiEntity();
 		form.updateEntity(e);
-
 		tuchiService.save(e);
 
 		return new ModelAndView("redirect:tuchi_list");
@@ -154,13 +153,12 @@ public class TuchiController extends BaseController {
 	public ModelAndView debug(HttpServletRequest request) {
 		clearResults();
 
-
 		results.put("data", baseUrl);
 		return new ModelAndView("tuchi/debug", results);
 	}
 
-	@RequestMapping( value="tuchi_init_base_url")
-	public ModelAndView initBaseUrl(HttpServletRequest request){
+	@RequestMapping(value = "tuchi_init_base_url")
+	public ModelAndView initBaseUrl(HttpServletRequest request) {
 
 		String baseUrl = mailSendComponent.getBaseUrl(request);
 		dynamicPropertyComponent.init(request);
@@ -169,12 +167,12 @@ public class TuchiController extends BaseController {
 
 		results.put("data", baseUrl);
 
-
 		return new ModelAndView("tuchi/debug", results);
 	}
 
 	@Value("#{dynamicProperties['test_url']}")
 	private String testUrl;
+
 	@Value("#{dynamicProperties['base_url']}")
 	private String baseUrl;
 

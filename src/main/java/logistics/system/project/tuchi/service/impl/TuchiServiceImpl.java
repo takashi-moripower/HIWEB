@@ -43,6 +43,10 @@ public class TuchiServiceImpl implements TuchiService {
 	private RelationDao<Integer, String> tuchiCity;
 
 	@Autowired
+	@Qualifier("tuchiPrefRelationDao")
+	private RelationDao<Integer, String> tuchiPref;
+
+	@Autowired
 	@Qualifier("ankenDetailService")
 	private AnkenDetailService ankenDetailService;
 
@@ -58,14 +62,39 @@ public class TuchiServiceImpl implements TuchiService {
 			entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
 			entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
 			entity.setCity(tuchiCity.getValues(tuchiId));
+			entity.setPref(tuchiPref.getValues(tuchiId));
 		}
-
 		return entity;
 	}
 
 	@Override
-	public List<TuchiEntity> getTuchiByUser(String userId) {
-		return tuchiDao.getTuchiByUser(userId);
+	public List<TuchiEntity> getTuchiByUser(String userId , boolean link) {
+		List<TuchiEntity> result = tuchiDao.getTuchiByUser(userId);
+
+		if (link) {
+/*
+			for(int i = 0; i < result.size(); ++i){
+	        	TuchiEntity entity = result.get(i);
+				int tuchiId = entity.getTuchiId();
+				entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
+				entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
+				entity.setCity(tuchiCity.getValues(tuchiId));
+				entity.setPref(tuchiPref.getValues(tuchiId));
+
+				result.set(i, entity);
+	        }
+*/
+			for( TuchiEntity entity : result ){
+				int tuchiId = entity.getTuchiId();
+				entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
+				entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
+				entity.setCity(tuchiCity.getValues(tuchiId));
+				entity.setPref(tuchiPref.getValues(tuchiId));
+			}
+
+		}
+
+		return result;
 	}
 
 	@Override
@@ -75,6 +104,7 @@ public class TuchiServiceImpl implements TuchiService {
 		tuchiTruckOp.save(entity.getTuchiId(), entity.getTruckOp());
 		tuchiSyasyu.save(entity.getTuchiId(), entity.getSyasyu());
 		tuchiCity.save(entity.getTuchiId(), entity.getCity());
+		tuchiPref.save(entity.getTuchiId(), entity.getPref());
 	}
 
 	@Override
