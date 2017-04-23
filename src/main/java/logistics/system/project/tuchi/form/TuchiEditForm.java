@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -143,13 +144,12 @@ public class TuchiEditForm {
 		return result;
 	}
 
-//	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd (E)";
-	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd";
+	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd (E)";
 	public static final String DATE_PATTERN_DB = "yyyy-MM-dd ";
 
-//	public static Locale LOCALE = new Locale("ja", "JP", "JP");
-	public static SimpleDateFormat DATE_FORMAT_FORM = new SimpleDateFormat(DATE_PATTERN_FORM );
-	public static SimpleDateFormat DATE_FORMAT_DB = new SimpleDateFormat(DATE_PATTERN_DB );
+	public static Locale LOCALE = new Locale("ja", "JP", "JP");
+	public static SimpleDateFormat DATE_FORMAT_FORM = new SimpleDateFormat(DATE_PATTERN_FORM , LOCALE);
+	public static SimpleDateFormat DATE_FORMAT_DB = new SimpleDateFormat(DATE_PATTERN_DB , LOCALE);
 
 	public static String formatDate(String source, SimpleDateFormat srcFormat, SimpleDateFormat destFormat) {
 		String dest = null;
