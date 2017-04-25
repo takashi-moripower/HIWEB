@@ -1,7 +1,7 @@
 package logistics.system.project.tuchi.dao;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 
@@ -22,9 +22,9 @@ public interface TuchiDao {
 
 	public void increaseCount( List<Integer> tuchiIds );
 
-	public List< HashMap<String,Object> > getQueues( String email );
+	public List< Map<String,Object> > getQueues( String email );
 	public void setQueueStatus( int id , int status );
-	public HashMap<String,Object> getAnkenForTuchi( String ankenId );
+	public Map<String,Object> getAnkenForTuchi( String ankenId );
 
 	public void clearDaylyCount();
 

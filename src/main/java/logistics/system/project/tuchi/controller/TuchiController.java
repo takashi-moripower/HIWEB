@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -194,10 +195,14 @@ public class TuchiController extends BaseController {
 	public ModelAndView debug(HttpServletRequest request) {
 		clearResults();
 
-		String baseUrl = optionDao.get("base_url");
+		Map<String,Object> r = tuchiDao.getAnkenForTuchi("1234");
+		if( r== null ){
+			results.put("data", "null");
+		}else{
+			results.put("data", "fill");
+		}
 
-
-		results.put("data", baseUrl);
+//		results.put("data", baseUrl);
 		return new ModelAndView("tuchi/debug", results);
 	}
 

@@ -3,8 +3,8 @@ package logistics.system.project.tuchi.service.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -147,14 +147,14 @@ public class TuchiServiceImpl implements TuchiService {
 		List<String> DestEmails = tuchiDao.getDestEmails(Constants.MAX_TUCHI_MAIL);
 
 		for (String Email : DestEmails) {
-			List<HashMap<String, Object>> Queues = tuchiDao.getQueues(Email);
+			List<Map<String, Object>> Queues = tuchiDao.getQueues(Email);
 
 			// メール文面作成
 			String text = getTuchiText( Queues );
 
 			int result = mailSendComponent.send(Constants.TUCHI_EMAIL_SUBJECT, Email, text);
 
-			for (HashMap<String, Object> Queue : Queues) {
+			for (Map<String, Object> Queue : Queues) {
 				int id = (int) Queue.get("ID");
 				int status = (int) Queue.get("STATUS");
 				afterSendMail(id, status, result);
@@ -162,14 +162,14 @@ public class TuchiServiceImpl implements TuchiService {
 		}
 	}
 
-	protected String getTuchiText( List<HashMap<String, Object>> Queues ){
+	protected String getTuchiText( List<Map<String, Object>> Queues ){
 		String result = "";
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
 		result += "配送案件のご案内 "+ df.format(new Date()) + "<br>";
 
-		for( HashMap<String,Object> Queue : Queues ){
+		for( Map<String,Object> Queue : Queues ){
 			result += getTuchiAnkenText( (String)Queue.get("ANKEN_ID"));
 		}
 		result += "-------------------------------------<br>";
@@ -187,7 +187,7 @@ public class TuchiServiceImpl implements TuchiService {
 	protected String getTuchiAnkenText(String ankenId) {
 		String result = "";
 
-		HashMap<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
+		Map<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
 
 		result += "-------------------------------------<br>";
 		result += String.format("受注期限：%s<br>", formatJutuDate( data.get("JUTU_KG") ));
@@ -224,7 +224,6 @@ public class TuchiServiceImpl implements TuchiService {
 		try {
 			date = FormatSrc.parse(src);
 		} catch (ParseException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			return "invalid date";
 		}
@@ -235,7 +234,7 @@ public class TuchiServiceImpl implements TuchiService {
 	protected String getTuchiAnkenText0(String ankenId) {
 		String result = "";
 
-		HashMap<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
+		Map<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
 
 		result += String.format("<td>%s</td>", data.get("JUTU_KG"));
 		result += String.format("<td>%s</td>", data.get("DAY_FROM"));

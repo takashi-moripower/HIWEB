@@ -3,6 +3,7 @@ package logistics.system.project.tuchi.dao.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -104,14 +105,14 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<HashMap<String, Object>> getQueues(String email) {
+	public List<Map<String, Object>> getQueues(String email) {
 		return getSqlMapClientTemplate().queryForList("getTuchiQueueByEmail", email);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public HashMap<String,Object> getAnkenForTuchi( String ankenId ){
-		return (HashMap<String,Object>)getSqlMapClientTemplate().queryForObject("getAnkenForTuchi",ankenId);
+	public Map<String,Object> getAnkenForTuchi( String ankenId ){
+		return (Map<String,Object>)getSqlMapClientTemplate().queryForObject("getAnkenForTuchi",ankenId);
 	}
 
 

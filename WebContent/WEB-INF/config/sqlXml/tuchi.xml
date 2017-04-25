@@ -140,7 +140,7 @@ WHERE
 		GROUP BY
 			T_TUCHI_QUEUE.ANKEN_ID
 		ORDER BY
-			T_ANKEN.JUTU_KG
+			T_TUCHI_QUEUE.CREATED
        	]]>
 	</select>
 
