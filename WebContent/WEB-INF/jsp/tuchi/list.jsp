@@ -28,9 +28,11 @@
 					<th>Title</th>
 					<th>user</th>
 					<th>配信先</th>
-					<th>都道府県</th>
+					<th>地域</th>
 					<th>開始</th>
 					<th>終了</th>
+					<th>発送数</th>
+					<th>発送数(今日)</th>
 					<th>action</th>
 				</tr>
 			</thead>
@@ -41,9 +43,11 @@
 						<th><c:out value="${item.title}" /></th>
 						<td><c:out value="${item.userNm}" /></td>
 						<td><c:out value="${item.email}" /></td>
-						<td><c:out value="${item.prefName}" /></td>
+						<td><c:out value="${item.area}" /></td>
 						<td><c:out value="${item.dateStartText}" /></td>
 						<td><c:out value="${item.dateEndText}" /></td>
+						<td class="text-right"><c:out value="${item.mailCount}" /></td>
+						<td class="text-right"><c:out value="${item.mailCountDay}" /></td>
 						<td><a class="link-edit btn btn-info btn-xs"
 							href='tuchi_edit?tuchiId=<c:out value="${item.tuchiId}" />'>編集</a>
 							<a class="link-delete  btn btn-warning btn-xs"

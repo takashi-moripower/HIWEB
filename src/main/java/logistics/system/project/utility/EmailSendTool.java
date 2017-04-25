@@ -70,7 +70,6 @@ public class EmailSendTool {
 		props.put("mail.smtp.localhost", "localhost");
 		Session session = Session.getDefaultInstance(props, auth);
 		MimeMessage message = new MimeMessage(session);
-//		message.setSubject(mailSubject);
 		message.setSubject(mailSubject,"UTF-8");
 
 //		message.setText(mailBody);
@@ -78,11 +77,15 @@ public class EmailSendTool {
 		message.setHeader(mailHeadName, mailHeadValue);
 
 		message.setSentDate(new Date());
-		Address address = new InternetAddress(mailFrom, personalName);
+		Address address = new InternetAddress(mailFrom, personalName,"UTF-8");
 		message.setFrom(address);
 		Address toAddress = new InternetAddress(mailTo);
 		message.addRecipient(Message.RecipientType.TO, toAddress);
 		Transport.send(message);
+
+
+		LogRecord.info(mailFrom);
+		LogRecord.info(address.toString());
 	}
 
 	public class Email_Autherticator extends Authenticator {

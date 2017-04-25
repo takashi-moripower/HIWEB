@@ -24,4 +24,5 @@
 	<sqlMap resource="sqlXml/postCode.xml" />
 	<sqlMap resource="sqlXml/tuchi.xml" />
 	<sqlMap resource="sqlXml/generalHABTM.xml" />
+	<sqlMap resource="sqlXml/option.xml" />
 </sqlMapConfig>

@@ -13,7 +13,7 @@
 詳細は配送マッチングシステムよりご確認ください。
 　
 　▼配送マッチングシステム
-　　http://61.209.205.64:10080/HiWEB/initAnkenDetail?ankenNo=${ankenNo}
+　　${baseUrl}initAnkenDetail?ankenNo=${ankenNo}
 
 
 -------------------------------------------------------------------------

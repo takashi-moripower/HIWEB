@@ -1,6 +1,8 @@
 package logistics.system.project.tuchi.Entity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import logistics.system.project.utility.Constants;
@@ -10,8 +12,8 @@ public class TuchiEntity {
 	protected String userId;
 	protected String email;
 	protected String ninusiCd;
-	protected String dateStart;
-	protected String dateEnd;
+	protected Date dateStart;
+	protected Date dateEnd;
 	protected String title;
 	protected int mailCount;
 	protected int mailCountDay;
@@ -20,6 +22,9 @@ public class TuchiEntity {
 	protected List<String> pref;
 	protected List<String> city;
 	protected String userNm;
+
+	public static final String DATE_PATTERN_ENTITY = "yyyy/MM/dd";
+	public static SimpleDateFormat DATE_FORMAT_ENTITY = new SimpleDateFormat(DATE_PATTERN_ENTITY);
 
 	public TuchiEntity(){
 	}
@@ -65,22 +70,6 @@ public class TuchiEntity {
 		this.ninusiCd = ninusiCd;
 	}
 
-	public String getDateStart() {
-		return dateStart;
-	}
-
-	public void setDateStart(String dateStart) {
-		this.dateStart = dateStart;
-	}
-
-	public String getDateEnd() {
-		return dateEnd;
-	}
-
-	public void setDateEnd(String dateEnd) {
-		this.dateEnd = dateEnd;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -105,31 +94,25 @@ public class TuchiEntity {
 		this.mailCountDay = mailCountDay;
 	}
 
-	public String getPrefName(){
+	public String getArea(){
 		if( pref==null || pref.size() == 0 ){
 			return "全国";
 		}
 
-		String result = "";
-		for(String prefCd : pref){
-			result += Constants.getPrefName(prefCd) + " ";
+		if( city==null || city.size() == 0 ){
+			String result = "";
+			for(String prefCd : pref){
+				result += Constants.getPrefName(prefCd) + " ";
+			}
+			return result;
 		}
+
+		String result = Constants.getPrefName( pref.get(0) ) + "（";
+		for(String cityCd : city){
+			result += Constants.getCityName(cityCd) + " ";
+		}
+		result += "）";
 		return result;
-	}
-
-	public String getDateStartText() {
-		return d2s(dateStart);
-	}
-
-	public String getDateEndText() {
-		return d2s(dateEnd);
-	}
-
-	static public String d2s(String date) {
-		if (date == null) {
-			return null;
-		}
-		return date;
 	}
 
 	public List<String> getTruckOp() {
@@ -170,4 +153,33 @@ public class TuchiEntity {
 	public void setUserNm(String userNm) {
 		this.userNm = userNm;
 	}
+
+	public Date getDateStart() {
+		return dateStart;
+	}
+
+	public void setDateStart(Date dateStart) {
+		this.dateStart = dateStart;
+	}
+
+	public Date getDateEnd() {
+		return dateEnd;
+	}
+
+	public void setDateEnd(Date dateEnd) {
+		this.dateEnd = dateEnd;
+	}
+
+	public String getDateStartText(){
+		return Date2Str(getDateStart());
+	}
+
+	public String getDateEndText(){
+		return Date2Str(getDateEnd());
+	}
+
+	public static String Date2Str( Date date ){
+		return DATE_FORMAT_ENTITY.format(date);
+	}
+
 }

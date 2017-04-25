@@ -29,40 +29,37 @@ import logistics.system.project.utility.WebUtils;
 
 @Controller
 public class LoginController extends BaseController {
+	@Autowired
+	@Qualifier("personalService")
+	private PersonalService personalService;
 
-	// @RequestMapping("ninushi/login")
-	// public ModelAndView shipperIndex(){
-	// HashMap<String, Object> results = new HashMap<String, Object>();
-	// this.setHeader(new String[]{Constants.NINUSHI_INDEX_TABTITLE,
-	// Constants.NINUSHI_INDEX_PAGETITLE}, results);
-	// return new ModelAndView("ninushi/login_ninushi", results);
-	// }
+	@Autowired
+	@Qualifier("menuService")
+	private MenuService menuService;
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public ModelAndView shipperLogin(Model model,
-			@Valid @ModelAttribute("loginForm") LoginForm loginForm, BindingResult errors) {
+	public ModelAndView shipperLogin(Model model, @Valid @ModelAttribute("loginForm") LoginForm loginForm,
+			BindingResult errors) {
 
 		HashMap<String, Object> results = new HashMap<String, Object>();
 		if (errors.hasErrors()) {
-			this.setHeader(new String[] { Constants.NINUSHI_LOGIN_TABTITLE,
-					Constants.NINUSHI_LOGIN_PAGETITLE }, results);
+			this.setHeader(new String[] { Constants.NINUSHI_LOGIN_TABTITLE, Constants.NINUSHI_LOGIN_PAGETITLE },
+					results);
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, true);
 			return new ModelAndView("../../login", results);
-		}
-		else {
+		} else {
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, false);
 		}
 
 		UserEntity userEntity = this.personalService.getUserLoginInfoService(loginForm.getUserId(),
 				MD5Util.EncoderByMd5(loginForm.getPassword()));
 		if (userEntity == null) {
-			this.setHeader(new String[] { Constants.NINUSHI_INDEX_TABTITLE,
-					Constants.NINUSHI_INDEX_PAGETITLE }, results);
+			this.setHeader(new String[] { Constants.NINUSHI_INDEX_TABTITLE, Constants.NINUSHI_INDEX_PAGETITLE },
+					results);
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, true);
 			results.put(Constants.ERROR_MESSAGE, Constants.USER_NOT_EXIST);
 			return new ModelAndView("../../login", results);
-		}
-		else {
+		} else {
 			results.put(Constants.SHOW_ERROR_MESS_FLAG, false);
 		}
 
@@ -72,21 +69,19 @@ public class LoginController extends BaseController {
 
 		String backUrl = "index";
 
-		if(Constants.GYOMU_SB_NINUSHI.equals(userEntity.getGyomuSb())){
+		if (Constants.GYOMU_SB_NINUSHI.equals(userEntity.getGyomuSb())) {
 			backUrl = "check_ca_ninushi";
-		}
-		else if(Constants.GYOMU_SB_UNSO.equals(userEntity.getGyomuSb())){
+		} else if (Constants.GYOMU_SB_UNSO.equals(userEntity.getGyomuSb())) {
 			backUrl = "check_ca_unso";
-		}
-		else if(Constants.GYOMU_SB_TRAIL.equals(userEntity.getGyomuSb())){
+		} else if (Constants.GYOMU_SB_TRAIL.equals(userEntity.getGyomuSb())) {
 			backUrl = "check_ca_trail";
 		}
 
 		return new ModelAndView("redirect:" + backUrl, null);
 	}
 
-	//CAチェックのため、中間パス経由でメニューに行く
-	@RequestMapping(value = {"check_ca_ninushi", "check_ca_unso", "check_ca_trail"}, method = RequestMethod.GET)
+	// CAチェックのため、中間パス経由でメニューに行く
+	@RequestMapping(value = { "check_ca_ninushi", "check_ca_unso", "check_ca_trail" }, method = RequestMethod.GET)
 	public ModelAndView checkCACert() {
 		String backUrl = "topPage";
 		if (StringUtils.isNotBlank((String) session.getAttribute("backUrl"))) {
@@ -94,7 +89,7 @@ public class LoginController extends BaseController {
 			session.removeAttribute("backUrl");
 
 			if (backUrl.indexOf("initAnkenDetail") != -1) {
-				backUrl +=  "&prePage=index";
+				backUrl += "&prePage=index";
 			}
 		}
 
@@ -105,7 +100,7 @@ public class LoginController extends BaseController {
 	public ModelAndView indexPage() {
 
 		if (Constants.GYOMU_SB_NINUSHI.equals(userSession.getGyomuSb())) {
-			//荷主
+			// 荷主
 			return new ModelAndView("redirect:check_ca_ninushi", null);
 		} else if (Constants.GYOMU_SB_UNSO.equals(userSession.getGyomuSb())) {
 			// 運送
@@ -126,45 +121,60 @@ public class LoginController extends BaseController {
 
 		results.put(Constants.SHOW_LOGOUT_FLAG, true);
 
-		String sysDate = ComUtils.getSysDate();
-		if (Constants.GYOMU_SB_NINUSHI.equals(userSession.getGyomuSb())) {
-			NinushiKensuEntity ninushiKensuEntity = menuService.getNinushiKensu(
-					userSession.getCompanyCd(), sysDate);
-			results.put("ninushiKensuEntity", ninushiKensuEntity);
+		if (userSession.getGyomuSb() == null) {
 
-			Integer kakuinZumiKensu = menuService.getKakuinZumiKensu(userSession.getCompanyCd(),
-					sysDate, userSession.getGyomuSb());
-			results.put("kakuinZumiKensu", kakuinZumiKensu);
+		} else
+			switch (userSession.getGyomuSb()) {
+			case Constants.GYOMU_SB_NINUSHI:
+				return topPageNinushi(results);
 
-			this.setHeader(new String[] { Constants.NINUSHI_LOGIN_TABTITLE,
-					Constants.NINUSHI_LOGIN_PAGETITLE, userSession.getUsername() }, results);
-			results.put(Constants.SHOW_LOGOUT_FLAG, true);
+			case Constants.GYOMU_SB_UNSO:
+				return topPageUnso(results);
 
-			return new ModelAndView("ninushi/index_ninushi", results);
-		} else if (Constants.GYOMU_SB_UNSO.equals(userSession.getGyomuSb())) {
-			// 運送
-			Integer kakuinZumiKensu = menuService.getKakuinZumiKensu(userSession.getCompanyCd(),
-					sysDate, userSession.getGyomuSb());
-			results.put("kakuinZumiKensu", kakuinZumiKensu);
-
-			Integer shabanMinyuRyokuKensu = menuService.getShabanMinyuRyokuKensu(
-					userSession.getCompanyCd(), sysDate);
-			results.put("shabanMinyuRyokuKensu", shabanMinyuRyokuKensu);
-
-			this.setHeader(new String[] { Constants.UNSO_INDEX_TABTITLE,
-					Constants.UNSO_INDEX_PAGETITLE, userSession.getUsername() }, results);
-			return new ModelAndView("unso/index_unso", results);
-		} else if (Constants.GYOMU_SB_TRAIL.equals(userSession.getGyomuSb())) {
-			// trail
-			this.setHeader(new String[] { Constants.TRAIL_INDEX_TABTITLE,
-					Constants.TRAIL_INDEX_PAGETITLE, userSession.getUsername() }, results);
-
-			return new ModelAndView("trail/index_trail", results);
-		}
+			case Constants.GYOMU_SB_TRAIL:
+				return topPageTrail(results);
+			}
 
 		return new ModelAndView("", results);
 	}
 
+	protected ModelAndView topPageNinushi(HashMap<String, Object> results) {
+		String sysDate = ComUtils.getSysDate();
+		NinushiKensuEntity ninushiKensuEntity = menuService.getNinushiKensu(userSession.getCompanyCd(), sysDate);
+		results.put("ninushiKensuEntity", ninushiKensuEntity);
+
+		Integer kakuinZumiKensu = menuService.getKakuinZumiKensu(userSession.getCompanyCd(), sysDate,
+				userSession.getGyomuSb());
+		results.put("kakuinZumiKensu", kakuinZumiKensu);
+
+		this.setHeader(new String[] { Constants.NINUSHI_LOGIN_TABTITLE, Constants.NINUSHI_LOGIN_PAGETITLE,
+				userSession.getUsername() }, results);
+		results.put(Constants.SHOW_LOGOUT_FLAG, true);
+
+		return new ModelAndView("ninushi/index_ninushi", results);
+	}
+
+	protected ModelAndView topPageUnso(HashMap<String, Object> results) {
+		String sysDate = ComUtils.getSysDate();
+		Integer kakuinZumiKensu = menuService.getKakuinZumiKensu(userSession.getCompanyCd(), sysDate,
+				userSession.getGyomuSb());
+		results.put("kakuinZumiKensu", kakuinZumiKensu);
+
+		Integer shabanMinyuRyokuKensu = menuService.getShabanMinyuRyokuKensu(userSession.getCompanyCd(), sysDate);
+		results.put("shabanMinyuRyokuKensu", shabanMinyuRyokuKensu);
+
+		this.setHeader(new String[] { Constants.UNSO_INDEX_TABTITLE, Constants.UNSO_INDEX_PAGETITLE,
+				userSession.getUsername() }, results);
+		return new ModelAndView("unso/index_unso", results);
+
+	}
+
+	protected ModelAndView topPageTrail(HashMap<String, Object> results) {
+		this.setHeader(new String[] { Constants.TRAIL_INDEX_TABTITLE, Constants.TRAIL_INDEX_PAGETITLE,
+				userSession.getUsername() }, results);
+
+		return new ModelAndView("trail/index_trail", results);
+	}
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public ModelAndView logout() {
@@ -173,14 +183,6 @@ public class LoginController extends BaseController {
 
 		return new ModelAndView("redirect:/");
 	}
-
-	@Autowired
-	@Qualifier("personalService")
-	private PersonalService personalService;
-
-	@Autowired
-	@Qualifier("menuService")
-	private MenuService menuService;
 
 	private void removeSession() {
 		session.removeAttribute("ankenSearchForm");

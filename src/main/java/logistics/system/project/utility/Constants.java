@@ -1,5 +1,6 @@
 package logistics.system.project.utility;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletContextEvent;
@@ -124,6 +125,10 @@ public class Constants {
 
 	public static final String SEIKYU_KANRI_PAGETITLE = "請求管理";
 
+	public static final String TUCHI_ADD_TITLE = "通知条件　新規作成";
+	public static final String TUCHI_EDIT_TITLE = "通知条件　編集";
+	public static final String TUCHI_LIST_TITLE = "通知条件　一覧";
+
 	public static final String AREA_ALL = "全域";
 
 	// 00:　案件削除
@@ -210,7 +215,11 @@ public class Constants {
 	public static final int TUCHI_QUEUE_STATE_FAILED01 = 1;
 	public static final int TUCHI_QUEUE_STATE_FAILED02 = 2;
 
-	public static final String TUCHI_EMAIL_SUBJECT = "新規案件が登録されました";
+	public static final String TUCHI_EMAIL_SUBJECT = "TRAIL配送マッチング案件通知メール";
+
+
+	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd";
+	public static final SimpleDateFormat DATE_FORMAT_FORM = new SimpleDateFormat(DATE_PATTERN_FORM);
 
 
 	public static String getPrefName( String prefCd ){
@@ -224,6 +233,19 @@ public class Constants {
 			}
 		}
 
+		return null;
+	}
+
+	public static String getCityName( String cityCd ){
+		if( cityCd == null || cityCd.equals("") || cityCd.equals("00")){
+			return null;
+		}
+
+		for( CityEntity item : getCityList()){
+			if( item.getCityCd().equals(cityCd)){
+				return item.getCityName();
+			}
+		}
 		return null;
 	}
 

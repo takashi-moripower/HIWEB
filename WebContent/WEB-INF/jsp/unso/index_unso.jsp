@@ -105,7 +105,7 @@
 						<h4 class="panel-title">お知らせ</h4>
 					</div>
 					<div class="panel-body">
-						<IFRAME src="news_top.html" frameborder="0" width="100%"></IFRAME>
+						<object data="resources/html/news_unso.html" width="100%"></object>
 					</div>
 				</div>
 

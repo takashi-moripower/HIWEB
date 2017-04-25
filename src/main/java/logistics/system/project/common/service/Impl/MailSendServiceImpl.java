@@ -21,6 +21,7 @@ import logistics.system.project.common.dao.AnkenDao;
 import logistics.system.project.common.dao.AnkenOrderDao;
 import logistics.system.project.common.dao.MailSendDao;
 import logistics.system.project.common.dao.MemberDao;
+import logistics.system.project.common.dao.OptionDao;
 import logistics.system.project.common.dao.PersonalDao;
 import logistics.system.project.common.service.MailSendService;
 import logistics.system.project.utility.Constants;
@@ -49,6 +50,11 @@ public class MailSendServiceImpl implements MailSendService {
 	@Autowired
 	@Qualifier("personalDao")
 	private PersonalDao personalDao;
+
+	@Autowired
+	@Qualifier("optionDao")
+	private OptionDao optionDao;
+
 
 	@Value("#{configProperties['mail.sub']}")
 	private String mailSub;
@@ -213,11 +219,9 @@ public class MailSendServiceImpl implements MailSendService {
 
 			Map dataMap = new HashMap();
 			dataMap.put("ankenNo", ankenNo);
-			// dataMap.put("updateDt", sdf.format(updateDt));
 			dataMap.put("updateDt", ankenDetail.getUpdateDt());
 			dataMap.put("statusNm", ankenDetail.getStatusNm().replace("済み", ""));
-			// dataMap.put("ankenId", ankenDetail.getAnkenId());
-			// dataMap.put("ankenNo", ankenNo); // TODO
+			dataMap.put("baseUrl", optionDao.get("base_url") );
 
 			String text = Freemarker.getTemplateString(Constants.FTL_PACKAGE, Constants.FTL_MAIL_FILE_NAME, dataMap);
 			mailSendEntity.setMailSendText(text);

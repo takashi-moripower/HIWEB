@@ -1,14 +1,17 @@
 package logistics.system.project.tuchi.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import logistics.system.project.common.dao.AnkenDao;
+import logistics.system.project.common.dao.OptionDao;
 import logistics.system.project.common.service.AnkenDetailService;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 import logistics.system.project.tuchi.component.MailSendComponent;
@@ -19,9 +22,6 @@ import logistics.system.project.utility.Constants;
 
 @Service("tuchiService")
 public class TuchiServiceImpl implements TuchiService {
-	@Value("#{dynamicProperties['base_url']}")
-	private String baseUrl;
-
 	@Autowired
 	@Qualifier("tuchiDao")
 	private TuchiDao tuchiDao;
@@ -29,6 +29,10 @@ public class TuchiServiceImpl implements TuchiService {
 	@Autowired
 	@Qualifier("ankenDao")
 	private AnkenDao ankenDao;
+
+	@Autowired
+	@Qualifier("optionDao")
+	private OptionDao optionDao;
 
 	@Autowired
 	@Qualifier("tuchiTruckOpRelationDao")
@@ -54,15 +58,20 @@ public class TuchiServiceImpl implements TuchiService {
 	@Qualifier("mailSendComponent")
 	private MailSendComponent mailSendComponent;
 
+	String baseUrl;
+
+	static SimpleDateFormat FORMAT_JUTU_SRC = new SimpleDateFormat("yyyyMMdd");
+	static SimpleDateFormat FORMAT_JUTU_DEST = new SimpleDateFormat("yyyy/MM/dd");
+
+	static SimpleDateFormat FORMAT_SYUKA_SRC = new SimpleDateFormat("yyyyMMddHHmm");
+	static SimpleDateFormat FORMAT_SYUKA_DEST = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+
 	@Override
 	public TuchiEntity getTuchiById(int tuchiId, boolean link) {
 		TuchiEntity entity = tuchiDao.getTuchiById(tuchiId);
 
 		if (link) {
-			entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
-			entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
-			entity.setCity(tuchiCity.getValues(tuchiId));
-			entity.setPref(tuchiPref.getValues(tuchiId));
+			setLink( entity );
 		}
 		return entity;
 	}
@@ -72,29 +81,20 @@ public class TuchiServiceImpl implements TuchiService {
 		List<TuchiEntity> result = tuchiDao.getTuchiByUser(userId);
 
 		if (link) {
-/*
-			for(int i = 0; i < result.size(); ++i){
-	        	TuchiEntity entity = result.get(i);
-				int tuchiId = entity.getTuchiId();
-				entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
-				entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
-				entity.setCity(tuchiCity.getValues(tuchiId));
-				entity.setPref(tuchiPref.getValues(tuchiId));
-
-				result.set(i, entity);
-	        }
-*/
 			for( TuchiEntity entity : result ){
-				int tuchiId = entity.getTuchiId();
-				entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
-				entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
-				entity.setCity(tuchiCity.getValues(tuchiId));
-				entity.setPref(tuchiPref.getValues(tuchiId));
+				setLink( entity );
 			}
-
 		}
 
 		return result;
+	}
+
+	protected void setLink( TuchiEntity entity){
+		int tuchiId = entity.getTuchiId();
+		entity.setTruckOp(tuchiTruckOp.getValues(tuchiId));
+		entity.setSyasyu(tuchiSyasyu.getValues(tuchiId));
+		entity.setCity(tuchiCity.getValues(tuchiId));
+		entity.setPref(tuchiPref.getValues(tuchiId));
 	}
 
 	@Override
@@ -143,23 +143,14 @@ public class TuchiServiceImpl implements TuchiService {
 
 	@Override
 	public void sendMail() {
+		this.baseUrl = optionDao.get("base_url");
 		List<String> DestEmails = tuchiDao.getDestEmails(Constants.MAX_TUCHI_MAIL);
 
 		for (String Email : DestEmails) {
 			List<HashMap<String, Object>> Queues = tuchiDao.getQueues(Email);
 
 			// メール文面作成
-			String text = "<html><body><table>";
-			text += "<td>受注期限</td>";
-			text += "<td colspan='2'>集荷</td>";
-			text += "<td colspan='2'>納品</td>";
-			for (HashMap<String, Object> Queue : Queues) {
-
-				String ankenId = (String) Queue.get("ANKEN_ID");
-				text += getTuchiText(ankenId);
-			}
-
-			text += "</table></body></html>";
+			String text = getTuchiText( Queues );
 
 			int result = mailSendComponent.send(Constants.TUCHI_EMAIL_SUBJECT, Email, text);
 
@@ -171,26 +162,77 @@ public class TuchiServiceImpl implements TuchiService {
 		}
 	}
 
-	protected void afterSendMail(int id, int status, int result) {
-		// フィルターされたとき
-		if (result == mailSendComponent.SEND_FILTERED) {
-			tuchiDao.setQueueStatus(id, Constants.TUCHI_QUEUE_STATE_FILTERED);
-		}
+	protected String getTuchiText( List<HashMap<String, Object>> Queues ){
+		String result = "";
 
-		// 送信成功時 最大回数送っても失敗だった時はキューから削除
-		if (result == mailSendComponent.SEND_SUCCESS
-				|| (result == mailSendComponent.SEND_FAILED && status == Constants.MAX_MAIL_SEND_KS)) {
-			tuchiDao.removeQueue(id);
-			return;
-		}
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
-		// 最大回数以下で失敗時
-		if (result == mailSendComponent.SEND_FAILED) {
-			tuchiDao.setQueueStatus(id, status + 1);
+		result += "配送案件のご案内 "+ df.format(new Date()) + "<br>";
+
+		for( HashMap<String,Object> Queue : Queues ){
+			result += getTuchiAnkenText( (String)Queue.get("ANKEN_ID"));
 		}
+		result += "-------------------------------------<br>";
+
+		result += "＊既に他業者が配送を確定している場合があります。<br>"
+				+ "＊このメールは配送マッチングによる自動配信です。<br>"
+				+ "*************************************<br>"
+				+ "問合先：株式会社TRAIL<br>"
+				+ "TEL: XXX-XXX-XXXX info@keel.co.jp<br>"
+				+ "*************************************<br>";
+
+		return result;
 	}
 
-	protected String getTuchiText(String ankenId) {
+	protected String getTuchiAnkenText(String ankenId) {
+		String result = "";
+
+		HashMap<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
+
+		result += "-------------------------------------<br>";
+		result += String.format("受注期限：%s<br>", formatJutuDate( data.get("JUTU_KG") ));
+
+		String dateFrom = formatSyukaDate( (String)data.get("DAY_FROM") + (String)data.get("TIME_FROM"));
+		long countFrom = (long) data.get("COUNT_FROM");
+		String countFromText = (countFrom > 1) ? String.format("ほか%d箇所", countFrom) : "";
+		String addrFrom = (String)data.get("ADDR_FROM");
+
+		String dateTo = formatSyukaDate( (String)data.get("DAY_TO") + (String)data.get("TIME_TO"));
+		long countTo = (long) data.get("COUNT_TO");
+		String countToText = (countTo > 1) ? String.format("ほか%d箇所", countTo) : "";
+		String addrTo = (String)data.get("ADDR_TO");
+
+		String yosan = String.format("%,d" , data.get("YOSAN_MN"));
+		String url = this.baseUrl + "initAnkenDetail?ankenNo="+ankenId + "101";
+
+		result += String.format("集荷：%s %s %s<br>", dateFrom , addrFrom , countFromText );
+		result += String.format("納品：%s %s %s<br>", dateTo , addrTo , countToText );
+		result += String.format("予算：%s円 【<a href=\"%s\">詳細</a>】<br>", yosan , url);
+
+		return result;
+	}
+
+	protected String formatSyukaDate( String src ){
+		return formatDate( src , FORMAT_SYUKA_SRC , FORMAT_SYUKA_DEST );
+	}
+	protected String formatJutuDate( Object src ){
+		return formatDate( (String)src , FORMAT_JUTU_SRC , FORMAT_JUTU_DEST );
+	}
+
+	protected String formatDate( String src , SimpleDateFormat FormatSrc , SimpleDateFormat FormatDest ){
+		Date date;
+		try {
+			date = FormatSrc.parse(src);
+		} catch (ParseException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return "invalid date";
+		}
+
+		return FormatDest.format(date);
+	}
+
+	protected String getTuchiAnkenText0(String ankenId) {
 		String result = "";
 
 		HashMap<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
@@ -217,6 +259,32 @@ public class TuchiServiceImpl implements TuchiService {
 		result = "<tr>" + result + "</tr>";
 
 		return result;
+	}
+
+
+	protected void afterSendMail(int id, int status, int result) {
+		// フィルターされたとき
+		if (result == MailSendComponent.SEND_FILTERED) {
+			tuchiDao.setQueueStatus(id, Constants.TUCHI_QUEUE_STATE_FILTERED);
+		}
+
+		// 送信成功時 最大回数送っても失敗だった時はキューから削除
+		if (result == MailSendComponent.SEND_SUCCESS
+				|| (result == MailSendComponent.SEND_FAILED && status == Constants.MAX_MAIL_SEND_KS)) {
+			tuchiDao.removeQueue(id);
+			return;
+		}
+
+		// 最大回数以下で失敗時
+		if (result == MailSendComponent.SEND_FAILED) {
+			tuchiDao.setQueueStatus(id, status + 1);
+		}
+	}
+
+
+	@Override
+	public void clearDaylyCount(){
+		tuchiDao.clearDaylyCount();
 	}
 
 }

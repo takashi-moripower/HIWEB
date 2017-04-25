@@ -26,6 +26,7 @@ public interface TuchiDao {
 	public void setQueueStatus( int id , int status );
 	public HashMap<String,Object> getAnkenForTuchi( String ankenId );
 
+	public void clearDaylyCount();
 
 	public List<String> debug( String sql );
 }

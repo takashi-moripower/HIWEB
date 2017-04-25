@@ -19,4 +19,6 @@ public interface TuchiService {
 
 	public void sendMail();
 
+	public void clearDaylyCount();
+
 }

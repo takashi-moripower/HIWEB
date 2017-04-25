@@ -1,5 +1,6 @@
 package logistics.system.project.tuchi.dao.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 		getSqlMapClientTemplate().delete("deleteTuchi", tuchiId);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Integer> getMatchTuchi(String ankenId) {
 		return getSqlMapClientTemplate().queryForList("getMatchTuchi", ankenId);
@@ -66,6 +68,7 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("tuchiId", tuchiId);
 			param.put("ankenId", ankenId);
+			param.put("created", new Date());
 
 			getSqlMapClientTemplate().insert("addTuchiQueue", param);
 			count++;
@@ -78,6 +81,7 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 		getSqlMapClientTemplate().delete("removeTuchiQueue", QueueId);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getDestEmails(int limit) {
 		return getSqlMapClientTemplate().queryForList("getTuchiDestEmails", limit);
@@ -98,17 +102,25 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 		getSqlMapClientTemplate().update("setQueueStatus", param);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<HashMap<String, Object>> getQueues(String email) {
 		return getSqlMapClientTemplate().queryForList("getTuchiQueueByEmail", email);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String,Object> getAnkenForTuchi( String ankenId ){
 		return (HashMap<String,Object>)getSqlMapClientTemplate().queryForObject("getAnkenForTuchi",ankenId);
 	}
 
 
+	@Override
+	public void clearDaylyCount(){
+		getSqlMapClientTemplate().update("clearTuchiDaylyCount");
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> debug(String sql) {
 		return getSqlMapClientTemplate().queryForList("debugSelect", sql);

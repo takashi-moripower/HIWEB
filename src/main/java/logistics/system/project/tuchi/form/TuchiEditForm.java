@@ -1,19 +1,20 @@
 package logistics.system.project.tuchi.form;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.validation.Valid;
 
 import logistics.system.project.common.Entity.PrefEntity;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
 import logistics.system.project.utility.Constants;
+import logistics.system.project.utility.annotation.DateFuture;
+import logistics.system.project.utility.annotation.DateRange;
 import logistics.system.project.utility.annotation.NotEmpty;
 
+@DateRange( fieldStart = "dateStart" , fieldEnd = "dateEnd" )
 public class TuchiEditForm {
 	@Valid
 	int tuchiId;
@@ -23,8 +24,10 @@ public class TuchiEditForm {
 	String ninusiCd;
 	@NotEmpty(field = "タイトル", message = "{field.not.empty}")
 	String title;
+	@DateFuture
 	@NotEmpty(field = "開始日時", message = "{field.not.empty}")
 	String dateStart;
+	@DateFuture
 	@NotEmpty(field = "終了日時", message = "{field.not.empty}")
 	String dateEnd;
 	List<String> syasyu;
@@ -144,38 +147,22 @@ public class TuchiEditForm {
 		return result;
 	}
 
-	public static final String DATE_PATTERN_FORM = "yyyy/MM/dd (E)";
-	public static final String DATE_PATTERN_DB = "yyyy-MM-dd ";
-
-	public static Locale LOCALE = new Locale("ja", "JP", "JP");
-	public static SimpleDateFormat DATE_FORMAT_FORM = new SimpleDateFormat(DATE_PATTERN_FORM , LOCALE);
-	public static SimpleDateFormat DATE_FORMAT_DB = new SimpleDateFormat(DATE_PATTERN_DB , LOCALE);
-
-	public static String formatDate(String source, SimpleDateFormat srcFormat, SimpleDateFormat destFormat) {
-		String dest = null;
+	public static Date Str2Date(String str) {
 		Date date;
 
 		try {
-			date = srcFormat.parse(source);
+			date = Constants.DATE_FORMAT_FORM.parse(str);
 		} catch (ParseException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			date = new Date();
 		}
 
-		dest = destFormat.format(date);
-
-		System.out.println("DATE FORMAT CONVERTED [" + source + "]  >>>  [" + dest+"]");
-
-		return dest;
+		return date;
 	}
 
-	public static String DateDB2Form(String str) {
-		return formatDate(str, DATE_FORMAT_DB, DATE_FORMAT_FORM);
-	}
-
-	public static String DateForm2DB(String str) {
-		return formatDate(str, DATE_FORMAT_FORM, DATE_FORMAT_DB);
+	public static String Date2Str(Date date) {
+		return Constants.DATE_FORMAT_FORM.format(date);
 	}
 
 	public void initForm(TuchiEntity entity) {
@@ -186,12 +173,11 @@ public class TuchiEditForm {
 		setCity(entity.getCity());
 		setTitle(entity.getTitle());
 		setPref(entity.getPref());
-		setDateStart(DateDB2Form(entity.getDateStart()));
-		setDateEnd(DateDB2Form(entity.getDateEnd()));
+		setDateStart(Date2Str(entity.getDateStart()));
+		setDateEnd(Date2Str(entity.getDateEnd()));
 		setTruckOp(entity.getTruckOp());
 		setSyasyu(entity.getSyasyu());
 		setCity(entity.getCity());
-
 	}
 
 	public void updateEntity(TuchiEntity entity) {
@@ -201,8 +187,8 @@ public class TuchiEditForm {
 		entity.setNinusiCd(getNinusiCd());
 		entity.setTitle(getTitle());
 		entity.setPref(getPref());
-		entity.setDateStart( DateForm2DB( getDateStart()));
-		entity.setDateEnd( DateForm2DB( getDateEnd()));
+		entity.setDateStart(Str2Date(getDateStart()));
+		entity.setDateEnd(Str2Date(getDateEnd()));
 		entity.setTruckOp(getTruckOp());
 		entity.setSyasyu(getSyasyu());
 		entity.setCity(getCity());
@@ -218,5 +204,4 @@ public class TuchiEditForm {
 		}
 		return result;
 	}
-
 }

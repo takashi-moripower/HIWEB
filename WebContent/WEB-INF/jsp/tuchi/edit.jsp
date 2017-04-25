@@ -162,8 +162,8 @@
 								<p class="form-control-static">～</p>
 								<div class="input-group date">
 									<input id="dateEnd" name="dateEnd" type="text"
-										class="form-control" value="<%=form.getDateEnd()%>"
-										size="12"> <span class="input-group-addon "><i
+										class="form-control" value="<%=form.getDateEnd()%>" size="12">
+									<span class="input-group-addon "><i
 										class="glyphicon glyphicon-th"></i></span>
 								</div>
 							</div>
@@ -184,9 +184,13 @@
 							</div>
 						</div>
 						<div class="form-group form-inline">
+							<div class="col-md-3 col-md-offset-18">
+								<button type="submit" class="btn btn-primary col-md-22 col-md-offset-2">保存</button>
+							</div>
+							<div class="col-md-3">
 							<a href="tuchi_list"
-								class="btn btn-default col-md-3 col-md-offset-18"> 一覧に戻る </a>
-							<button type="submit" class="btn btn-info col-md-3">保存</button>
+								class="btn btn-default col-md-22 col-md-offset-2"> 一覧に戻る </a>
+							</div>
 						</div>
 
 					</div>

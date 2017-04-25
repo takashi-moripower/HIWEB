@@ -2,13 +2,19 @@ package logistics.system.project.common.task;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import logistics.system.project.common.Entity.MailSendEntity;
 import logistics.system.project.common.service.MailSendService;
 import logistics.system.project.tuchi.service.TuchiService;
 import logistics.system.project.utility.Constants;
+import logistics.system.project.utility.LogRecord;
 
+@EnableScheduling
 public class MainTask {
 
 	@Value("#{configProperties['mail.batch.count.max']}")
@@ -52,5 +58,17 @@ public class MainTask {
 		} finally {
 			locked = false;
 		}
+	}
+
+	@Autowired
+	@Qualifier("tuchiService")
+	private TuchiService tuchiService;
+
+	// 秒　分　時　日　月　週
+	// 0時0分0秒に実行
+	@Scheduled( cron="0 0 0 * * *")
+	public void clearDaylyCounts(){
+		LogRecord.info("CLEAR DAYLY COUNT");
+		tuchiService.clearDaylyCount();
 	}
 }

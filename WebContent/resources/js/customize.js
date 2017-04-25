@@ -21,13 +21,10 @@ $(function() {
 		var elem = event.srcElement || event.target;
 		var type = elem.type || elem.getAttribute('type');
 
-/*		if (keyCode == 37 || keyCode == 39) {
-			event.returnValue = false;
-			return false;
-		}*/
-
+		//バックスペースキー制御
 		if (keyCode == 8) {
-			if ((type == "password" || type == "text" || type == "textarea" || type == "tel")) {
+			TARGET_TYPES = ["password" , "text" , "textarea" , "tel" , "email" ];
+			if ( $.inArray( type , TARGET_TYPES )) {
 				var vReadOnly = elem.getAttribute('readonly');
 				var vEnabled = elem.getAttribute('enabled');
 				vReadOnly = (vReadOnly == null) ? false : vReadOnly;
@@ -46,45 +43,12 @@ $(function() {
 		if (keyCode == 116) {
 			return false;
 		}
-
-		/*if (keyCode == 82) { R
-			return false;
-		}*/
-
 	});
 
 
 	document.oncontextmenu = function(e){
     	return false;
 	};
-
-// document.body.onbeforeunload = function (event){
-//		 var c = event || window.event;
-//		 if (/webkit/.test(navigator.userAgent.toLowerCase())) {
-//		 return"leave this page will cause data missing!";
-//		}
-//		else
-//		{
-//		 c.returnValue ="leave this page will cause data missing！";
-//		}
-//	};
-
-//	$('.input-group.date').click(
-//		function(event) {
-//			var target = this;
-//			$(target).datepicker({
-//				format : 'yyyy/mm/dd (D)',
-//				startDate : "2015/5/19",
-//				language : 'ja',
-//				orientation : 'top left',
-//				autoclose : true
-//			});
-//
-//			event.stopPropagation();
-//			event.preventDefault();
-//		}
-//
-//	);
 
 	var startTime;
 
@@ -114,14 +78,6 @@ $(function() {
 			return false;
 		}
 	});
-
-	/*$(document).on('change', 'select[name=select_nenryo]', function() {
-		if ($(this).val() == 2) {
-			$("#nenryo_val").show();
-		} else {
-			$("#nenryo_val").hide();
-		}
-	});*/
 
 	$('select[name=select_nenryo]').change(
 		function() {

@@ -11,8 +11,8 @@
 		<result column="EMAIL" jdbcType="CHAR" property="email" />
 		<result column="USER_NM" jdbcType="CHAR" property="userNm" />
 		<result column="NINUSI_CD" jdbcType="CHAR" property="ninusiCd" />
-		<result column="DATE_START" jdbcType="TIMESTAMP" property="dateStart" />
-		<result column="DATE_END" jdbcType="TIMESTAMP" property="dateEnd" />
+		<result column="DATE_START" property="dateStart" />
+		<result column="DATE_END" property="dateEnd" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
 		<result column="MAIL_COUNT" jdbcType="INTEGER" property="mailCount" />
 		<result column="MAIL_COUNT_DAY" jdbcType="INTEGER" property="mailCountDay" />
@@ -83,8 +83,8 @@ WHERE
 			)
 		)
 	) AND
-    STR_TO_DATE( T_SYUKA.SYUKA_DAY , '%Y%m%d') > T_TUCHI.DATE_START AND
-    STR_TO_DATE( T_SYUKA.SYUKA_DAY , '%Y%m%d') < T_TUCHI.DATE_END AND
+    T_SYUKA.SYUKA_DAY >= DATE_FORMAT( T_TUCHI.DATE_START , '%Y%m%d' ) AND
+    T_SYUKA.SYUKA_DAY <= DATE_FORMAT( T_TUCHI.DATE_END , '%Y%m%d' ) AND
    	(
    		NOT EXISTS ( SELECT * FROM T_SYASYU_TUCHI WHERE T_SYASYU_TUCHI.TUCHI_ID = T_TUCHI.TUCHI_ID ) OR
    		EXISTS (
@@ -148,19 +148,26 @@ WHERE
 		SELECT
 			T_ANKEN.JUTU_KG AS JUTU_KG,
 			T_SYUKA.SYUKA_DAY AS DAY_FROM,
+			T_SYUKA.SYUKA_TIME AS TIME_FROM,
 			T_SYUKA.PREF_NM AS PREF_FROM,
 			T_SYUKA.CITY_NM AS CITY_FROM,
+			T_SYUKA.ADDR_NM AS ADDR_FROM,
 			T_NOHIN.NOHIN_DAY AS DAY_TO,
+			T_NOHIN.NOHIN_TIME AS TIME_TO,
 			T_NOHIN.PREF_NM AS PREF_TO,
 			T_NOHIN.CITY_NM AS CITY_TO,
+			T_NOHIN.ADDR_NM AS ADDR_TO,
 			(SELECT COUNT(*) FROM T_SYUKA AS CS WHERE CS.ANKEN_ID = T_ANKEN.ANKEN_ID) AS COUNT_FROM,
-			(SELECT COUNT(*) FROM T_NOHIN AS CN WHERE CN.ANKEN_ID = T_ANKEN.ANKEN_ID) AS COUNT_TO
+			(SELECT COUNT(*) FROM T_NOHIN AS CN WHERE CN.ANKEN_ID = T_ANKEN.ANKEN_ID) AS COUNT_TO,
+			T_TRUCK.YOSAN_MN AS YOSAN_MN
 		FROM
 			T_ANKEN
 		JOIN
 			T_SYUKA ON T_SYUKA.ANKEN_ID = T_ANKEN.ANKEN_ID
 		JOIN
 			T_NOHIN ON T_NOHIN.ANKEN_ID = T_ANKEN.ANKEN_ID
+		JOIN
+			T_TRUCK ON T_TRUCK.ANKEN_ID = T_ANKEN.ANKEN_ID
 		WHERE
 			T_ANKEN.ANKEN_ID = #ankenId#
 		ORDER BY
@@ -198,6 +205,12 @@ WHERE
 		WHERE
 			ID = #id#
 	</update>
+	<update id="clearTuchiDaylyCount" >
+		UPDATE
+			T_TUCHI
+		SET
+			MAIL_COUNT_DAY = 0
+	</update>
 
 	<insert id="insertTuchi" parameterClass="logistics.system.project.tuchi.Entity.TuchiEntity">
 		INSERT
@@ -223,8 +236,8 @@ WHERE
 	<insert id="addTuchiQueue" parameterClass="java.util.Map">
 
    	INSERT
-		INTO T_TUCHI_QUEUE( ANKEN_ID , TUCHI_ID )
-		SELECT * FROM (SELECT #ankenId#,#tuchiId#) as buffer
+		INTO T_TUCHI_QUEUE( ANKEN_ID , TUCHI_ID , CREATED)
+		SELECT * FROM (SELECT #ankenId#,#tuchiId#,#created#) as buffer
 		WHERE NOT EXISTS (
 			SELECT *
 				FROM T_TUCHI_QUEUE

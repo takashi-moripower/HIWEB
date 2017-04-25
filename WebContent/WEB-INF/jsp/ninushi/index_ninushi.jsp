@@ -5,13 +5,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
-	
+
 	<%@ include file="../common/header.jsp"%>
 </head>
 <body>
 	<div class="container">
 	 <%@ include file="../common/nav.jsp"%>
-  
+
   <form:form class="form-horizontal">
     <fieldset>
     <div class="panel panel-default">
@@ -70,16 +70,16 @@
 		  </div>
       </div>
     </div>
-	
+
 	<div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">お知らせ</h4>
       </div>
       <div class="panel-body">
-		<IFRAME src="resources/html/news_top.html" frameborder="0" width="100%"></IFRAME>
+		<object data="resources/html/news_ninushi.html" width="100%"></object>
       </div>
     </div>
-		
+
     </fieldset>
   </form:form >
   <!-- フォーム　▲-->

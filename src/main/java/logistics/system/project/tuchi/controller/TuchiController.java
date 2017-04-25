@@ -1,6 +1,8 @@
 package logistics.system.project.tuchi.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,7 +11,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -19,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import logistics.system.project.base.controller.BaseController;
+import logistics.system.project.common.dao.OptionDao;
 import logistics.system.project.common.parameterClass.MemberListParameter;
 import logistics.system.project.common.service.MemberListSearchService;
 import logistics.system.project.tuchi.Entity.TuchiEntity;
-import logistics.system.project.tuchi.component.DynamicPropertyComponent;
 import logistics.system.project.tuchi.component.MailSendComponent;
 import logistics.system.project.tuchi.dao.TuchiDao;
 import logistics.system.project.tuchi.form.TuchiEditForm;
@@ -33,6 +34,26 @@ import logistics.system.project.utility.Constants;
 public class TuchiController extends BaseController {
 
 	HashMap<String, Object> results;
+
+	@Autowired
+	@Qualifier("mailSendComponent")
+	private MailSendComponent mailSendComponent;
+
+	@Autowired
+	@Qualifier("tuchiService")
+	private TuchiService tuchiService;
+
+	@Autowired
+	@Qualifier("tuchiDao")
+	private TuchiDao tuchiDao;
+
+	@Autowired
+	@Qualifier("memberListSearchService")
+	private MemberListSearchService memberListSearchService;
+
+	@Autowired
+	@Qualifier("optionDao")
+	private OptionDao optionDao;
 
 	protected void clearResults() {
 		this.results = new HashMap<>();
@@ -53,6 +74,8 @@ public class TuchiController extends BaseController {
 		List<TuchiEntity> l = tuchiService.getTuchiByUser(userId, true);
 
 		results.put("list", l);
+		this.setHeader(new String[] {Constants.TUCHI_LIST_TITLE,
+				Constants.TUCHI_LIST_TITLE }, results);
 
 		return new ModelAndView("tuchi/list", results);
 	}
@@ -60,10 +83,25 @@ public class TuchiController extends BaseController {
 	@RequestMapping(value = "tuchi_add")
 	public ModelAndView Add() {
 
+		String datestring;
+
+		Date today = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		datestring = df.format(today);
+
+
 		TuchiEntity e = new TuchiEntity();
 		e.setTitle("新規作成");
 		e.setUserId(userSession.getUserId());
+		e.setEmail(userSession.getLoginId());
+		e.setDateStart(today);
+		e.setDateEnd(today);
 		e.initLinks();
+
+
+		this.setHeader(new String[] {Constants.TUCHI_ADD_TITLE,
+				Constants.TUCHI_ADD_TITLE }, results);
+
 
 		return editMain(e);
 	}
@@ -73,6 +111,9 @@ public class TuchiController extends BaseController {
 		String id = request.getParameter("tuchiId");
 
 		TuchiEntity e = tuchiService.getTuchiById(Integer.parseInt(id), true);
+
+		this.setHeader(new String[] {Constants.TUCHI_EDIT_TITLE,
+				Constants.TUCHI_EDIT_TITLE }, results);
 
 		return editMain(e);
 	}
@@ -153,47 +194,20 @@ public class TuchiController extends BaseController {
 	public ModelAndView debug(HttpServletRequest request) {
 		clearResults();
 
+		String baseUrl = optionDao.get("base_url");
+
+
 		results.put("data", baseUrl);
 		return new ModelAndView("tuchi/debug", results);
 	}
 
 	@RequestMapping(value = "tuchi_init_base_url")
 	public ModelAndView initBaseUrl(HttpServletRequest request) {
-
 		String baseUrl = mailSendComponent.getBaseUrl(request);
-		dynamicPropertyComponent.init(request);
-		dynamicPropertyComponent.setProperty("base_url", baseUrl);
-		dynamicPropertyComponent.store("");
+
+		optionDao.set("base_url", baseUrl);
 
 		results.put("data", baseUrl);
-
 		return new ModelAndView("tuchi/debug", results);
 	}
-
-	@Value("#{dynamicProperties['test_url']}")
-	private String testUrl;
-
-	@Value("#{dynamicProperties['base_url']}")
-	private String baseUrl;
-
-	@Autowired
-	@Qualifier("mailSendComponent")
-	private MailSendComponent mailSendComponent;
-
-	@Autowired
-	@Qualifier("dynamicPropertyComponent")
-	private DynamicPropertyComponent dynamicPropertyComponent;
-
-	@Autowired
-	@Qualifier("tuchiService")
-	private TuchiService tuchiService;
-
-	@Autowired
-	@Qualifier("tuchiDao")
-	private TuchiDao tuchiDao;
-
-	@Autowired
-	@Qualifier("memberListSearchService")
-	private MemberListSearchService memberListSearchService;
-
 }
