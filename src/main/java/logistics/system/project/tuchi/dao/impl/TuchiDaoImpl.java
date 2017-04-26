@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import logistics.system.project.base.dao.BaseDao;
@@ -13,6 +14,12 @@ import logistics.system.project.tuchi.dao.TuchiDao;
 
 @Repository("tuchiDao")
 public class TuchiDaoImpl extends BaseDao implements TuchiDao {
+
+	@Value("#{configProperties['DefaultDISPDL']}")
+	private String defaultDisplayDelay;
+
+	@Value("#{configProperties['mail.batch.count.max']}")
+	private String mailCountMax;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,8 +91,13 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> getDestEmails(int limit) {
-		return getSqlMapClientTemplate().queryForList("getTuchiDestEmails", limit);
+	public List<String> getDestEmails() {
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		param.put("limit", Integer.parseInt(this.mailCountMax));
+		param.put("defaultDelay", Integer.parseInt(this.defaultDisplayDelay));
+
+		return getSqlMapClientTemplate().queryForList("getTuchiDestEmails", param);
 	}
 
 	@Override
@@ -106,18 +118,20 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> getQueues(String email) {
-		return getSqlMapClientTemplate().queryForList("getTuchiQueueByEmail", email);
+		HashMap<String,Object> param = new HashMap<String,Object>();
+		param.put("email", email);
+		param.put("defaultDelay", Integer.parseInt(this.defaultDisplayDelay));
+		return getSqlMapClientTemplate().queryForList("getTuchiQueueByEmail", param);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String,Object> getAnkenForTuchi( String ankenId ){
-		return (Map<String,Object>)getSqlMapClientTemplate().queryForObject("getAnkenForTuchi",ankenId);
+	public Map<String, Object> getAnkenForTuchi(String ankenId) {
+		return (Map<String, Object>) getSqlMapClientTemplate().queryForObject("getAnkenForTuchi", ankenId);
 	}
 
-
 	@Override
-	public void clearDaylyCount(){
+	public void clearDaylyCount() {
 		getSqlMapClientTemplate().update("clearTuchiDaylyCount");
 	}
 
@@ -126,6 +140,5 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	public List<String> debug(String sql) {
 		return getSqlMapClientTemplate().queryForList("debugSelect", sql);
 	}
-
 
 }

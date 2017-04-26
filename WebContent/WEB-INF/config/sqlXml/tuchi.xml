@@ -111,36 +111,62 @@ WHERE
 		$value$
 	</select>
 
-	<select id="getTuchiDestEmails" resultClass="java.lang.String" parameterClass="java.lang.Integer">
+	<select id="getTuchiDestEmails" resultClass="java.lang.String" parameterClass="java.util.Map">
+	<![CDATA[
 		SELECT
 			T_TUCHI.EMAIL
 		FROM
 			T_TUCHI_QUEUE
 		JOIN
 			T_TUCHI ON T_TUCHI_QUEUE.TUCHI_ID = T_TUCHI.TUCHI_ID
+		JOIN
+			M_USER ON T_TUCHI.USER_ID = M_USER.USER_ID
+		JOIN
+			M_COMPANY ON M_USER.COMPANY_CD = M_COMPANY.COMPANY_CD
+		WHERE(
+			CASE WHEN M_COMPANY.DISP_DL IS NULL THEN
+				(CURRENT_TIMESTAMP - INTERVAL #defaultDelay# MINUTE)
+			ELSE
+				(CURRENT_TIMESTAMP - INTERVAL M_COMPANY.DISP_DL MINUTE)
+			END
+		) > T_TUCHI_QUEUE.CREATED
 		GROUP BY
 			T_TUCHI.EMAIL
 		LIMIT
-			#value#
+			#limit#
+	]]>
+
+
 	</select>
 
-	<select id="getTuchiQueueByEmail" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+	<select id="getTuchiQueueByEmail" resultClass="java.util.HashMap" parameterClass="java.util.Map">
 		<![CDATA[
-		SELECT
-			T_TUCHI_QUEUE.*
-		FROM
-			T_TUCHI_QUEUE
-		JOIN
-			T_TUCHI ON T_TUCHI_QUEUE.TUCHI_ID = T_TUCHI.TUCHI_ID
-		JOIN
-			T_ANKEN ON T_TUCHI_QUEUE.ANKEN_ID = T_ANKEN.ANKEN_ID
-		WHERE
-			T_TUCHI.EMAIL = #value# AND
-			T_TUCHI_QUEUE.STATUS <> -1
-		GROUP BY
-			T_TUCHI_QUEUE.ANKEN_ID
-		ORDER BY
-			T_TUCHI_QUEUE.CREATED
+			SELECT
+				T_TUCHI_QUEUE.*
+			FROM
+				T_TUCHI_QUEUE
+			JOIN
+				T_TUCHI ON T_TUCHI_QUEUE.TUCHI_ID = T_TUCHI.TUCHI_ID
+			JOIN
+				T_ANKEN ON T_TUCHI_QUEUE.ANKEN_ID = T_ANKEN.ANKEN_ID
+			JOIN
+				M_USER ON T_TUCHI.USER_ID = M_USER.USER_ID
+			JOIN
+				M_COMPANY ON M_USER.COMPANY_CD = M_COMPANY.COMPANY_CD
+			WHERE
+				(
+					CASE WHEN M_COMPANY.DISP_DL IS NULL THEN
+						(CURRENT_TIMESTAMP - INTERVAL #defaultDelay# MINUTE)
+					ELSE
+						(CURRENT_TIMESTAMP - INTERVAL M_COMPANY.DISP_DL MINUTE)
+					END
+				) > T_TUCHI_QUEUE.CREATED AND
+				T_TUCHI.EMAIL = #email# AND
+				T_TUCHI_QUEUE.STATUS <> -1
+			GROUP BY
+				T_TUCHI_QUEUE.ANKEN_ID
+			ORDER BY
+				T_TUCHI_QUEUE.CREATED
        	]]>
 	</select>
 

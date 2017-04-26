@@ -23,6 +23,7 @@
 </script>
 <%
 	TuchiEditForm form = (TuchiEditForm) request.getAttribute("form");
+	@SuppressWarnings("unchecked")
 	List<MemberEntity> ninushiList = (List<MemberEntity>) request.getAttribute("ninushiList");
 %>
 
@@ -39,6 +40,7 @@
 				type="hidden" name="userId" value="${form.userId}" />
 			<fieldset>
 				<%
+					@SuppressWarnings("unchecked")
 					List<String> errors = (List<String>) request.getAttribute("errors");
 					if (errors != null) {
 				%>
@@ -94,8 +96,8 @@
 									<%
 										for (MemberEntity m : ninushiList) {
 											String sel = (m.getCompanyCd().equals(form.getNinusiCd())) ? "selected" : "";
-											String buf = String.format("<option value='%s' %s>%s</option>", m.getCompanyCd(), sel,
-													m.getCompanyNm());
+											String buf = String.format("<option value='%s' %s>%s %s</option>", m.getCompanyCd(), sel,
+													m.getCompanyNm() , m.getOfficeNm() );
 											out.println(buf);
 										}
 									%>
@@ -111,7 +113,7 @@
 										<%
 											for (AreaEntity a : Constants.getAreaList()) {
 												out.println("<div class='row'><div class='col-md-2'>" + a.getAreaName() + "</div>");
-												for (PrefEntity p : form.getPrefByArea(a.getAreaCd())) {
+												for (PrefEntity p : TuchiEditForm.getPrefByArea(a.getAreaCd())) {
 													List<String> pr = form.getPref();
 													String checked = form.getPref().contains(p.getPrefCd()) ? "checked" : "";
 													String buf = p.getPrefName();
@@ -185,11 +187,12 @@
 						</div>
 						<div class="form-group form-inline">
 							<div class="col-md-3 col-md-offset-18">
-								<button type="submit" class="btn btn-primary col-md-22 col-md-offset-2">保存</button>
+								<button type="submit"
+									class="btn btn-primary col-md-22 col-md-offset-2">保存</button>
 							</div>
 							<div class="col-md-3">
-							<a href="tuchi_list"
-								class="btn btn-default col-md-22 col-md-offset-2"> 一覧に戻る </a>
+								<a href="tuchi_list"
+									class="btn btn-default col-md-22 col-md-offset-2"> 一覧に戻る </a>
 							</div>
 						</div>
 

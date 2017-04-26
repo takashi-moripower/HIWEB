@@ -66,7 +66,10 @@ public class TuchiController extends BaseController {
 		clearResults();
 
 		String userId;
-		if (userSession.getGyomuSb().equals(Constants.GYOMU_SB_TRAIL)) {
+		String GyomuSb = userSession.getGyomuSb();
+		results.put("GyomuSb", GyomuSb);
+
+		if (GyomuSb.equals(Constants.GYOMU_SB_TRAIL)) {
 			userId = null;
 		} else {
 			userId = userSession.getUserId();

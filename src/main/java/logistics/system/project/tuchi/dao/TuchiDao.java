@@ -18,7 +18,7 @@ public interface TuchiDao {
 
 	public int addQueue( List<Integer> tuchiIds , String ankenId );
 	public void removeQueue( int QueueId );
-	public List<String> getDestEmails( int limit );
+	public List<String> getDestEmails();
 
 	public void increaseCount( List<Integer> tuchiIds );
 

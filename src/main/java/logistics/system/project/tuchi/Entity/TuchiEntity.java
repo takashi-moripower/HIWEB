@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import logistics.system.project.common.Entity.MemberEntity;
+import logistics.system.project.common.dao.MemberDao;
 import logistics.system.project.utility.Constants;
 
 public class TuchiEntity {
@@ -112,6 +114,17 @@ public class TuchiEntity {
 			result += Constants.getCityName(cityCd) + " ";
 		}
 		result += "）";
+		return result;
+	}
+
+	public String getUnsoNm(){
+		if( this.getNinusiCd() == null ){
+			return null;
+		}
+		MemberDao md = (MemberDao) Constants.WEB_APP_CONTEXT.getBean("memberDao");
+		MemberEntity unso = md.getMemberByCd(getNinusiCd());
+		String result = unso.getCompanyNm() + " " + unso.getOfficeNm();
+
 		return result;
 	}
 

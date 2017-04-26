@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@page import="logistics.system.project.utility.Constants"%>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=yes" />
@@ -11,6 +12,25 @@
 .btn.btn-xs {
 	padding: 0 10px;
 }
+
+.table-tuchi-list thead th {
+	white-space: nowrap;
+}
+
+table.table-tuchi-list tr td {
+	padding:.5rem;
+	white-space: nowrap;
+}
+
+.table-tuchi-list td.area {
+	white-space: normal;
+}
+<%boolean isAdmin = Constants.GYOMU_SB_TRAIL.equals(request.getAttribute("GyomuSb")); %>
+<%if (!isAdmin) {%>
+.table-tuchi-list th.user-nm, .table-tuchi-list td.user-nm {
+	display: none;
+}
+<%}%>
 </style>
 </head>
 <body>
@@ -21,18 +41,20 @@
 	<div class="container">
 		<h1>通知条件一覧</h1>
 
-		<table class="table table-bordered table-striped">
+		<table class="table table-bordered table-striped table-tuchi-list">
 			<thead>
 				<tr>
 					<th>Id</th>
-					<th>Title</th>
-					<th>user</th>
+					<th>タイトル</th>
+					<th class="user-nm">登録者</th>
+					<th>荷主</th>
 					<th>配信先</th>
 					<th>地域</th>
 					<th>開始</th>
 					<th>終了</th>
 					<th>発送数</th>
-					<th>発送数(今日)</th>
+					<th>発送数<wbr>(今日)
+					</th>
 					<th>action</th>
 				</tr>
 			</thead>
@@ -40,10 +62,11 @@
 				<c:forEach var="item" items="${list}" varStatus="status">
 					<tr>
 						<td><c:out value="${item.tuchiId}" /></td>
-						<th><c:out value="${item.title}" /></th>
-						<td><c:out value="${item.userNm}" /></td>
+						<td><c:out value="${item.title}" /></td>
+						<td class="user-nm"><c:out value="${item.userNm}" /></td>
+						<td><c:out value="${item.unsoNm}" /></td>
 						<td><c:out value="${item.email}" /></td>
-						<td><c:out value="${item.area}" /></td>
+						<td class="area"><c:out value="${item.area}" /></td>
 						<td><c:out value="${item.dateStartText}" /></td>
 						<td><c:out value="${item.dateEndText}" /></td>
 						<td class="text-right"><c:out value="${item.mailCount}" /></td>

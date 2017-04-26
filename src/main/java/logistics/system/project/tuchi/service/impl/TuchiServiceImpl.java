@@ -144,13 +144,16 @@ public class TuchiServiceImpl implements TuchiService {
 	@Override
 	public void sendMail() {
 		this.baseUrl = optionDao.get("base_url");
-		List<String> DestEmails = tuchiDao.getDestEmails(Constants.MAX_TUCHI_MAIL);
+		List<String> DestEmails = tuchiDao.getDestEmails();
 
 		for (String Email : DestEmails) {
 			List<Map<String, Object>> Queues = tuchiDao.getQueues(Email);
 
 			// メール文面作成
 			String text = getTuchiText( Queues );
+			if( text.isEmpty()){
+				continue;
+			}
 
 			int result = mailSendComponent.send(Constants.TUCHI_EMAIL_SUBJECT, Email, text);
 
@@ -163,31 +166,40 @@ public class TuchiServiceImpl implements TuchiService {
 	}
 
 	protected String getTuchiText( List<Map<String, Object>> Queues ){
-		String result = "";
-
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
-		result += "配送案件のご案内 "+ df.format(new Date()) + "<br>";
+		String header = "配送案件のご案内 "+ df.format(new Date()) + "<br>";
 
+
+		String main = "";
 		for( Map<String,Object> Queue : Queues ){
-			result += getTuchiAnkenText( (String)Queue.get("ANKEN_ID"));
+			main += getTuchiAnkenText( (String)Queue.get("ANKEN_ID"));
 		}
-		result += "-------------------------------------<br>";
+		if( main.isEmpty() ){
+			return "";
+		}
+		main += "-------------------------------------<br>";
 
-		result += "＊既に他業者が配送を確定している場合があります。<br>"
+
+		String footer;
+		footer  = "＊既に他業者が配送を確定している場合があります。<br>"
 				+ "＊このメールは配送マッチングによる自動配信です。<br>"
 				+ "*************************************<br>"
 				+ "問合先：株式会社TRAIL<br>"
 				+ "TEL: XXX-XXX-XXXX info@keel.co.jp<br>"
 				+ "*************************************<br>";
 
-		return result;
+		return header + main + footer;
 	}
 
 	protected String getTuchiAnkenText(String ankenId) {
 		String result = "";
 
 		Map<String, Object> data = tuchiDao.getAnkenForTuchi(ankenId);
+
+		if( data == null ){
+			return result;
+		}
 
 		result += "-------------------------------------<br>";
 		result += String.format("受注期限：%s<br>", formatJutuDate( data.get("JUTU_KG") ));
