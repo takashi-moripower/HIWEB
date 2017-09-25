@@ -17,13 +17,13 @@ public interface TuchiDao {
 	public List<Integer> getMatchTuchi(String ankenId);
 
 	public int addQueue( List<Integer> tuchiIds , String ankenId );
-	public void removeQueue( int QueueId );
+	public void removeQueue( long QueueId );
 	public List<String> getDestEmails();
 
 	public void increaseCount( List<Integer> tuchiIds );
 
 	public List< Map<String,Object> > getQueues( String email );
-	public void setQueueStatus( int id , int status );
+	public void setQueueStatus( long QueueId , int status );
 	public Map<String,Object> getAnkenForTuchi( String ankenId );
 
 	public void clearDaylyCount();

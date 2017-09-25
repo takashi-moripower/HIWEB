@@ -281,7 +281,7 @@ WHERE
        		TUCHI_ID = #value#
     </delete>
 
-    <delete id="removeTuchiQueue" parameterClass="java.lang.Integer">
+    <delete id="removeTuchiQueue" parameterClass="java.lang.Long">
 		DELETE
 			T_TUCHI_QUEUE
 		FROM

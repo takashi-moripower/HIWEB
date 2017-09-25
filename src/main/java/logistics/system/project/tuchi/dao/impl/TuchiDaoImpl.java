@@ -85,7 +85,7 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	}
 
 	@Override
-	public void removeQueue(int QueueId) {
+	public void removeQueue(long QueueId) {
 		getSqlMapClientTemplate().delete("removeTuchiQueue", QueueId);
 	}
 
@@ -108,7 +108,7 @@ public class TuchiDaoImpl extends BaseDao implements TuchiDao {
 	}
 
 	@Override
-	public void setQueueStatus(int id, int status) {
+	public void setQueueStatus(long id, int status) {
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("id", id);
 		param.put("status", status);

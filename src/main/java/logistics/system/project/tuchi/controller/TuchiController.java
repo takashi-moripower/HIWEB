@@ -1,11 +1,9 @@
 package logistics.system.project.tuchi.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -87,12 +85,7 @@ public class TuchiController extends BaseController {
 	@RequestMapping(value = "tuchi_add")
 	public ModelAndView Add() {
 
-		String datestring;
-
 		Date today = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		datestring = df.format(today);
-
 
 		TuchiEntity e = new TuchiEntity();
 		e.setTitle("新規作成");
@@ -101,7 +94,6 @@ public class TuchiController extends BaseController {
 		e.setDateStart(today);
 		e.setDateEnd(today);
 		e.initLinks();
-
 
 		this.setHeader(new String[] {Constants.TUCHI_ADD_TITLE,
 				Constants.TUCHI_ADD_TITLE }, results);
@@ -198,14 +190,8 @@ public class TuchiController extends BaseController {
 	public ModelAndView debug(HttpServletRequest request) {
 		clearResults();
 
-		Map<String,Object> r = tuchiDao.getAnkenForTuchi("1234");
-		if( r== null ){
-			results.put("data", "null");
-		}else{
-			results.put("data", "fill");
-		}
+		results.put("data", tuchiDao.getDestEmails());
 
-//		results.put("data", baseUrl);
 		return new ModelAndView("tuchi/debug", results);
 	}
 

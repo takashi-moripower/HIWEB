@@ -19,6 +19,7 @@ import logistics.system.project.tuchi.dao.RelationDao;
 import logistics.system.project.tuchi.dao.TuchiDao;
 import logistics.system.project.tuchi.service.TuchiService;
 import logistics.system.project.utility.Constants;
+import logistics.system.project.utility.LogRecord;
 
 @Service("tuchiService")
 public class TuchiServiceImpl implements TuchiService {
@@ -146,8 +147,13 @@ public class TuchiServiceImpl implements TuchiService {
 		this.baseUrl = optionDao.get("base_url");
 		List<String> DestEmails = tuchiDao.getDestEmails();
 
+		LogRecord.info( "DEST EMAILS" );
+		LogRecord.info( DestEmails.toString() );
+
 		for (String Email : DestEmails) {
 			List<Map<String, Object>> Queues = tuchiDao.getQueues(Email);
+			LogRecord.info( "QUEUES" );
+			LogRecord.info( Queues.toString() );
 
 			// メール文面作成
 			String text = getTuchiText( Queues );
@@ -158,7 +164,7 @@ public class TuchiServiceImpl implements TuchiService {
 			int result = mailSendComponent.send(Constants.TUCHI_EMAIL_SUBJECT, Email, text);
 
 			for (Map<String, Object> Queue : Queues) {
-				int id = (int) Queue.get("ID");
+				long id = (long) Queue.get("ID");
 				int status = (int) Queue.get("STATUS");
 				afterSendMail(id, status, result);
 			}
@@ -273,22 +279,22 @@ public class TuchiServiceImpl implements TuchiService {
 	}
 
 
-	protected void afterSendMail(int id, int status, int result) {
+	protected void afterSendMail(long queueId, int status, int result) {
 		// フィルターされたとき
 		if (result == MailSendComponent.SEND_FILTERED) {
-			tuchiDao.setQueueStatus(id, Constants.TUCHI_QUEUE_STATE_FILTERED);
+			tuchiDao.setQueueStatus(queueId, Constants.TUCHI_QUEUE_STATE_FILTERED);
 		}
 
 		// 送信成功時 最大回数送っても失敗だった時はキューから削除
 		if (result == MailSendComponent.SEND_SUCCESS
 				|| (result == MailSendComponent.SEND_FAILED && status == Constants.MAX_MAIL_SEND_KS)) {
-			tuchiDao.removeQueue(id);
+			tuchiDao.removeQueue(queueId);
 			return;
 		}
 
 		// 最大回数以下で失敗時
 		if (result == MailSendComponent.SEND_FAILED) {
-			tuchiDao.setQueueStatus(id, status + 1);
+			tuchiDao.setQueueStatus(queueId, status + 1);
 		}
 	}
 
